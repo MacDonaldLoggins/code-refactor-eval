@@ -1,0 +1,77 @@
+{
+  "session_node_order": {
+    "first_user_keywords": [
+      "Base directory for this skill:",
+      "/",
+      "[Image #",
+      "/superpowers",
+      "/plan",
+      "<local-command-stdout>",
+      "/start codex mode",
+      "/fix-all-issues",
+      "<bash-input>"
+    ],
+    "second_user_keywords": [
+      "Base directory for this skill:",
+      "[Image:"
+    ]
+  },
+  "basic_acceptance": {
+    "long_check_keywords": [
+      "/",
+      "[Image #",
+      "/superpowers"
+    ]
+  },
+  "check_openaI_chat_completions": {
+    "continuous_user": [
+      "/",
+      "[Image #",
+      "/superpowers",
+      "/plan",
+      "<local-command-stdout>",
+      "/start codex mode",
+      "/fix-all-issues",
+      "<bash-input>"
+    ]
+  },
+  "tool_definitions": {
+    "undefined_tool_name_exemptions": [
+      "mcp__serena__initial_instructions",
+      "mcp__serena__check_onboarding_performed",
+      "mcp__serena__activate_project",
+      "mcp__serena__get_symbols_overview",
+      "mcp__filesystem__list_directory",
+      "mcp__filesystem__create_directory",
+      "mcp__filesystem__read_text_file",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_snapshot",
+      "mcp__codex__codex",
+      "mcp__ide__getDiagnostics",
+      "mcp__plugin_claude-mem_mcp-search__get_observations",
+      "mcp__plugin_claude-mem_mcp-search__smart_outline",
+      "Agent\" subagent_type=\"Explore",
+      "mcp__filesystem__directory_tree",
+      "mcp__filesystem__read_multiple_files",
+      "mcp__playwright__browser_console_messages",
+      "mcp__playwright__browser_evaluate",
+      "mcp__serena__replace_symbol_body",
+      "mcp__serena__replace_regex",
+      "mcp__serena__replace_content",
+      "mcp__serena__find_symbol",
+      "mcp__sorux_broker__Read",
+      "mcp__filesystem__write_file",
+      "mcp__filesystem__list_allowed_directories",
+      "mcp__filesystem__list_directory_with_sizes",
+      "Agent\" parameter_assignments=\"{}",
+      "Agent\" ><br><parameter name=\"description",
+      "Agent",
+      "Agent\" parameter_name=\"description",
+      "mcp__plugin_claude-mem_mcp-search__search",
+      "mcp__plugin_claude-mem_mcp-search__smart_unfold",
+      "update_todos"
+    ]
+  }
+}

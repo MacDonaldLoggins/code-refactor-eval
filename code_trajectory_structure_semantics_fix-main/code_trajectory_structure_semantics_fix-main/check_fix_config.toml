@@ -1,0 +1,92 @@
+config_version = 1
+
+# 结构检查/修复配置。
+# 常改项优先看 [general]、[check.scripts]、[fix.scripts]。
+
+[general]
+# 输入/输出范围。
+session_path = "sessions"
+task_glob = "TASK-*"
+report_subdir = "report"
+
+# 并发。
+check_workers = 20
+fix_workers = 8
+
+# 修复策略。
+source_state = "convert"    # sessions / convert / auto
+compact_llm = "off"         # off / misfiled / backup / both；这里的 backup 是 CORRUPTED_BACKUP 修复模式，不会复制备份。
+stop_on_fix_error = false
+
+# 特定检查/修复参数。
+min_first_user_chars = 30
+price_error_move = false
+
+[check]
+enabled = true
+keep_child_reports = false
+
+[check.scripts]
+# 基础结构。
+calculate_price = true
+sessions_folder = true
+original_sessions_structure = true
+original_sessions_forkedfrom = false
+basic_acceptance = true
+json_structure = true
+
+# OpenAI / tool / subagent 结构。
+openai_chat_completions = true
+tools_call_result = true
+subagent = true
+tool_definitions = true
+
+# 节点顺序与终态。
+final_assistant_main = true
+session_node_order = true
+session_system_prompt = true
+completed_state = false
+final = true
+
+# 内容规范。
+skill_commands = true
+sensitive_keywords = true
+no_chinese = true
+forbidden_commands = true
+
+[fix]
+enabled = true
+
+[fix.scripts]
+# 文件/JSON 基础修复。
+encoding = true
+broken_json = true
+malformed = true
+mojibake = true
+chinese_chars = true
+
+# 迁入的结构轨迹修复。
+remove_task_tools = true
+add_codegraph_tool_definition = true
+fix_corrupted_content = true
+clean_empty_assistant = true
+dedup_consecutive_assistant = true
+fix_compact_alignment = true
+assistant_scene_modify = false
+
+# OpenAI/tool/subagent 修复。
+openai_pairing_restore = true
+invalid_tool_arguments = true
+rule50 = true
+subagent_002 = true
+subagent_003 = true
+
+# user 节点修复。
+missing_first_user = true
+short_first_user = true
+double_user = true
+
+# 内容脱敏收尾。顺序固定：先替换模型/厂商关键字，再删除由替换产生的
+# assistant tool_calls.function.arguments 中 model=internal-model 字段。
+sensitive_keywords = true
+remove_internal_model_field = true

@@ -1,0 +1,24 @@
+{
+  "schema_version": "unittest-rl-execution-profiles-v1",
+  "status": "frozen",
+  "default_profile_id": "current",
+  "profile_isolation": "single_current_virtual_environment_and_process",
+  "profiles": [
+    {
+      "profile_id": "current",
+      "description": "Current dependency profile: Twisted 26.4.0.",
+      "dependency_lock": "environment/requirements.lock",
+      "runtime_relative_path": "runtime",
+      "container_python": "/opt/unittest-rl/runtimes/current/bin/python",
+      "test_selection": {
+        "paths": [
+          "candidate_tests"
+        ],
+        "ignore_paths": [],
+        "empty_policy": "candidate_fail"
+      },
+      "required_for_hard_gate": true
+    }
+  ],
+  "mode": "single"
+}

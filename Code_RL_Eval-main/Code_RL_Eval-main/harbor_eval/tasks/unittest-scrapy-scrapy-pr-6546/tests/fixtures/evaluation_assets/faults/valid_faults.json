@@ -1,0 +1,135 @@
+{
+  "schema_version": "unittest-rl-valid-faults-v5",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "stage_id": "S06",
+  "status": "frozen",
+  "scope_revision_id": "coverage-scope-revision-002-current-only",
+  "source": "active/sealed/faults/raw_faults.json",
+  "validation_policy": "original_target_passes_and_mutant_is_stably_distinguishable",
+  "original_target": {
+    "exit_code": 0,
+    "summary": "10 passed in 0.47s"
+  },
+  "valid_faults": [
+    {
+      "fault_id": "F001",
+      "status": "valid",
+      "patch": "patches/F001-ignore-stdlib-tls-bounds.patch",
+      "behavior_ids": [
+        "scrapy.tls.stdlib_version_limits"
+      ],
+      "semantic_class": "ignored_stdlib_configuration",
+      "replays": [
+        "1 failed, 9 passed",
+        "1 failed, 9 passed",
+        "1 failed, 9 passed"
+      ],
+      "classification": "stable_distinguishable",
+      "accepted_failure_phases": ["call"]
+    },
+    {
+      "fault_id": "F002",
+      "status": "valid",
+      "patch": "patches/F002-ignore-twisted-tls-bounds.patch",
+      "behavior_ids": [
+        "scrapy.tls.twisted_version_limits"
+      ],
+      "semantic_class": "ignored_twisted_configuration",
+      "replays": [
+        "1 failed, 9 passed",
+        "1 failed, 9 passed",
+        "1 failed, 9 passed"
+      ],
+      "classification": "stable_distinguishable",
+      "accepted_failure_phases": ["call"]
+    },
+    {
+      "fault_id": "F003",
+      "status": "valid",
+      "patch": "patches/F003-suppress-legacy-module-warning.patch",
+      "behavior_ids": [
+        "scrapy.tls.legacy_api_deprecation"
+      ],
+      "semantic_class": "missing_module_api_deprecation",
+      "replays": [
+        "2 failed, 8 passed",
+        "2 failed, 8 passed",
+        "2 failed, 8 passed"
+      ],
+      "classification": "stable_distinguishable",
+      "accepted_failure_phases": ["call"]
+    },
+    {
+      "fault_id": "F004",
+      "status": "valid",
+      "patch": "patches/F004-drop-current-twisted-max-mapping.patch",
+      "behavior_ids": [
+        "scrapy.tls.twisted_version_limits"
+      ],
+      "semantic_class": "missing_current_twisted_maximum_mapping",
+      "replays": [
+        "3 failed, 7 passed",
+        "3 failed, 7 passed",
+        "3 failed, 7 passed"
+      ],
+      "classification": "stable_distinguishable",
+      "accepted_failure_phases": ["call"],
+      "rationale": "The current Twisted translation drops the requested maximum instead of passing it through as lowerMaximumSecurityTo."
+    },
+    {
+      "fault_id": "F005",
+      "status": "valid",
+      "patch": "patches/F005-suppress-legacy-setting-warning.patch",
+      "behavior_ids": [
+        "scrapy.tls.legacy_api_deprecation"
+      ],
+      "semantic_class": "missing_setting_deprecation",
+      "replays": [
+        "2 failed, 8 passed",
+        "2 failed, 8 passed",
+        "2 failed, 8 passed"
+      ],
+      "classification": "stable_distinguishable",
+      "accepted_failure_phases": ["call"]
+    },
+    {
+      "fault_id": "F006",
+      "status": "valid",
+      "patch": "patches/F006-generic-invalid-min-version-error.patch",
+      "behavior_ids": [
+        "scrapy.tls.invalid_min_version"
+      ],
+      "semantic_class": "lost_minimum_setting_specific_diagnostic",
+      "replays": [
+        "1 failed, 9 passed",
+        "1 failed, 9 passed",
+        "1 failed, 9 passed"
+      ],
+      "classification": "stable_distinguishable",
+      "accepted_failure_phases": ["call"],
+      "rationale": "The invalid minimum bound fails without naming its setting or value."
+    },
+    {
+      "fault_id": "F007",
+      "status": "valid",
+      "patch": "patches/F007-generic-invalid-max-version-error.patch",
+      "behavior_ids": [
+        "scrapy.tls.invalid_max_version"
+      ],
+      "semantic_class": "lost_maximum_setting_specific_diagnostic",
+      "replays": [
+        "1 failed, 9 passed",
+        "1 failed, 9 passed",
+        "1 failed, 9 passed"
+      ],
+      "classification": "stable_distinguishable",
+      "accepted_failure_phases": ["call"],
+      "rationale": "The invalid maximum bound fails without naming its setting or value."
+    }
+  ],
+  "counts": {
+    "raw": 7,
+    "valid": 7,
+    "invalid": 0
+  }
+}

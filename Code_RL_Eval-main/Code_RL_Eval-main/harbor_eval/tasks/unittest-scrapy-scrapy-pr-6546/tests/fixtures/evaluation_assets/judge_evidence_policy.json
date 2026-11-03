@@ -1,0 +1,116 @@
+{
+  "schema_version": "unittest-rl-judge-evidence-policy-v1",
+  "policy_id": "judge-evidence-policy-v0103-dimension-isolated-v4",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "status": "frozen",
+  "freeze_point": "Frozen before prepared-v004 was published; all nine candidates and each candidate's three scoring rounds read the same file and SHA-256.",
+  "language": "en-US",
+  "purpose_contract": [
+    {
+      "evidence_kind": "rubric_and_facts",
+      "purpose": "Defines behavior, condition relationships, and the 0/1 boundary; it does not prove that a candidate ran or satisfied a condition."
+    },
+    {
+      "evidence_kind": "structured_runtime_evidence",
+      "purpose": "Proves node collection, actual execution, production calls, and runtime results; source code cannot fill in missing runtime facts."
+    },
+    {
+      "evidence_kind": "candidate_source",
+      "purpose": "Proves that test inputs, assertions, and structure exist; source code alone does not prove that a node was collected, executed, or passed."
+    },
+    {
+      "evidence_kind": "normalized_failure_evidence",
+      "purpose": "Proves the J5 failure location, expected/actual values, input context, and cascade noise; volatile addresses, paths, and durations are not scored."
+    },
+    {
+      "evidence_kind": "e2_obligation_evidence",
+      "purpose": "Proves only production execution events within the SC-E2 obligation scope; it does not prove SC-J1 through SC-J5 or candidate assertions."
+    }
+  ],
+  "precedence": [
+    {
+      "rank": 1,
+      "evidence_kind": "structured_runtime_evidence",
+      "rule": "When it conflicts with an inference from source code, actual collection and execution results take precedence."
+    },
+    {
+      "rank": 2,
+      "evidence_kind": "normalized_failure_evidence",
+      "rule": "Use normalized actual failure records when judging J5 diagnostic quality."
+    },
+    {
+      "rank": 3,
+      "evidence_kind": "candidate_source",
+      "rule": "Use only to determine that inputs, assertions, and structure exist; do not infer runtime facts."
+    },
+    {
+      "rank": 4,
+      "evidence_kind": "rubric_and_facts",
+      "rule": "Provides judging criteria and the fact scope only; it does not provide a conclusion that the candidate meets the criteria."
+    }
+  ],
+  "conflict_rules": [
+    "When high-priority evidence conflicts with low-priority evidence, use the high-priority evidence and explain both sides and the reason for the choice.",
+    "When evidence at the same priority appears inconsistent, read the complete record for that Rubric and verify execution status, evidence identifiers, and hashes; if the necessary conditions still cannot be proved by consistent direct evidence, assign 0 and identify the unresolved evidence problem in the reason.",
+    "When runtime evidence is missing, do not use candidate source, Rubric, facts, candidate_absent, or stable_killed to infer that a condition was executed."
+  ],
+  "non_overlap_contract": {
+    "general": [
+      "Shared entry points, the same test_execution_id, and production provenance constrain the evidence; they are not independent scoring cores for multiple Rubrics.",
+      "Each Rubric's reason must identify its unique input partition, responsibility endpoint, Oracle, structural property, relationship edge, or diagnostic property.",
+      "The same evidence record or path may support multiple Rubrics; each score of 1 must use the observable fact corresponding to that Rubric's scoring direction, not merely repeat another Rubric's reason."
+    ],
+    "SC-J1": [
+      "Use the behavior-specific input partition and terminal production event to judge the responsibility path; a shared upstream call cannot replace a terminal event.",
+      "Valid min/max, invalid min, invalid max, compensable maximum, and unrepresentable maximum each bind to a different test_execution_id and cannot substitute for one another."
+    ],
+    "SC-J2": [
+      "Judge only the exact expected/actual Oracle in the candidate assertion; do not score the production responsibility path again."
+    ],
+    "SC-J3": [
+      "behavior_naming judges the meaning conveyed by the nodeid; single_behavior_cohesion judges contract isolation; fixture_understandability judges input and expected-value readability; structural_clarity judges the target action, result binding, and control flow; no_structural_coupling judges external and cross-test dependencies."
+    ],
+    "SC-J4": [
+      "Judge only whether the two contribution units have a direct relationship established by distinguishable independent instances and their own result checks; do not rescore the exact values already judged by J2."
+    ],
+    "SC-J5": {
+      "failure_location": "Use only the complete nodeid, candidate file, and failed assertion location.",
+      "expected_actual_visible": "Use only explicitly identified expected and actual results.",
+      "input_context": "Use only actual inputs directly given by the input area, complete parameter identifier, call arguments, or candidate failed source/attribute-access records bound to the same failing node; expected text alone cannot prove input context. Frozen profile-level preconditions are applicability facts and need not be repeated in the candidate failure log.",
+      "no_cascade_noise": "Use the complete candidate failure set and behavior ownership from each replay; do not additionally require an exact assertion location, expected/actual value, or input value."
+    }
+  },
+  "dimension_contract": {
+    "SC-J1": [
+      "j1_execution_evidence is the minimal projection generated on demand from positive-behavior-observations.json and embedded only in the J1 input; do not save j1-responsibility-trace.json separately.",
+      "Use the complete candidate source to identify inputs, assertions, and structure; an assertion-arrival record proves only that the corresponding Oracle was reached under the same test_execution_id, and neither source nor that record alone proves the complete responsibility path.",
+      "The J1 trace must have a valid schema, completed status, and complete collection records; assign 0 to the corresponding Rubric when a necessary production event lacks valid direct evidence.",
+      "Production responsibility must be proved by a call record with a trusted implementation source, production-event marker, and the same test_execution_id; do not substitute source code, synthetic events, or an ATIF agent trajectory.",
+      "The current projection does not provide object identity or assertion expected/actual values; do not infer the same factory, the same SSLContext, or an exact Oracle value."
+    ],
+    "SC-J2": [
+      "Read the complete candidate source to judge the exact Oracle, and use the positive execution report to prove that the corresponding node was collected, executed, and passed; source code alone cannot prove runtime success."
+    ],
+    "SC-J3": [
+      "Read the complete candidate source to judge naming, fixtures, structure, and control flow, and use the positive execution report to verify node collection, isolation, and repeated execution."
+    ],
+    "SC-J4": [
+      "J4 reads the two contribution units, their inputs, and assertions in the complete candidate source and relates them to successful collection and isolated execution records.",
+      "SC-E2 obligation status cannot replace evidence that a J4 assertion holds.",
+      "J4 judges only whether both ends of the relationship are independent and distinguishable; it does not rescore J2's exact Oracle value."
+    ],
+    "SC-J5": [
+      "Each Rubric reads only the stable_killed fault mapped to it in j5_rubric_evidence_scope.",
+      "Each mapped fault has three non-empty replays with consecutive numbering; the Judge reads all of them before deciding the Rubric.",
+      "no_cascade_noise reads the complete failure set from each replay of its mapped fault; other directions read only failure records in that fault associated with this Rubric's behavior and observable.",
+      "Do not use another Rubric's fault scope to fill in this condition."
+    ]
+  },
+  "reason_contract": [
+    "Each Rubric reason cites the evidence path or evidence identifier used for the conclusion.",
+    "Each reason explicitly identifies this Rubric's unique scoring object and does not use shared prefixes or evidence from another direction as its sole basis for passing.",
+    "When score_1 has multiple necessary conditions, the reason explains the evidence for each condition; assign 0 when a necessary condition is missing.",
+    "When assigning 0, identify the specific omission, conflict, or counterevidence; do not describe a collection failure as a candidate defect.",
+    "When evidence conflicts, explain the priority rule used; when there is no conflict, do not invent one."
+  ]
+}

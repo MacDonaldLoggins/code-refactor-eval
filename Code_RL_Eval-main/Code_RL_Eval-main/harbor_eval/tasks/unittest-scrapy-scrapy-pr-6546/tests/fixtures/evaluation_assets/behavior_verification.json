@@ -1,0 +1,74 @@
+{
+  "schema_version": "unittest-rl-behavior-verification-v4",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "stage_id": "S04",
+  "status": "pass",
+  "behavior_source": "active/sealed/behaviors.json",
+  "verifier": "active/sealed/reference_tests/test_pr6546_tls_contracts.py",
+  "target_replays": [
+    {
+      "attempt": 1,
+      "exit_code": 0,
+      "summary": "10 passed in 0.47s"
+    },
+    {
+      "attempt": 2,
+      "exit_code": 0,
+      "summary": "10 passed in 0.45s"
+    },
+    {
+      "attempt": 3,
+      "exit_code": 0,
+      "summary": "10 passed in 0.46s"
+    }
+  ],
+  "base_replay": {
+    "exit_code": 1,
+    "summary": "6 failed in 0.14s",
+    "classification": "expected_behaviors_absent"
+  },
+  "results": [
+    {
+      "behavior_id": "scrapy.tls.stdlib_version_limits",
+      "status": "verified",
+      "tests": [
+        "test_stdlib_context_honors_configured_tls_version_range"
+      ]
+    },
+    {
+      "behavior_id": "scrapy.tls.twisted_version_limits",
+      "status": "verified",
+      "tests": [
+        "test_twisted_context_factory_uses_version_limits_over_legacy_method",
+        "test_current_twisted_maximum_is_translated_directly"
+      ]
+    },
+    {
+      "behavior_id": "scrapy.tls.invalid_min_version",
+      "status": "verified",
+      "tests": [
+        "test_invalid_tls_version_setting_is_rejected[DOWNLOAD_TLS_MIN_VERSION-Unknown DOWNLOAD_TLS_MIN_VERSION value: invalid]"
+      ]
+    },
+    {
+      "behavior_id": "scrapy.tls.invalid_max_version",
+      "status": "verified",
+      "tests": [
+        "test_invalid_tls_version_setting_is_rejected[DOWNLOAD_TLS_MAX_VERSION-Unknown DOWNLOAD_TLS_MAX_VERSION value: invalid]"
+      ]
+    },
+    {
+      "behavior_id": "scrapy.tls.legacy_api_deprecation",
+      "status": "verified",
+      "tests": [
+        "test_legacy_tls_module_names_remain_available_with_warnings",
+        "test_twisted_context_factory_uses_version_limits_over_legacy_method"
+      ]
+    }
+  ],
+  "coverage": {
+    "declared_behavior_count": 5,
+    "verified_behavior_count": 5,
+    "missing_behavior_ids": []
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "schema_version": "unittest-rl-test-obligations-v4",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "stage_id": "S06O",
+  "status": "frozen",
+  "obligation_revision_id": "obligations-revision-003-current-only",
+  "scope_revision_id": "coverage-scope-revision-002-current-only",
+  "aggregation_policy": "hierarchical_behavior_risk_weighted_v2",
+  "candidate_data_read": false,
+  "behavior_profiles": [
+    {
+      "behavior_id": "scrapy.tls.stdlib_version_limits",
+      "quality_goal_id": "QG-stdlib-tls-range",
+      "behavior_risk_weight": 1.2
+    },
+    {
+      "behavior_id": "scrapy.tls.twisted_version_limits",
+      "quality_goal_id": "QG-twisted-tls-range",
+      "behavior_risk_weight": 1.4
+    },
+    {
+      "behavior_id": "scrapy.tls.invalid_min_version",
+      "quality_goal_id": "QG-invalid-min-diagnostic",
+      "behavior_risk_weight": 0.8
+    },
+    {
+      "behavior_id": "scrapy.tls.invalid_max_version",
+      "quality_goal_id": "QG-invalid-max-diagnostic",
+      "behavior_risk_weight": 0.8
+    },
+    {
+      "behavior_id": "scrapy.tls.legacy_api_deprecation",
+      "quality_goal_id": "QG-legacy-migration-signals",
+      "behavior_risk_weight": 0.7
+    }
+  ],
+  "obligations": [
+    {
+      "obligation_id": "OBL-001",
+      "behavior_id": "scrapy.tls.stdlib_version_limits",
+      "criterion": "configured_range_application",
+      "obligation_weight": 1.2,
+      "public_entry": "scrapy.utils.ssl._make_ssl_context",
+      "required_partition": "Both DOWNLOAD_TLS_MIN_VERSION=TLSv1.2 and DOWNLOAD_TLS_MAX_VERSION=TLSv1.3 are configured.",
+      "required_observable": "The resulting SSLContext has minimum_version TLSv1.2 and maximum_version TLSv1.3.",
+      "counterexample": "Either bound remains a library default or the two bounds are swapped.",
+      "fault_ids": [
+        "F001"
+      ]
+    },
+    {
+      "obligation_id": "OBL-002",
+      "behavior_id": "scrapy.tls.stdlib_version_limits",
+      "criterion": "omitted_range_defaults",
+      "obligation_weight": 0.8,
+      "public_entry": "scrapy.utils.ssl._make_ssl_context",
+      "required_partition": "Both new TLS version settings are omitted.",
+      "required_observable": "The context uses ssl.PROTOCOL_TLS_CLIENT without assigning explicit minimum or maximum versions.",
+      "counterexample": "Omitted bounds force a concrete TLS version or revive the deprecated method selector.",
+      "fault_ids": []
+    },
+    {
+      "obligation_id": "OBL-003",
+      "behavior_id": "scrapy.tls.twisted_version_limits",
+      "criterion": "bound_conversion",
+      "obligation_weight": 1.0,
+      "public_entry": "_load_context_factory_from_settings",
+      "required_partition": "Twisted context construction with both TLSv1.2 minimum and TLSv1.3 maximum.",
+      "required_observable": "The factory stores TLSVersion.TLSv1_2 and TLSVersion.TLSv1_3 and translates them for CertificateOptions.",
+      "counterexample": "The bounds are discarded, represented as strings, or applied to the wrong endpoints.",
+      "fault_ids": [
+        "F002"
+      ]
+    },
+    {
+      "obligation_id": "OBL-004",
+      "behavior_id": "scrapy.tls.twisted_version_limits",
+      "criterion": "range_precedence_over_method",
+      "obligation_weight": 1.2,
+      "public_entry": "_ScrapyClientContextFactory.from_crawler",
+      "required_partition": "A legacy non-default TLS method and at least one new version bound are configured together.",
+      "required_observable": "The factory clears the legacy method and uses the explicit version range.",
+      "counterexample": "The legacy method overrides or coexists ambiguously with the new bounds.",
+      "fault_ids": [
+        "F002"
+      ]
+    },
+    {
+      "obligation_id": "OBL-005",
+      "behavior_id": "scrapy.tls.invalid_min_version",
+      "criterion": "setting_specific_error",
+      "obligation_weight": 1.0,
+      "public_entry": "HTTPS context construction",
+      "required_partition": "DOWNLOAD_TLS_MIN_VERSION is set to an unknown value.",
+      "required_observable": "A ValueError names DOWNLOAD_TLS_MIN_VERSION and includes the rejected value.",
+      "counterexample": "The value is ignored or the diagnostic does not identify the minimum setting.",
+      "fault_ids": [
+        "F006"
+      ]
+    },
+    {
+      "obligation_id": "OBL-006",
+      "behavior_id": "scrapy.tls.invalid_max_version",
+      "criterion": "setting_specific_error",
+      "obligation_weight": 1.0,
+      "public_entry": "HTTPS context construction",
+      "required_partition": "DOWNLOAD_TLS_MAX_VERSION is set to an unknown value.",
+      "required_observable": "A ValueError names DOWNLOAD_TLS_MAX_VERSION and includes the rejected value.",
+      "counterexample": "The value is ignored or the diagnostic does not identify the maximum setting.",
+      "fault_ids": [
+        "F007"
+      ]
+    },
+    {
+      "obligation_id": "OBL-007",
+      "behavior_id": "scrapy.tls.legacy_api_deprecation",
+      "criterion": "method_tls_export_compatibility",
+      "obligation_weight": 1.0,
+      "public_entry": "scrapy.core.downloader.tls.METHOD_TLS",
+      "required_partition": "A caller reads the historical METHOD_TLS export.",
+      "required_observable": "The value is \"TLS\" and access emits ScrapyDeprecationWarning naming METHOD_TLS.",
+      "counterexample": "The name disappears, changes value, or is returned silently.",
+      "fault_ids": [
+        "F003"
+      ]
+    },
+    {
+      "obligation_id": "OBL-008",
+      "behavior_id": "scrapy.tls.legacy_api_deprecation",
+      "criterion": "legacy_setting_warning",
+      "obligation_weight": 1.0,
+      "public_entry": "DOWNLOADER_CLIENT_TLS_METHOD",
+      "required_partition": "The legacy method setting is assigned TLSv1.2 instead of its TLS default.",
+      "required_observable": "Factory construction emits ScrapyDeprecationWarning directing the caller to the new min/max settings while preserving the selected legacy method when no bound is present.",
+      "counterexample": "The non-default setting is silent or no longer works during the compatibility window.",
+      "fault_ids": [
+        "F005"
+      ]
+    },
+    {
+      "obligation_id": "OBL-009",
+      "behavior_id": "scrapy.tls.twisted_version_limits",
+      "criterion": "current_maximum_translation_tls12",
+      "obligation_weight": 1.2,
+      "public_entry": "_get_cert_options_version_kwargs",
+      "required_partition": "Twisted 26.4.0 is active, TWISTED_TLS_LIMITS_OFFBY1 is false, and TLSv1.2 is requested as the maximum.",
+      "required_observable": "lowerMaximumSecurityTo receives TLSVersion.TLSv1_2 exactly.",
+      "counterexample": "The maximum mapping is missing, changed to another version, or treated as a lower endpoint.",
+      "fault_ids": [
+        "F004"
+      ]
+    },
+    {
+      "obligation_id": "OBL-010",
+      "behavior_id": "scrapy.tls.twisted_version_limits",
+      "criterion": "current_maximum_translation_tls13",
+      "obligation_weight": 0.8,
+      "public_entry": "_get_cert_options_version_kwargs",
+      "required_partition": "Twisted 26.4.0 is active, TWISTED_TLS_LIMITS_OFFBY1 is false, and TLSv1.3 is requested as the maximum.",
+      "required_observable": "lowerMaximumSecurityTo receives TLSVersion.TLSv1_3 exactly and the helper returns normally.",
+      "counterexample": "The maximum mapping is missing, changed to another version, or rejected as unrepresentable.",
+      "fault_ids": [
+        "F004"
+      ]
+    },
+    {
+      "obligation_id": "OBL-011",
+      "behavior_id": "scrapy.tls.legacy_api_deprecation",
+      "criterion": "openssl_methods_export_compatibility",
+      "obligation_weight": 1.0,
+      "public_entry": "scrapy.core.downloader.tls.openssl_methods",
+      "required_partition": "A caller reads the historical openssl_methods export.",
+      "required_observable": "The exact four-entry compatibility mapping is returned and access emits ScrapyDeprecationWarning naming openssl_methods.",
+      "counterexample": "The name disappears, changes value, or is returned silently.",
+      "fault_ids": [
+        "F003"
+      ]
+    }
+  ]
+}

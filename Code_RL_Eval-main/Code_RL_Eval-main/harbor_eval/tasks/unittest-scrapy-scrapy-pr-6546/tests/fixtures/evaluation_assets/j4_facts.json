@@ -1,0 +1,41 @@
+{
+  "schema_version": "unittest-rl-j4-facts-v3",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "pr_target_sha": "d9e2f5fbf7da59ea61595cffea5e3399fb9c3574",
+  "stage_id": "S10",
+  "status": "verified",
+  "contribution_units": [
+    {"contribution_unit_id": "U-001", "scenario_family": "stdlib_tls_range", "entrypoint": "_make_ssl_context", "primary_behavior_id": "scrapy.tls.stdlib_version_limits", "precondition_partition": "both bounds configured", "action": "construct context", "outcome_class": "explicit min/max state", "oracle_id": "J2-O-001", "functional_hunk_id": "H02"},
+    {"contribution_unit_id": "U-002", "scenario_family": "stdlib_tls_range", "entrypoint": "_make_ssl_context", "primary_behavior_id": "scrapy.tls.stdlib_version_limits", "precondition_partition": "both bounds omitted", "action": "construct context", "outcome_class": "library defaults preserved", "oracle_id": "J2-O-002", "functional_hunk_id": "H02"},
+    {"contribution_unit_id": "U-003", "scenario_family": "twisted_tls_range", "entrypoint": "_load_context_factory_from_settings", "primary_behavior_id": "scrapy.tls.twisted_version_limits", "precondition_partition": "new bounds plus legacy method", "action": "construct factory", "outcome_class": "converted bounds and precedence", "oracle_id": "J2-O-003", "functional_hunk_id": "H03"},
+    {"contribution_unit_id": "U-004", "scenario_family": "invalid_tls_settings", "entrypoint": "_make_ssl_context", "primary_behavior_id": "scrapy.tls.invalid_min_version", "precondition_partition": "invalid minimum", "action": "construct context", "outcome_class": "minimum-specific ValueError", "oracle_id": "J2-O-004", "functional_hunk_id": "H02"},
+    {"contribution_unit_id": "U-005", "scenario_family": "invalid_tls_settings", "entrypoint": "_make_ssl_context", "primary_behavior_id": "scrapy.tls.invalid_max_version", "precondition_partition": "invalid maximum", "action": "construct context", "outcome_class": "maximum-specific ValueError", "oracle_id": "J2-O-005", "functional_hunk_id": "H02"},
+    {"contribution_unit_id": "U-006", "scenario_family": "legacy_compatibility", "entrypoint": "scrapy.core.downloader.tls attributes", "primary_behavior_id": "scrapy.tls.legacy_api_deprecation", "precondition_partition": "historical module exports", "action": "read exports", "outcome_class": "value plus warning", "oracle_id": "J2-O-006", "functional_hunk_id": "H05"},
+    {"contribution_unit_id": "U-007", "scenario_family": "legacy_compatibility", "entrypoint": "_load_context_factory_from_settings", "primary_behavior_id": "scrapy.tls.legacy_api_deprecation", "precondition_partition": "non-default legacy setting", "action": "construct factory", "outcome_class": "warning plus compatible method", "oracle_id": "J2-O-007", "functional_hunk_id": "H04"},
+    {"contribution_unit_id": "U-008", "scenario_family": "twisted_version_translation", "entrypoint": "_get_cert_options_version_kwargs", "primary_behavior_id": "scrapy.tls.twisted_version_limits", "precondition_partition": "current Twisted 26.4.0 with explicit TLSv1.2 or TLSv1.3 maximum", "action": "translate each maximum", "outcome_class": "direct lowerMaximumSecurityTo mapping", "oracle_id": "J2-O-008", "functional_hunk_id": "H06"}
+  ],
+  "distinction_relations": [
+    {"relation_id": "R-001", "scenario_family": "stdlib_tls_range", "left_unit_id": "U-001", "right_unit_id": "U-002", "primary_axis": "configured_vs_omitted_bounds", "j4_claim_key": "stdlib_tls_range|U-001|U-002", "distinction": "Applying explicit bounds is distinct from preserving defaults.", "independent_execution_required": true, "verification_ref": "active/sealed/j2_facts.json"},
+    {"relation_id": "R-002", "scenario_family": "backend_consistency", "left_unit_id": "U-001", "right_unit_id": "U-003", "primary_axis": "stdlib_vs_twisted_backend", "j4_claim_key": "backend_consistency|U-001|U-003", "distinction": "The two handler stacks require separate state observables.", "independent_execution_required": true, "verification_ref": "active/sealed/j2_facts.json"},
+    {"relation_id": "R-003", "scenario_family": "invalid_tls_settings", "left_unit_id": "U-004", "right_unit_id": "U-005", "primary_axis": "invalid_min_vs_invalid_max", "j4_claim_key": "invalid_tls_settings|U-004|U-005", "distinction": "The diagnostic must identify which endpoint is invalid.", "independent_execution_required": true, "verification_ref": "active/sealed/j2_facts.json"},
+    {"relation_id": "R-004", "scenario_family": "legacy_compatibility", "left_unit_id": "U-006", "right_unit_id": "U-007", "primary_axis": "module_api_vs_setting", "j4_claim_key": "legacy_compatibility|U-006|U-007", "distinction": "Module attribute warnings and setting migration warnings are independent compatibility paths.", "independent_execution_required": true, "verification_ref": "active/sealed/j2_facts.json"},
+    {"relation_id": "R-005", "scenario_family": "twisted_version_translation", "left_unit_id": "U-003", "right_unit_id": "U-008", "primary_axis": "factory_range_vs_direct_maximum_translation", "j4_claim_key": "twisted_version_translation|U-003|U-008", "distinction": "Factory range state and direct maximum-to-CertificateOptions translation are independent current-Twisted observables.", "independent_execution_required": true, "verification_ref": "active/sealed/j2_facts.json"},
+    {"relation_id": "R-006", "scenario_family": "success_vs_error", "left_unit_id": "U-001", "right_unit_id": "U-004", "primary_axis": "valid_range_vs_invalid_min", "j4_claim_key": "success_vs_error|U-001|U-004", "distinction": "Successful range application and setting-specific failure are distinct partitions.", "independent_execution_required": true, "verification_ref": "active/sealed/j2_facts.json"},
+    {"relation_id": "R-007", "scenario_family": "new_vs_legacy_configuration", "left_unit_id": "U-003", "right_unit_id": "U-007", "primary_axis": "new_bounds_vs_legacy_method", "j4_claim_key": "new_vs_legacy_configuration|U-003|U-007", "distinction": "New-bound precedence and no-bound legacy compatibility require separate cases.", "independent_execution_required": true, "verification_ref": "active/sealed/j2_facts.json"}
+  ],
+  "unit_count": 8,
+  "relation_count": 7,
+  "direction_counts": {
+    "configured_vs_omitted_bounds": 1,
+    "stdlib_vs_twisted_backend": 1,
+    "invalid_min_vs_invalid_max": 1,
+    "module_api_vs_setting": 1,
+    "factory_range_vs_direct_maximum_translation": 1,
+    "valid_range_vs_invalid_min": 1,
+    "new_bounds_vs_legacy_method": 1
+  },
+  "source_policy": {
+    "candidate_data_read": false,
+    "current_obligations_revision": "obligations-revision-003-current-only"
+  }
+}

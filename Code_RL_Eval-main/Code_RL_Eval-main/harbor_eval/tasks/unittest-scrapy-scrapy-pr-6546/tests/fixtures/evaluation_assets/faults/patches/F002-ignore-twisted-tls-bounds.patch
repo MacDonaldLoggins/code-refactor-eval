@@ -1,0 +1,17 @@
+diff --git a/scrapy/core/downloader/contextfactory.py b/scrapy/core/downloader/contextfactory.py
+--- a/scrapy/core/downloader/contextfactory.py
++++ b/scrapy/core/downloader/contextfactory.py
+@@ -89,9 +89,6 @@ class _ScrapyClientContextFactory(BrowserLikePolicyForHTTPS):
+         tls_ciphers: str | None = crawler.settings["DOWNLOADER_CLIENT_TLS_CIPHERS"]
+         # DOWNLOADER_CLIENT_TLS_METHOD reading and handling should be also moved here
+         # when the deprecated load_context_factory_from_settings() is removed
+-        tls_min_ver, tls_max_ver = _get_tls_version_limits(
+-            crawler.settings, _TWISTED_VERSION_MAP.__getitem__
+-        )
+-        if tls_min_ver or tls_max_ver:
+-            method = None
++        tls_min_ver = None
++        tls_max_ver = None
+         verify_certificates = crawler.settings.getbool("DOWNLOAD_VERIFY_CERTIFICATES")
+         return cls(  # type: ignore[misc]
+             *args,

@@ -1,0 +1,96 @@
+{
+  "version": "2.0",
+  "dimension_id": "C6",
+  "name": "重复与知识集中",
+  "layer": "eq",
+  "applicable_equivalence_classes": [
+    "E7",
+    "E10",
+    "E12"
+  ],
+  "description": "判断重构是否集中同一设计知识，同时保护不同抽象层之间有意保留的独立表达。不鼓励为了消除表面相似而强行抽象，核心是同一需要共同维护的知识应有明确来源。",
+  "system_prompt": "C6 属于等价类专属层，用于 E7（重复消除与知识集中）与 E10（死代码清理）等场景。警惕：抽象复杂度高于重复成本，或将似而不同的代码强行合并。",
+  "evaluation_prompt_template": "评估 C6 重复与知识集中。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 区分表面相似与知识重复。\n2. 判断抽象成本是否低于重复成本。\n3. 每个 Atom 给出归一化分并附证据。",
+  "questions": [
+    {
+      "id": "C6.1",
+      "text": "相同且需要共同维护的代码逻辑是否被集中到一个实现位置？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=完全重复未消除；1=已集中"
+    },
+    {
+      "id": "C6.2",
+      "text": "对于相似但不完全相同的代码，重构是否保留了合理差异？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=保留必要差异；fail=强行合并抹掉真实差异"
+    },
+    {
+      "id": "C6.3",
+      "text": "默认值、规则、格式、错误分类等设计知识是否避免多点维护？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=知识仍多点维护；1=单一来源"
+    },
+    {
+      "id": "C6.4",
+      "text": "同一个变化是否不再需要手工修改多个副本？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=同步修改点未减少；1=单点修改"
+    },
+    {
+      "id": "C6.5",
+      "text": "为了消除重复，新增的抽象是否比原本的重复更难理解，或破坏了不同层次的信息隐藏？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=抽象成本低于重复成本且未破坏层次边界；fail=抽象复杂度过高或造成跨层耦合"
+    }
+  ],
+  "aggregation": {
+    "formula": "dim_C6 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)",
+    "hard_constraint_indicator": "H_C6 = product(s_a for a in hard atoms in A^†)",
+    "na_policy": "无相似代码场景 C6.2 可标记 na；无抽象引入 C6.5 可标记 na"
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "dimension_id",
+      "layer",
+      "atom_scores",
+      "dim_score",
+      "hard_indicator",
+      "summary"
+    ],
+    "properties": {
+      "dimension_id": {
+        "const": "C6"
+      },
+      "layer": {
+        "const": "eq"
+      },
+      "atom_scores": {
+        "type": "array"
+      },
+      "dim_score": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "hard_indicator": {
+        "type": "number",
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "critical_failures": {
+        "type": "array"
+      },
+      "summary": {
+        "type": "string"
+      }
+    }
+  }
+}

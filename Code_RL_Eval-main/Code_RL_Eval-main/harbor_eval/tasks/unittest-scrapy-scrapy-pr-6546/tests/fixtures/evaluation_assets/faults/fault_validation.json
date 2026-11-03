@@ -1,0 +1,26 @@
+{
+  "schema_version": "unittest-rl-fault-validation-v5",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "stage_id": "S06",
+  "status": "pass",
+  "source": "tests/fixtures/evaluation_assets/faults/raw_faults.json",
+  "result": "tests/fixtures/evaluation_assets/faults/valid_faults.json",
+  "reference_test": "tests/fixtures/evaluation_assets/reference_tests/test_pr6546_tls_contracts.py",
+  "original_target_passed": true,
+  "replay_count_per_fault": 3,
+  "valid_fault_ids": [
+    "F001",
+    "F002",
+    "F003",
+    "F004",
+    "F005",
+    "F006",
+    "F007"
+  ],
+  "invalid_fault_ids": [],
+  "pending_fault_ids": [],
+  "evidence": {
+    "reference_test": "tests/fixtures/evaluation_assets/reference_tests/test_pr6546_tls_contracts.py",
+    "valid_faults": "tests/fixtures/evaluation_assets/faults/valid_faults.json"
+  }
+}

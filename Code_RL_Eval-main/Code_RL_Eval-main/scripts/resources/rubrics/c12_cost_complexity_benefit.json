@@ -1,0 +1,105 @@
+{
+  "version": "2.0",
+  "dimension_id": "C12",
+  "name": "成本、复杂性与演化收益",
+  "layer": "univ",
+  "applicable_equivalence_classes": [
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7",
+    "E8",
+    "E9",
+    "E10",
+    "E11",
+    "E12"
+  ],
+  "description": "判断重构是否值得，是否以合理成本获得了长期收益。重构不是'结构越复杂越高级'，也不是'类越少越好'。需要综合考虑本次修改成本、新增代码量、新增间接层、新增维护点、学习成本、未来变化收益、风险降低和回滚难度。",
+  "system_prompt": "C12 属于普适层，评价重构的收益-成本比。新增复杂性明显超过重构收益属于关键失败项。",
+  "evaluation_prompt_template": "评估 C12 成本、复杂性与演化收益。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 综合评估重构收益（理解、修改）与成本（实施、维护、学习）。\n2. 检测不必要的结构、过度工程。\n3. 判断是否解决当前或可预见问题，是否改善未来演化。\n4. 每个 Atom 给出归一化分并附证据。",
+  "questions": [
+    {
+      "id": "C12.1",
+      "text": "重构带来的理解和修改收益，是否大于实施和维护成本？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=成本远超收益；1=收益显著超过成本"
+    },
+    {
+      "id": "C12.2",
+      "text": "是否新增了没有明确用途的类、接口、参数、抽象或层级？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=无冗余结构；fail=新增不必要结构"
+    },
+    {
+      "id": "C12.3",
+      "text": "重构是否针对真实需求、已观察到的坏味道或明确的变化方向？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=针对真实问题；fail=预测性重构或无目标"
+    },
+    {
+      "id": "C12.4",
+      "text": "重构后是否仍然可以用简单方式解释，而不是引入过度工程？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=保留合理简单性；fail=过度工程"
+    },
+    {
+      "id": "C12.5",
+      "text": "下一次相似需求是否会更容易实现？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=未来演化无改善；1=未来演化显著改善"
+    }
+  ],
+  "aggregation": {
+    "formula": "dim_C12 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)",
+    "hard_constraint_indicator": "H_C12 = product(s_a for a in hard atoms in A^†)",
+    "na_policy": "所有 Atom 均不得用 na 规避；C12 是对重构价值的整体判断"
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "dimension_id",
+      "layer",
+      "atom_scores",
+      "dim_score",
+      "hard_indicator",
+      "summary"
+    ],
+    "properties": {
+      "dimension_id": {
+        "const": "C12"
+      },
+      "layer": {
+        "const": "univ"
+      },
+      "atom_scores": {
+        "type": "array"
+      },
+      "dim_score": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "hard_indicator": {
+        "type": "number",
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "critical_failures": {
+        "type": "array"
+      },
+      "summary": {
+        "type": "string"
+      }
+    }
+  }
+}

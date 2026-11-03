@@ -1,0 +1,38 @@
+{
+  "schema_version": "unittest-rl-judge-input-contract-v1",
+  "contract_id": "scrapy-pr6546-v0103-dimension-isolation-v001",
+  "status": "frozen",
+  "candidate_source": {
+    "required_for": ["SC-J1", "SC-J2", "SC-J3", "SC-J4", "SC-J5"],
+    "scope": "The complete candidate_tests source tree",
+    "proof_limit": "Proves only that inputs, assertions, fixtures, naming, structure, and control flow exist; it must not fill in missing runtime facts."
+  },
+  "dimensions": {
+    "SC-J1": {
+      "runtime_evidence": "The minimal projection generated on demand from positive-behavior-observations.json and embedded only in the J1 input",
+      "required": ["candidate_files", "j1_execution_evidence"],
+      "forbidden": ["positive_execution_evidence", "hard_evidence", "j5_rubric_evidence_scope"]
+    },
+    "SC-J2": {
+      "required": ["candidate_files", "positive_execution_evidence"],
+      "forbidden": ["j1_execution_evidence", "hard_evidence", "j5_rubric_evidence_scope"]
+    },
+    "SC-J3": {
+      "required": ["candidate_files", "positive_execution_evidence"],
+      "forbidden": ["j1_execution_evidence", "hard_evidence", "j5_rubric_evidence_scope"]
+    },
+    "SC-J4": {
+      "required": ["candidate_files", "positive_execution_evidence"],
+      "forbidden": ["j1_execution_evidence", "hard_evidence", "j5_rubric_evidence_scope"]
+    },
+    "SC-J5": {
+      "required": ["candidate_files", "hard_evidence", "j5_rubric_evidence_scope"],
+      "forbidden": ["j1_execution_evidence", "positive_execution_evidence"]
+    }
+  },
+  "j1_artifact_policy": {
+    "canonical_raw_artifact": "/logs/verifier/positive-behavior-observations.json",
+    "standalone_trace_artifact": false,
+    "atif_trajectory_is_j1_evidence": false
+  }
+}

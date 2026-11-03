@@ -1,0 +1,69 @@
+{
+  "schema_version": "unittest-rl-harbor-binding-v4",
+  "source_task_id": "scrapy-scrapy-pr-6546-v0103",
+  "prepared_id": "prepared-v004",
+  "source_engine": {
+    "name": "unittest-rl-evaluation-engine",
+    "version": "0.10.3",
+    "revision": "engine-revision-017"
+  },
+  "source_contract_version": "unittest-rl-internal-contract-v40",
+  "task_core_fingerprint": "bd6346982a716d90e0108d7b32d2de533a0ebfc78aa102e891e4b167def88f51",
+  "generation_bundle_fingerprint": "6ad5d1b0d34956a72a8e06c7ee91e140dde7161e637d1a05841aede5843493ff",
+  "scoring_bundle_fingerprint": "db60ce2389f2c157f1f79d9457520e9b8639c6fd382297b7e2e57987add766fd",
+  "scoring_mode": "harbor-m4-dimension-isolated-j1-shared-positive-current-only-f004-v3",
+  "execution_profiles": {
+    "schema_version": "unittest-rl-execution-profiles-v1",
+    "mode": "single",
+    "default_profile_id": "current",
+    "profile_ids": [
+      "current"
+    ],
+    "bindings_schema_version": "unittest-rl-execution-profile-bindings-v1"
+  },
+  "trajectory_policy": "required",
+  "atif_schema_version": "ATIF-v1.7",
+  "j1_execution_evidence": {
+    "source_artifact": "positive-behavior-observations.json",
+    "projection": "embedded_in_sc_j1_input_only",
+    "standalone_artifact": false,
+    "schema_version": "unittest-rl-harbor-j1-execution-evidence-v1",
+    "assertion_execution_required": true
+  },
+  "e2_v2": {
+    "enabled": true,
+    "semantic_version": "positive-execution-obligation-adequacy-v3",
+    "evidence_mode": "positive_target_execution",
+    "contract_schema": "unittest-rl-harbor-e2-positive-execution-contract-v2",
+    "aggregation_policy": "hierarchical_behavior_risk_weighted_v2",
+    "contract_id": "scrapy-pr6546-e2-current-only-v001",
+    "contract_sha256": "09d211fcd0ed6c8aa5279fd76ae229bf5cc861d6d02f024937f20280e2f05505",
+    "obligation_revision_id": "obligations-revision-003-current-only"
+  },
+  "judge": {
+    "enabled": true,
+    "config_id": "scrapy-pr6546-v0103-prepared-v004-judge-openai-gpt-5.6-sol-j1shared-v002",
+    "config_sha256": "7b111006c9913c6a08ebfd2c3d97ba0e1bfc4577099bb6653d3823b8ba09b261",
+    "model_key": "openai--gpt-5.6-sol--judge",
+    "judge_model": "gpt-5.6-sol",
+    "provider": "openai",
+    "dimensions": [
+      "SC-J1",
+      "SC-J2",
+      "SC-J3",
+      "SC-J4",
+      "SC-J5"
+    ],
+    "barrier_policy": "all-five-required",
+    "judge_repetitions": 3,
+    "aggregation_policy": "per-rubric-majority",
+    "stability_policy": "report_only",
+    "replay_bound": false
+  },
+  "reward": {
+    "enabled": true,
+    "config_sha256": "3ef13fcb0ac5470d7518f4658c7262e6fda79dbee8eac25e3b131a96e712b77d",
+    "independent_validation_required": true
+  },
+  "official_reward": false
+}

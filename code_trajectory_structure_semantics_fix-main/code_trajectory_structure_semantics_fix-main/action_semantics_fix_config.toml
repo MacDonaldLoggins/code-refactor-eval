@@ -1,0 +1,40 @@
+config_version = 1
+
+# 行为语义修复配置。
+# 常改项优先看 [general] 和 [fix.scripts]；LLM 密钥仍放在 .env。
+
+[general]
+# 输入/输出范围。
+session_path = "sessions"
+task_glob = "TASK-*"
+report_subdir = "report/action_semantics_fix"
+
+# 并发与限流。
+task_workers = 10       # 同时处理多少个 TASK。
+workers = 10            # 单个 TASK 内传给子脚本的 worker 数。
+max_files = 0           # 0 表示不限；只影响支持该参数的步骤。
+
+# 执行策略。
+stop_on_error = true
+
+# LLM 策略。
+no_llm = false
+meaningless_heuristic_only = false
+
+[llm]
+env_file = ".env"
+
+[fix]
+enabled = true
+
+[fix.scripts]
+# 对话轮次清理。
+remove_meaningless_dialogues = true
+
+# 末尾 assistant 内容/总结修复。
+modify_assistant_content = true
+fix_missing_summary_nodes = true
+clean_last_assistant = true
+
+# user-assistant 对应关系与幻觉修复。
+ua_detect_and_repair = true

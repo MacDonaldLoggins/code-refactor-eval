@@ -1,0 +1,77 @@
+[judge]
+judge = "codex"
+model = "gpt-5.5"
+mode = "batched"
+timeout = 900
+isolated = false
+cwd = "/logs/verifier/judge-workdir"
+prompt_template = "prompt.md"
+
+[scoring]
+aggregation = "weighted_mean"
+
+[[criterion]]
+id = "C1"
+name = "behavior_preservation"
+description = "Behavior contract preservation for the twenty-partners app. Score 1 when UUID/schema identity, defineLogicFunction contracts, request/response shapes, error reasons, side effects, ordering and focused unit behavior remain compatible for partner self-service, partner application intake, marketplace, opportunity intake/matching and application review; score 0.5 only when executable evidence and code inspection show the main behavior is preserved but a non-critical integration edge remains unproven; score 0 for any broken public contract, changed UUID/schema identity, changed route/auth/method/timeout, changed business behavior, or missing credible evidence."
+type = "numeric"
+min = 0.0
+max = 1.0
+weight = 25.0
+hard = true
+evidence_refs = ["contract:must-preserve", "gate:universal_identifier_preservation_pass", "gate:logic_function_contract_pass", "gate:partners_unit_tests", "objective:behavior_evidence_coverage"]
+
+[[criterion]]
+id = "C2"
+name = "compatibility"
+description = "Compatibility with SDK discovery, schema metadata, scripts, roles, workflows, and package-local tooling. Score 1 when all public exports and module moves preserve importability, metadata discovery, root universal-identifiers.ts, scripts/roles/skills/workflows paths, TypeScript typecheck, lint and unit test selection; score 0.5 when compatibility is plausible but a narrow non-critical import/tooling path is weakly evidenced; score 0 for broken imports, stale re-export shims, moved protected root paths, changed dependency locks, or package/tooling changes that hide failures."
+type = "numeric"
+min = 0.0
+max = 1.0
+weight = 20.0
+hard = true
+evidence_refs = ["contract:observers", "gate:partners_typecheck", "gate:partners_lint", "gate:anti_cheating_pass", "diff:imports"]
+
+[[criterion]]
+id = "C3"
+name = "vertical_slice_completion"
+description = "Completion of the requested vertical-slice modularization. Score 1 when partner, opportunity, application and shared modules own their declarations, logic functions, services, GraphQL operations, mappers, tests and front components, and no top-level primitive piles remain; score 0.5 when most high-value code moved but one meaningful domain or primitive pile remains; score 0 when the change is mostly cosmetic, leaves flat folders as primary owners, or creates modules that simply re-export the old layout."
+type = "numeric"
+min = 0.0
+max = 1.0
+weight = 15.0
+hard = false
+evidence_refs = ["prompt:goal", "gate:partners_module_layout_pass", "objective:module_layout_completion", "diff:target-files"]
+
+[[criterion]]
+id = "C4"
+name = "responsibility_and_dependency_direction"
+description = "Responsibility boundaries and dependency direction. Score 1 when SDK entrypoints are thin adapters, business rules live in services, raw GraphQL lives under graphql/, outbound API code lives in connector/, pure mapping lives in mappers/, and cross-domain reuse goes through modules/shared without sideways business-logic imports; score 0.5 when the direction is mostly right but a few modules still mix responsibilities; score 0 when logic functions still own substantial business logic, GraphQL remains scattered, shared code becomes a dumping ground, or coupling is merely moved."
+type = "numeric"
+min = 0.0
+max = 1.0
+weight = 15.0
+hard = false
+evidence_refs = ["objective:logic_entrypoint_thinness", "objective:graphql_locality", "diff:dependencies", "diff:services"]
+
+[[criterion]]
+id = "C5"
+name = "evidence_and_test_quality"
+description = "Risk-proportional evidence for the refactor. Score 1 when moved code has co-located or updated unit tests for services, mappers, validation and pure helpers, integration tests keep their live-server setup semantics, and the candidate evidence covers critical partner/opportunity/application flows; score 0.5 when existing tests still pass but extracted units have incomplete focused coverage; score 0 when tests are deleted, skipped, weakened, left behind in misleading locations, or fail to cover changed behavior-risk surfaces."
+type = "numeric"
+min = 0.0
+max = 1.0
+weight = 15.0
+hard = false
+evidence_refs = ["gate:partners_unit_tests", "objective:behavior_evidence_coverage", "diff:tests", "contract:unknowns"]
+
+[[criterion]]
+id = "C6"
+name = "scope_and_integrity"
+description = "Scope discipline and evaluation integrity. Score 1 when candidate changes stay inside the declared twenty-partners scope and do not alter protected files, dependency locks, root workspace configuration, CI, verifier-related paths, or add skip/only shortcuts; score 0.5 only for a small production-only spillover with direct necessity and no evaluation risk; score 0 for unrelated workspace changes, test disabling, hard-coded reference answers, verifier manipulation, dependency-lock churn, or any evaluation-integrity violation."
+type = "numeric"
+min = 0.0
+max = 1.0
+weight = 10.0
+hard = true
+evidence_refs = ["gate:scope_pass", "gate:anti_cheating_pass", "objective:change_scope_focus", "diff:changed-files"]

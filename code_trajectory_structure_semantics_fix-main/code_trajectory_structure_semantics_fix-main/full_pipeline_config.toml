@@ -1,0 +1,111 @@
+config_version = 1
+
+[general]
+task_glob = "TASK-*"
+session_glob = "**/*.json"
+run_subdir = "pipeline_runs"
+env_file = ".env"
+action_session_workers = 10
+runtest_task_workers = 6
+structure_task_workers = 20
+judge_session_workers = 20
+command_retries = 1
+retain_runs = 20
+# Online claimed TASKs always require upload; this remains for local-only runs.
+completion_requires_upload = false 
+# Destructive cleanup is opt-in and only applies after a TASK was uploaded.
+cleanup_task_dirs_on_success = true
+
+[action]
+entry = "action_semantics_fix.py"
+workers = 50
+timeout_seconds = 3600
+extra_args = []
+
+[runtest]
+# Runs after aggregation; the script itself processes only main sessions/*.json.
+enabled = true
+entry = "action_semantics_fix_script/runtest_pipeline.py"
+# Session jobs within one TASK.
+workers = 1
+timeout_seconds = 43200
+extra_args = []
+
+[structure]
+entry = "structure_check_fix.py"
+check_workers = 20
+fix_workers = 8
+timeout_seconds = 3600
+extra_args = []
+
+[judge]
+# Opt-in; runs after Action against only the working TASK's sessions/.
+enabled = false
+entry = "action_semantics_check_script/seven_dimension_quality/detector/batch_judge_tasks.py"
+timeout_seconds = 7200
+extra_args = []
+
+[paths]
+before_tasks = "batch_before_tasks"
+after_tasks = "batch_after_tasks"
+success_tasks = "success_task"
+fail_tasks = "fail_task"
+
+[database]
+# Optional direct MySQL task ledger. Fill these values before enabling.
+# Disabled by default so local manifest runs do not require the remote ledger.
+enabled = true
+host = "124.174.117.150"
+port = 3306
+database = "MF_CLAUDE_CODE_SESSION"
+user = "admin"
+password = "MF123456"
+password_env = "TASK_DB_PASSWORD"
+table = "task_structure_semantics"
+charset = "utf8mb4"
+connect_timeout_seconds = 10
+read_timeout_seconds = 30
+write_timeout_seconds = 30
+
+# Run modes and hook contract:
+# - `python full_pipeline.py` reads project-root tasks.txt and operator.json.
+#   It does not call the QA platform; OSS download/upload hooks remain available.
+# - `python full_pipeline.py --count N` calls the QA claim hook once, then
+#   atomically writes the claimed IDs to tasks.txt for restart/resume.
+# - `python full_pipeline.py --resume` reuses the saved mode and never claims an
+#   already persisted batch again.
+# - The QA completion hook is intentionally disabled in every mode.
+# - tasks.txt accepts one or more TASK IDs separated by lines, spaces, or commas.
+# - operator.json accepts user_id/user_name or operator_code/operator_name.
+# - command is executed without a shell.
+# - input JSON:  PIPELINE_CONTEXT_PATH
+# - optional output JSON: PIPELINE_HOOK_RESULT_PATH
+# - claim sends qa_user_id plus count (unless explicit task_ids are supplied),
+#   then returns {"task_ids": ["TASK-..."]}.
+# - fetch_from_oss downloads full-clean and aggregate TASK archives into
+#   before_tasks, then builds a disposable TASK under after_tasks.
+# Available command placeholders: {python}, {repo}, {root}, {run_dir},
+# {context}, {result}, {env_file}, {user_id}, {user_name}, {task_count}, {grades}.
+# Platform/OSS commands require a configured .env; disable these hooks for a
+# local-only run.
+
+[hooks.claim_tasks]
+enabled = false
+retries = 0
+command = ["{python}", "{repo}/pipeline_integrations/platform_qa.py", "claim", "--env-file", "{env_file}", "--retries", "0"]
+
+[hooks.fetch_from_oss]
+enabled = true
+command = ["{python}", "{repo}/pipeline_integrations/oss_transfer.py", "prepare", "--env-file", "{env_file}"]
+
+[hooks.upload_results]
+enabled = true
+command = ["{python}", "{repo}/pipeline_integrations/oss_transfer.py", "upload", "--env-file", "{env_file}"]
+
+[hooks.mark_qa_complete]
+enabled = false
+command = []
+
+[hooks.notify_failure]
+enabled = false
+command = []

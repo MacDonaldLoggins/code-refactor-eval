@@ -1,0 +1,14 @@
+diff --git a/scrapy/utils/ssl.py b/scrapy/utils/ssl.py
+--- a/scrapy/utils/ssl.py
++++ b/scrapy/utils/ssl.py
+@@ -78,10 +78,6 @@ def _make_ssl_context(settings: BaseSettings) -> ssl.SSLContext:
+     else:
+         ctx.check_hostname = False
+         ctx.verify_mode = ssl.CERT_NONE
+-    if tls_min_ver is not None:
+-        ctx.minimum_version = tls_min_ver
+-    if tls_max_ver is not None:
+-        ctx.maximum_version = tls_max_ver
+     if ciphers_setting:
+         ctx.set_ciphers(ciphers_setting)
+     return ctx

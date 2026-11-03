@@ -1,0 +1,16 @@
+{
+  "schema_version": "unittest-rl-translation-session-v1",
+  "session_id": "english-copy-translation-current-only-v001",
+  "stage_id": "S20",
+  "status": "completed",
+  "model_key": "openai--gpt-5-6-sol",
+  "model": "gpt-5.6-sol",
+  "input_path": "active/sealed/prompt_public_context.source.json",
+  "output_path": "active/sealed/prompt_public_context.en-US.json",
+  "allowed_fields": [
+    "repository_summary",
+    "change_summary"
+  ],
+  "candidate_data_read": false,
+  "sealed_evaluation_assets_read": false
+}

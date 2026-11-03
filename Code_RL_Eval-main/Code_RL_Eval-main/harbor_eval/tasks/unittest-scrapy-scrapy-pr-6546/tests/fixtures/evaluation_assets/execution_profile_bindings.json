@@ -1,0 +1,26 @@
+{
+  "schema_version": "unittest-rl-execution-profile-bindings-v1",
+  "status": "frozen",
+  "fault_profiles": {
+    "F001": "current",
+    "F002": "current",
+    "F003": "current",
+    "F004": "current",
+    "F005": "current",
+    "F006": "current",
+    "F007": "current"
+  },
+  "e2_obligation_profiles": {
+    "OBL-001": "current",
+    "OBL-002": "current",
+    "OBL-003": "current",
+    "OBL-004": "current",
+    "OBL-005": "current",
+    "OBL-006": "current",
+    "OBL-007": "current",
+    "OBL-008": "current",
+    "OBL-009": "current",
+    "OBL-010": "current",
+    "OBL-011": "current"
+  }
+}

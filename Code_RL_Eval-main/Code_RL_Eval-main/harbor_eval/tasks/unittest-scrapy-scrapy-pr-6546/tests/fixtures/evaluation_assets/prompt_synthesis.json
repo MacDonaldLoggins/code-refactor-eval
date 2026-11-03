@@ -1,0 +1,33 @@
+{
+  "schema_version": "unittest-rl-prompt-synthesis-v2",
+  "stage_id": "S20",
+  "status": "pass",
+  "synthesis_method": "public_context_english_normalization_plus_deterministic_rules_v2",
+  "translation": {
+    "llm_used": true,
+    "translator_model_key": "openai--gpt-5-6-sol",
+    "translation_session_id": "english-copy-translation-current-only-v001"
+  },
+  "final_render": {
+    "llm_used": false
+  },
+  "source_policy": "repository_readme_and_public_pr_commit_only",
+  "source_artifacts": [
+    "Unit_Test_RL_tasks/active/unittest-rl-evaluation-engine-0.10.2/scrapy-scrapy-pr-6546-v0103/prepared_runs/drafts/prepared-v002/candidate_input/prompt_public_context.json",
+    "Unit_Test_RL_tasks/active/unittest-rl-evaluation-engine-0.10.2/scrapy-scrapy-pr-6546-v0103/prepared_runs/drafts/prepared-v002/candidate_input/prompt_workspace_constraints.json"
+  ],
+  "excluded_semantic_inputs": [
+    "behaviors",
+    "faults",
+    "obligations",
+    "oracles",
+    "reference_tests",
+    "rubrics",
+    "scoring_facts"
+  ],
+  "prompt_structure": [
+    "## 1. Repository and PR information",
+    "## 2. Rules"
+  ],
+  "output": "Unit_Test_RL_tasks/active/unittest-rl-evaluation-engine-0.10.2/scrapy-scrapy-pr-6546-v0103/prepared_runs/drafts/prepared-v002/candidate_input/user_prompt.md"
+}

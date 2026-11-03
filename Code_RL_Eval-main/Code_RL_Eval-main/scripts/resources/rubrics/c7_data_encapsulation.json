@@ -1,0 +1,103 @@
+{
+  "version": "2.0",
+  "dimension_id": "C7",
+  "name": "数据封装与状态安全",
+  "layer": "eq",
+  "applicable_equivalence_classes": [
+    "E2",
+    "E9",
+    "E12"
+  ],
+  "description": "评价重构后数据是否具有清晰的所有权、生命周期和修改边界。对应全局数据、可变数据、封装变量、封装集合、引用对象和值对象、基本类型偏执及派生变量等场景。",
+  "system_prompt": "C7 属于等价类专属层，用于 E2（封装与数据）与 E9（变量与数据流重组）场景。特别关注：数据所有权、集合封装、派生数据一致性、基本类型偏执。",
+  "evaluation_prompt_template": "评估 C7 数据封装与状态安全。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 判断数据所有权、封装边界、修改入口。\n2. 检查派生数据是否被重复存储。\n3. 每个 Atom 给出归一化分并附证据。",
+  "questions": [
+    {
+      "id": "C7.1",
+      "text": "是否清楚知道哪个模块拥有这份数据、负责修改它和维护它？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=所有权不清；1=所有权明确"
+    },
+    {
+      "id": "C7.2",
+      "text": "外部调用者是否无法绕过模块直接破坏内部集合？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=集合已封装；fail=外部可直接修改"
+    },
+    {
+      "id": "C7.3",
+      "text": "修改状态是否必须经过清晰、可验证的操作？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=状态修改到处发生；1=统一入口"
+    },
+    {
+      "id": "C7.4",
+      "text": "可以由源数据计算得到的内容，若被缓存、索引或物化存储，是否具有明确的一致性、失效和更新协议？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=派生状态要么不存储，要么有明确一致性协议且服务于真实需求；fail=无协议的重复状态可能失效"
+    },
+    {
+      "id": "C7.5",
+      "text": "字符串、数字和布尔值是否被用于承载本应具有独立语义的概念？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=基本类型偏执严重；1=概念对象化"
+    },
+    {
+      "id": "C7.6",
+      "text": "对象是应该共享身份，还是应该按值比较，重构是否表达清楚？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=值/引用语义混乱；1=语义明确"
+    }
+  ],
+  "aggregation": {
+    "formula": "dim_C7 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)",
+    "hard_constraint_indicator": "H_C7 = product(s_a for a in hard atoms in A^†)",
+    "na_policy": "无内部集合场景 C7.2 可标记 na；无派生数据场景 C7.4 可标记 na"
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "dimension_id",
+      "layer",
+      "atom_scores",
+      "dim_score",
+      "hard_indicator",
+      "summary"
+    ],
+    "properties": {
+      "dimension_id": {
+        "const": "C7"
+      },
+      "layer": {
+        "const": "eq"
+      },
+      "atom_scores": {
+        "type": "array"
+      },
+      "dim_score": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "hard_indicator": {
+        "type": "number",
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "critical_failures": {
+        "type": "array"
+      },
+      "summary": {
+        "type": "string"
+      }
+    }
+  }
+}

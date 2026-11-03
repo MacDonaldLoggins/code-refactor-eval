@@ -1,0 +1,98 @@
+{
+  "schema_version": "unittest-rl-functional-line-scope-v4",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "stage_id": "S04E",
+  "status": "frozen",
+  "scope_revision_id": "coverage-scope-revision-002-current-only",
+  "base_sha": "5149e2c67993c642a384072ac43157491a3b2052",
+  "target_sha": "d9e2f5fbf7da59ea61595cffea5e3399fb9c3574",
+  "pure_relocation_detected": false,
+  "functional_hunks": [
+    {
+      "id": "H01",
+      "path": "scrapy/settings/default_settings.py",
+      "target_lines": [
+        270,
+        271
+      ],
+      "change": "Declare independent optional minimum and maximum TLS version settings.",
+      "behavior_ids": [
+        "scrapy.tls.stdlib_version_limits",
+        "scrapy.tls.twisted_version_limits",
+        "scrapy.tls.invalid_min_version",
+        "scrapy.tls.invalid_max_version"
+      ],
+      "classification": "functional_change"
+    },
+    {
+      "id": "H02",
+      "path": "scrapy/utils/ssl.py",
+      "target_lines": [
+        30,
+        87
+      ],
+      "change": "Parse TLS bound settings, reject unknown values, and apply bounds to stdlib SSLContext.",
+      "behavior_ids": [
+        "scrapy.tls.stdlib_version_limits",
+        "scrapy.tls.invalid_min_version",
+        "scrapy.tls.invalid_max_version"
+      ],
+      "classification": "functional_change"
+    },
+    {
+      "id": "H03",
+      "path": "scrapy/core/downloader/contextfactory.py",
+      "target_lines": [
+        55,
+        157
+      ],
+      "change": "Carry TLS bounds into Twisted context factories and translate them to CertificateOptions arguments.",
+      "behavior_ids": [
+        "scrapy.tls.twisted_version_limits"
+      ],
+      "classification": "functional_change"
+    },
+    {
+      "id": "H04",
+      "path": "scrapy/core/downloader/contextfactory.py",
+      "target_lines": [
+        268,
+        301
+      ],
+      "change": "Warn for non-default legacy TLS method use while preserving compatibility.",
+      "behavior_ids": [
+        "scrapy.tls.twisted_version_limits",
+        "scrapy.tls.legacy_api_deprecation"
+      ],
+      "classification": "functional_change"
+    },
+    {
+      "id": "H05",
+      "path": "scrapy/core/downloader/tls.py",
+      "target_lines": [
+        37,
+        68
+      ],
+      "change": "Replace public legacy constants with warning-backed compatibility lookups and add the Twisted TLS version map.",
+      "behavior_ids": [
+        "scrapy.tls.twisted_version_limits",
+        "scrapy.tls.legacy_api_deprecation"
+      ],
+      "classification": "functional_change"
+    },
+    {
+      "id": "H06",
+      "path": "scrapy/utils/ssl.py",
+      "target_lines": [
+        195,
+        228
+      ],
+      "change": "Translate TLS bounds for current Twisted, including direct maximum-version mapping to CertificateOptions.",
+      "behavior_ids": [
+        "scrapy.tls.twisted_version_limits"
+      ],
+      "classification": "functional_change"
+    }
+  ],
+  "unmapped_functional_hunks": []
+}

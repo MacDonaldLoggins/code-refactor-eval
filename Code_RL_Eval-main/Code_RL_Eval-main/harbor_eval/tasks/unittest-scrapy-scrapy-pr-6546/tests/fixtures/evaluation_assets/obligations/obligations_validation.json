@@ -1,0 +1,19 @@
+{
+  "schema_version": "unittest-rl-obligations-validation-v4",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "stage_id": "S06O",
+  "status": "pass",
+  "source": "active/sealed/obligations/test_obligations.json",
+  "scope_revision_id": "coverage-scope-revision-002-current-only",
+  "aggregation_policy": "hierarchical_behavior_risk_weighted_v2",
+  "candidate_data_read": false,
+  "behavior_count": 5,
+  "covered_behavior_count": 5,
+  "obligation_count": 11,
+  "valid_fault_count": 7,
+  "unknown_behavior_ids": [],
+  "unknown_fault_ids": [],
+  "missing_behavior_ids": [],
+  "duplicate_obligation_ids": [],
+  "result": "all obligations are structurally complete and linked to the frozen scope"
+}

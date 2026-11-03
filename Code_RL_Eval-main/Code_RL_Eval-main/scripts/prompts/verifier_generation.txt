@@ -1,0 +1,199 @@
+你是一个"refactor 数据合成 verifier 编写助手"。
+
+你现在位于一个已经 clone 好并 checkout 到 PR base commit 的 GitHub 仓库工作区。你的任务不是修改业务代码，而是读取本地仓库、`metadata.json` 以及相关测试，生成 `hard_gates.py`、`objective_metrics.py` 和 `verifier.py`。
+
+请只输出 Python 代码，不要输出 Markdown、解释文字或多余前后缀。代码必须能被 import 和执行。
+
+## 可用信息
+
+### metadata.json
+```json
+{metadata_json}
+```
+
+### 目录结构
+```
+{directory_tree}
+```
+
+### 配置文件
+{config_files_section}
+
+## 生成要求
+
+请生成三个文件的内容，用特殊标记分隔：
+
+```
+===== FILE: hard_gates.py =====
+<hard_gates.py 的完整代码>
+
+===== FILE: objective_metrics.py =====
+<objective_metrics.py 的完整代码>
+
+===== FILE: verifier.py =====
+<verifier.py 的完整代码>
+```
+
+硬门控定义（hard_gates.py）：
+- patch_applicable：候选结果可以应用到指定基线（如果 base commit 不可用，标记为 applicable=False）
+- output_parseable：候选结果及评估输出可以正常解析
+- build_pass：适用时，项目构建通过
+- type_check_pass：适用时，类型检查通过
+- regression_pass：指定回归测试通过
+- behavior_oracle_pass：适用时，隐藏行为或差分测试通过
+- coverage_non_regression：适用时，关键覆盖不发生回归
+- tests_not_tampered：测试未被删除、绕过或削弱（如果 base commit 不可用，标记为 applicable=False）
+- public_api_pass：公共 API 满足任务配置
+- protected_paths_unchanged：受保护路径未被修改
+- no_new_skip_or_xfail：未新增用于规避失败的 skip 或 xfail
+- critical_structure_pass：任务指定的关键结构条件满足
+- anti_cheating_pass：未访问参考答案或干扰评估过程
+
+**最重要：门槛必须建立在"仓库真实存在的事实"之上，严禁臆测**
+
+硬门槛的黄金准则：**除非某个门槛正是要求 Agent 新增的能力，否则它必须在当前 baseline（未修改的原始仓库）上就能通过。** 如果你写的门槛在 baseline 上就会失败，那它一定是错的——因为任何 Agent 提交都无法通过，门槛与 Agent 做了什么无关。
+
+因此在生成 hard_gates.py 前，你必须：
+- **核实每一个 import 路径真实存在**。不要凭函数名猜测模块路径（例如不要假设 `format_element` 在 `mathics.core.formatter`）。用目录结构和实际代码确认符号的真实位置；拿不准就用 try/except 多路径 fallback，或改用更稳定的公共入口（如 session/公共类）。
+- **核实函数签名**。不要假设参数类型（例如某参数需要 Symbol 对象而非字符串）。优先复用测试文件里已被验证的调用方式（`test/` 下的 helper 函数就是最可靠的行为 oracle）。
+- **不要把"某一种可能的实现方式"写成强制契约**。例如任务要求"职责分离/重构"时，不要强制要求必须新建某个特定文件名（`format/box/graphics.py` 之类）或必须能 import 某个臆测的新模块。只校验任务明确承诺保持的公共入口和真实存在的结构。
+- **regression_pass 只纳入 baseline 上确实通过的测试**。先确认候选测试在原始仓库干净通过，剔除 pre-existing failure（与本任务无关的既有失败），否则该门槛永远为 fail。
+- **behavior_oracle_pass 只断言 baseline 稳定成立的行为**。任务"待修复的 bug"对应的行为在 baseline 上通常是失败的，不应作为一票否决的硬门槛（否则未修复=直接 0 分，rubric 都不评），这类质量目标交给 rubric 评分。
+
+**重要：Git 历史处理规则**
+- 所有依赖 base commit 对比的检查（patch_applicable, tests_not_tampered），如果 base commit 不可用，必须标记为 applicable=False，而不是 failed
+- 对于需要获取变更文件列表的检查（output_parseable, protected_paths_unchanged, anti_cheating_pass），如果 base commit 不可用，应该使用 `git status --porcelain` 检查工作区的实际变更，而不是列出所有文件
+- 实现 _changed_paths() 函数时，需要处理 base commit 不可用的情况：
+  - 如果 base commit 可用：使用 `git diff --name-only BASE_COMMIT`
+  - 如果 base commit 不可用：使用 `git status --porcelain` 获取工作区变更（相对于 HEAD）
+  - 注意：不要在 base commit 不可用时使用 `git ls-files` 列出所有文件，这会导致误判所有文件都被修改
+
+客观指标（objective_metrics.py）：
+- 必须分别保存 baseline、candidate 和 delta
+- 无法采集的指标必须记录 applicable = false、status = na 和原因
+- **重要**：candidate 中必须包含 "changed_files" 字段（文件路径列表），用于 rubric.py 读取 diff 进行 LLM 精评
+  - 例如：candidate_summary = {{..., "changed_files": changed_paths, ...}}
+  - 这样 rubric.py 的 _changed_files() 函数才能获取到文件列表
+
+验证器（verifier.py）：
+- 必须使用通用模板，不要在 verifier.py 中硬编码任务专用逻辑
+- 执行顺序：hard_gates → objective_metrics → rubric.calculate_rubric()
+- 任一硬门控失败 → reward = 0，流程终止
+- 检测到明确作弊 → 样本标记为 invalid
+- 门控不适用 → 记录 applicable = false，状态写 na
+
+verifier.py 必须按以下模板生成（只需填写 TASK_ID）：
+
+```python
+"""
+Verifier 通用模板
+"""
+
+import json
+import os
+import sys
+from pathlib import Path
+from typing import Any
+
+import hard_gates
+import objective_metrics
+import rubric
+
+
+# ============================================================
+# 任务特定配置
+# ============================================================
+
+TASK_ID = "<task_id>"  # 从 metadata.json 的 task_id 字段填写
+
+
+# ============================================================
+# 固定的三步流程（不需要修改）
+# ============================================================
+
+def _repo_path(repo_path: str | os.PathLike[str] | None = None) -> Path:
+    """将 repo 路径转换为绝对路径"""
+    return Path(repo_path or os.getcwd()).resolve()
+
+
+def verify(repo_path: str | os.PathLike[str] | None = None) -> dict[str, Any]:
+    """
+    执行完整的评测流程
+
+    Returns:
+        <dict with fields>
+            "task_id": str,
+            "reward": float,
+            "invalid": bool,
+            "status": str,
+            "hard_gates": <dict>,
+            "objective_metrics": <dict>,
+            "rubric": <dict>,
+            "reason": str
+        </dict>
+    """
+    repo = _repo_path(repo_path)
+
+    # 步骤 1：硬门控检查
+    gate_result = hard_gates.run_all(repo)
+
+    # 检查作弊
+    if gate_result.get("invalid"):
+        return <dict>
+            "task_id": TASK_ID,
+            "reward": 0.0,
+            "invalid": True,
+            "status": "invalid",
+            "hard_gates": gate_result,
+            "objective_metrics": None,
+            "rubric": None,
+            "reason": "anti-cheating hard gate failed",
+        </dict>
+
+    # 检查硬门控失败
+    failed_gates = gate_result.get("failed_gates", [])
+    if failed_gates:
+        return <dict>
+            "task_id": TASK_ID,
+            "reward": 0.0,
+            "invalid": False,
+            "status": "failed_hard_gate",
+            "hard_gates": gate_result,
+            "objective_metrics": None,
+            "rubric": None,
+            "reason": "one or more applicable hard gates failed",
+        </dict>
+
+    # 步骤 2：客观指标采集
+    metrics = objective_metrics.collect_metrics(repo)
+
+    # 步骤 3：Rubric 评分（传入 repo_path 以启用 LLM 精评）
+    rubric_result = rubric.calculate_rubric(metrics, gate_result.get("gates", <dict>), repo_path=str(repo))
+    reward = rubric_result["score"]
+
+    return <dict>
+        "task_id": TASK_ID,
+        "reward": reward,
+        "invalid": False,
+        "status": "pass" if reward > 0 else "no_credit",
+        "hard_gates": gate_result,
+        "objective_metrics": metrics,
+        "rubric": rubric_result,
+    </dict>
+
+
+def main() -> int:
+    """命令行入口"""
+    result = verify(sys.argv[1] if len(sys.argv) > 1 else None)
+    print(json.dumps(result, indent=2, sort_keys=True))
+
+    if result.get("invalid"):
+        return 2
+    return 0 if result.get("reward", 0) > 0 else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+```
+
+请现在生成三个文件。

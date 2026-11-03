@@ -1,0 +1,20 @@
+{
+  "version": "2.0",
+  "dimension_id": "C14",
+  "name": "复杂性下沉与错误设计",
+  "layer": "univ",
+  "applicable_equivalence_classes": ["E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", "E9", "E10", "E11", "E12"],
+  "description": "以 Ousterhout 的 pull complexity downward 和 define errors out of existence 为核心，评价复杂性是否由少数模块承担，而不是扩散给所有调用者。",
+  "system_prompt": "C14 不机械奖励吞异常或改变契约。只有任务允许契约改进且新语义更清晰、稳定、可验证时，才认可错误消除。",
+  "evaluation_prompt_template": "评估 C14 复杂性下沉与错误设计。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 比较复杂性由模块内部承担还是扩散给调用者。\n2. 区分合法契约重设计与错误吞没。\n3. 每个 Atom 给出分数并附证据位置。",
+  "questions": [
+    {"id": "C14.1", "text": "不可避免的复杂性是否被集中在少数模块，而不是复制给多个调用者？", "type": "soft", "weight": 1.0, "anchor": "0=复杂性广泛扩散；1=复杂性被稳定边界吸收"},
+    {"id": "C14.2", "text": "调用者是否无需自行设置本可由模块推导的策略、默认值或配置？", "type": "soft", "weight": 1.0, "anchor": "0=责任被推给调用者；1=模块提供合理默认行为"},
+    {"id": "C14.3", "text": "任务允许契约变化时，是否通过正常语义消除了可预测且无必要的异常分支？", "type": "soft", "weight": 1.0, "anchor": "0=异常仍被不必要地扩散；1=错误条件被清晰定义掉"},
+    {"id": "C14.4", "text": "任务要求行为保持时，是否保留了原有异常契约并避免把异常转换为成功？", "type": "hard", "weight": 1.0, "anchor": "pass=符合任务契约；fail=无授权地吞错或改契约"},
+    {"id": "C14.5", "text": "错误处理是否具有稳定、少量且易理解的抽象，而不是暴露底层异常组合？", "type": "soft", "weight": 1.0, "anchor": "0=错误模型碎片化；1=错误边界清晰"},
+    {"id": "C14.6", "text": "新语义是否通过测试或契约证据证明不会隐藏真正的失败？", "type": "hard", "weight": 1.0, "anchor": "pass=语义变化可验证；fail=以消除复杂性为由掩盖失败"}
+  ],
+  "aggregation": {"formula": "dim_C14 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)", "hard_constraint_indicator": "H_C14 = product(s_a for a in hard atoms in A^†)", "na_policy": "无异常、默认值或调用者配置场景时，可按适用性标记 na；契约模式必须先确定"},
+  "output_schema": {"type": "object", "required": ["dimension_id", "layer", "atom_scores", "dim_score", "hard_indicator", "summary"], "properties": {"dimension_id": {"const": "C14"}, "layer": {"const": "univ"}, "atom_scores": {"type": "array"}, "dim_score": {"type": "number", "minimum": 0, "maximum": 1}, "hard_indicator": {"type": "number", "enum": [0, 1]}, "critical_failures": {"type": "array"}, "summary": {"type": "string"}}}
+}

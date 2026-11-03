@@ -1,0 +1,222 @@
+{
+  "schema_version": "unittest-rl-j1-facts-v4",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "pr_target_sha": "d9e2f5fbf7da59ea61595cffea5e3399fb9c3574",
+  "stage_id": "S07",
+  "status": "verified",
+  "responsibilities": [
+    {
+      "responsibility_id": "J1-001",
+      "behavior_ids": [
+        "scrapy.tls.stdlib_version_limits"
+      ],
+      "entrypoint": "scrapy.utils.ssl._make_ssl_context",
+      "responsible_components": [
+        "scrapy.settings.default_settings",
+        "scrapy.utils.ssl._get_tls_version_limits",
+        "ssl.SSLContext"
+      ],
+      "responsibility": "Carry independently configured minimum and maximum version strings through parsing into the stdlib SSL context.",
+      "required_trace": [
+        "Settings lookup",
+        "_get_tls_version_limits",
+        "_STDLIB_VERSION_MAP",
+        "_make_ssl_context",
+        "SSLContext minimum/maximum properties"
+      ],
+      "observable": "constructed SSLContext version properties",
+      "allowed_mock_boundaries": [],
+      "forbidden_mock_boundaries": [
+        "_make_ssl_context",
+        "ssl.SSLContext version assignments"
+      ],
+      "verification_ref": "active/sealed/behavior_verification.json"
+    },
+    {
+      "responsibility_id": "J1-002",
+      "behavior_ids": [
+        "scrapy.tls.twisted_version_limits"
+      ],
+      "entrypoint": "_load_context_factory_from_settings",
+      "responsible_components": [
+        "scrapy.core.downloader.contextfactory",
+        "scrapy.core.downloader.tls._TWISTED_VERSION_MAP",
+        "scrapy.utils.ssl._get_cert_options_version_kwargs"
+      ],
+      "responsibility": "Propagate settings into the real Twisted context factory and represent them as CertificateOptions arguments.",
+      "required_trace": [
+        "crawler Settings",
+        "_load_context_factory_from_settings",
+        "_ScrapyClientContextFactory.from_crawler",
+        "_get_cert_options_version_kwargs"
+      ],
+      "observable": "factory state and CertificateOptions keyword arguments",
+      "allowed_mock_boundaries": [],
+      "forbidden_mock_boundaries": [
+        "context factory construction",
+        "TLS version conversion"
+      ],
+      "verification_ref": "active/sealed/behavior_verification.json"
+    },
+    {
+      "responsibility_id": "J1-003",
+      "behavior_ids": [
+        "scrapy.tls.invalid_min_version"
+      ],
+      "entrypoint": "HTTPS context construction from Scrapy settings",
+      "responsible_components": [
+        "scrapy.utils.ssl._get_tls_version_limit",
+        "stdlib and Twisted converter maps"
+      ],
+      "responsibility": "Reject an unknown DOWNLOAD_TLS_MIN_VERSION through the real minimum-bound conversion and ValueError translation path.",
+      "required_trace": [
+        "DOWNLOAD_TLS_MIN_VERSION Settings lookup",
+        "_get_tls_version_limit",
+        "minimum-version converter map",
+        "ValueError translation"
+      ],
+      "observable": "minimum-version ValueError event",
+      "allowed_mock_boundaries": [],
+      "forbidden_mock_boundaries": [
+        "_get_tls_version_limit",
+        "converter lookup"
+      ],
+      "verification_ref": "active/sealed/behavior_verification.json"
+    },
+    {
+      "responsibility_id": "J1-004",
+      "behavior_ids": [
+        "scrapy.tls.legacy_api_deprecation"
+      ],
+      "entrypoint": "scrapy.core.downloader.tls compatibility exports",
+      "responsible_components": [
+        "module __getattr__",
+        "_openssl_methods",
+        "ScrapyDeprecationWarning"
+      ],
+      "responsibility": "Keep historical constants and mapping readable while moving every access through the warning boundary.",
+      "required_trace": [
+        "module attribute lookup",
+        "__getattr__",
+        "warning emission",
+        "compatibility value return"
+      ],
+      "observable": "warning category/message and returned value",
+      "allowed_mock_boundaries": [],
+      "forbidden_mock_boundaries": [
+        "module attribute dispatch",
+        "warning emission"
+      ],
+      "verification_ref": "active/sealed/behavior_verification.json"
+    },
+    {
+      "responsibility_id": "J1-005",
+      "behavior_ids": [
+        "scrapy.tls.legacy_api_deprecation"
+      ],
+      "entrypoint": "_load_context_factory_from_settings",
+      "responsible_components": [
+        "legacy method setting",
+        "_openssl_methods",
+        "_ScrapyClientContextFactory.from_crawler"
+      ],
+      "responsibility": "Carry a non-default legacy method through the real loader when both new version bounds are omitted.",
+      "required_trace": [
+        "legacy setting lookup",
+        "deprecation warning",
+        "_openssl_methods method conversion",
+        "factory initialization"
+      ],
+      "observable": "legacy method responsibility path",
+      "allowed_mock_boundaries": [],
+      "forbidden_mock_boundaries": [
+        "context factory loader"
+      ],
+      "verification_ref": "active/sealed/behavior_verification.json"
+    },
+    {
+      "responsibility_id": "J1-006",
+      "behavior_ids": [
+        "scrapy.tls.twisted_version_limits"
+      ],
+      "entrypoint": "_get_cert_options_version_kwargs",
+      "responsible_components": [
+        "TWISTED_TLS_LIMITS_OFFBY1=false",
+        "TLSVersion.TLSv1_2",
+        "CertificateOptions keyword translation"
+      ],
+      "responsibility": "Pass a requested TLSv1.2 maximum through the current Twisted 26.4.0 conversion path without compatibility compensation.",
+      "required_trace": [
+        "current Twisted version predicate",
+        "direct TLSv1.2 maximum",
+        "CertificateOptions maximum translation"
+      ],
+      "observable": "CertificateOptions maximum translation event",
+      "allowed_mock_boundaries": [],
+      "forbidden_mock_boundaries": [
+        "_get_cert_options_version_kwargs"
+      ],
+      "verification_ref": "active/sealed/behavior_verification.json"
+    },
+    {
+      "responsibility_id": "J1-007",
+      "behavior_ids": [
+        "scrapy.tls.invalid_max_version"
+      ],
+      "entrypoint": "HTTPS context construction from Scrapy settings",
+      "responsible_components": [
+        "scrapy.utils.ssl._get_tls_version_limit",
+        "stdlib and Twisted converter maps"
+      ],
+      "responsibility": "Reject an unknown DOWNLOAD_TLS_MAX_VERSION through the real maximum-bound conversion and ValueError translation path.",
+      "required_trace": [
+        "DOWNLOAD_TLS_MAX_VERSION Settings lookup",
+        "_get_tls_version_limit",
+        "maximum-version converter map",
+        "ValueError translation"
+      ],
+      "observable": "maximum-version ValueError event",
+      "allowed_mock_boundaries": [],
+      "forbidden_mock_boundaries": [
+        "_get_tls_version_limit",
+        "converter lookup"
+      ],
+      "verification_ref": "active/sealed/behavior_verification.json"
+    },
+    {
+      "responsibility_id": "J1-008",
+      "behavior_ids": [
+        "scrapy.tls.twisted_version_limits"
+      ],
+      "entrypoint": "_get_cert_options_version_kwargs",
+      "responsible_components": [
+        "TWISTED_TLS_LIMITS_OFFBY1=false",
+        "TLSVersion.TLSv1_3",
+        "CertificateOptions keyword translation"
+      ],
+      "responsibility": "Pass a requested TLSv1.3 maximum through the current Twisted 26.4.0 conversion path without rejecting it.",
+      "required_trace": [
+        "current Twisted version predicate",
+        "direct TLSv1.3 maximum",
+        "normal return from maximum translation"
+      ],
+      "observable": "TLSv1.3 CertificateOptions maximum translation event",
+      "allowed_mock_boundaries": [],
+      "forbidden_mock_boundaries": [
+        "_get_cert_options_version_kwargs"
+      ],
+      "verification_ref": "active/sealed/behavior_verification.json"
+    }
+  ],
+  "responsibility_count": 8,
+  "direction_applicability": {
+    "cross_file_responsibility": {
+      "applicable": true,
+      "fact_count": 8
+    }
+  },
+  "source_policy": {
+    "candidate_data_read": false,
+    "current_behavior_revision": "S04"
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "schema_version": "unittest-rl-j5-facts-v4",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "pr_target_sha": "d9e2f5fbf7da59ea61595cffea5e3399fb9c3574",
+  "stage_id": "S11",
+  "status": "verified",
+  "diagnostic_units": [
+    {
+      "diagnostic_unit_id": "J5-DIAG-001",
+      "primary_behavior_id": "scrapy.tls.stdlib_version_limits",
+      "behavior_ids": [
+        "scrapy.tls.stdlib_version_limits"
+      ],
+      "fault_family": "stdlib bounds ignored",
+      "precondition_partition": "explicit minimum and maximum",
+      "entrypoint": "_make_ssl_context",
+      "action": "inspect constructed context",
+      "expected_contract": "both context properties equal configured versions",
+      "fault_outcome_class": "default_bound_left_in_place",
+      "target_observable": "minimum and maximum enum values",
+      "fault_ids": [
+        "F001"
+      ],
+      "fault_count": 1,
+      "allowed_behavior_ids": [
+        "scrapy.tls.stdlib_version_limits"
+      ],
+      "verification_refs": [
+        "active/sealed/faults/fault_validation.json"
+      ]
+    },
+    {
+      "diagnostic_unit_id": "J5-DIAG-002",
+      "primary_behavior_id": "scrapy.tls.twisted_version_limits",
+      "behavior_ids": [
+        "scrapy.tls.twisted_version_limits"
+      ],
+      "fault_family": "Twisted bounds discarded",
+      "precondition_partition": "new range combined with legacy method",
+      "entrypoint": "_load_context_factory_from_settings",
+      "action": "inspect factory state",
+      "expected_contract": "converted bounds are present and legacy method is cleared",
+      "fault_outcome_class": "missing_bounds_and_active_legacy_method",
+      "target_observable": "factory min/max/method fields",
+      "fault_ids": [
+        "F002"
+      ],
+      "fault_count": 1,
+      "allowed_behavior_ids": [
+        "scrapy.tls.twisted_version_limits"
+      ],
+      "verification_refs": [
+        "active/sealed/faults/fault_validation.json"
+      ]
+    },
+    {
+      "diagnostic_unit_id": "J5-DIAG-003",
+      "primary_behavior_id": "scrapy.tls.invalid_min_version",
+      "behavior_ids": [
+        "scrapy.tls.invalid_min_version"
+      ],
+      "fault_family": "minimum setting identity lost",
+      "precondition_partition": "invalid DOWNLOAD_TLS_MIN_VERSION",
+      "entrypoint": "_make_ssl_context",
+      "action": "capture each construction error",
+      "expected_contract": "The ValueError identifies DOWNLOAD_TLS_MIN_VERSION and its value.",
+      "fault_outcome_class": "setting_identity_lost",
+      "target_observable": "exception message",
+      "fault_ids": [
+        "F006"
+      ],
+      "fault_count": 1,
+      "allowed_behavior_ids": [
+        "scrapy.tls.invalid_min_version"
+      ],
+      "verification_refs": [
+        "active/sealed/faults/fault_validation.json"
+      ]
+    },
+    {
+      "diagnostic_unit_id": "J5-DIAG-004",
+      "primary_behavior_id": "scrapy.tls.legacy_api_deprecation",
+      "behavior_ids": [
+        "scrapy.tls.legacy_api_deprecation"
+      ],
+      "fault_family": "missing module export warning",
+      "precondition_partition": "historical module export access",
+      "entrypoint": "scrapy.core.downloader.tls module attributes",
+      "action": "capture compatibility behavior",
+      "expected_contract": "old values still work and each migration boundary warns",
+      "fault_outcome_class": "silent_legacy_path",
+      "target_observable": "warning category/message plus compatible value",
+      "fault_ids": [
+        "F003"
+      ],
+      "fault_count": 1,
+      "allowed_behavior_ids": [
+        "scrapy.tls.legacy_api_deprecation"
+      ],
+      "verification_refs": [
+        "active/sealed/faults/fault_validation.json"
+      ]
+    },
+    {
+      "diagnostic_unit_id": "J5-DIAG-005",
+      "primary_behavior_id": "scrapy.tls.twisted_version_limits",
+      "behavior_ids": [
+        "scrapy.tls.twisted_version_limits"
+      ],
+      "fault_family": "current Twisted maximum mapping dropped",
+      "precondition_partition": "Twisted 26.4.0 with TLSv1.2 and TLSv1.3 maxima",
+      "entrypoint": "_get_cert_options_version_kwargs",
+      "action": "translate each maximum",
+      "expected_contract": "TLSv1.2 maps directly to TLSv1.2 and TLSv1.3 maps directly to TLSv1.3",
+      "fault_outcome_class": "missing_lower_maximum_mapping",
+      "target_observable": "lowerMaximumSecurityTo keyword argument",
+      "fault_ids": [
+        "F004"
+      ],
+      "fault_count": 1,
+      "allowed_behavior_ids": [
+        "scrapy.tls.twisted_version_limits"
+      ],
+      "verification_refs": [
+        "active/sealed/faults/fault_validation.json"
+      ]
+    },
+    {
+      "diagnostic_unit_id": "J5-DIAG-006",
+      "primary_behavior_id": "scrapy.tls.invalid_max_version",
+      "behavior_ids": [
+        "scrapy.tls.invalid_max_version"
+      ],
+      "fault_family": "maximum setting identity lost",
+      "precondition_partition": "invalid DOWNLOAD_TLS_MAX_VERSION",
+      "entrypoint": "_make_ssl_context",
+      "action": "capture each construction error",
+      "expected_contract": "The ValueError identifies DOWNLOAD_TLS_MAX_VERSION and its value.",
+      "fault_outcome_class": "setting_identity_lost",
+      "target_observable": "exception message",
+      "fault_ids": [
+        "F007"
+      ],
+      "fault_count": 1,
+      "allowed_behavior_ids": [
+        "scrapy.tls.invalid_max_version"
+      ],
+      "verification_refs": [
+        "active/sealed/faults/fault_validation.json"
+      ]
+    },
+    {
+      "diagnostic_unit_id": "J5-DIAG-007",
+      "primary_behavior_id": "scrapy.tls.legacy_api_deprecation",
+      "behavior_ids": [
+        "scrapy.tls.legacy_api_deprecation"
+      ],
+      "fault_family": "missing legacy setting warning",
+      "precondition_partition": "non-default legacy method setting",
+      "entrypoint": "_load_context_factory_from_settings",
+      "action": "capture compatibility behavior",
+      "expected_contract": "old values still work and each migration boundary warns",
+      "fault_outcome_class": "silent_legacy_path",
+      "target_observable": "warning category/message plus compatible value",
+      "fault_ids": [
+        "F005"
+      ],
+      "fault_count": 1,
+      "allowed_behavior_ids": [
+        "scrapy.tls.legacy_api_deprecation"
+      ],
+      "verification_refs": [
+        "active/sealed/faults/fault_validation.json"
+      ]
+    }
+  ],
+  "diagnostic_unit_count": 7,
+  "source_policy": {
+    "candidate_data_read": false,
+    "current_fault_revision": "S06"
+  }
+}

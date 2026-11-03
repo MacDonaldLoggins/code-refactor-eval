@@ -1,0 +1,7 @@
+schema_version = "harbor-refactor-eval/v1"
+
+[policy]
+final_score = "rubric"
+allowed_rubric_scores = [0.0, 0.5, 1.0]
+fail_on_uncertain = true
+rubric_weight_total = 100.0

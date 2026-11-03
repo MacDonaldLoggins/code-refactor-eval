@@ -1,0 +1,52 @@
+{
+  "schema_version": "unittest-rl-preparation-audit-v4",
+  "task_id": "scrapy-scrapy-pr-6546-v082-r3",
+  "stage_id": "S23",
+  "status": "pass",
+  "engine": {
+    "version": "0.8.2",
+    "revision": "engine-revision-010",
+    "contract": "unittest-rl-internal-contract-v33"
+  },
+  "checks": {
+    "pr_admitted": true,
+    "behaviors_verified": true,
+    "coverage_scope_frozen": true,
+    "fault_pool_validated_with_three_replays": true,
+    "obligations_independently_validated": true,
+    "rubrics_complete_and_unique": true,
+    "rubrics_en_us_validation_pass": true,
+    "prompt_public_context_en_us": true,
+    "prompt_exact_deterministic_render": true,
+    "candidate_visible_file_set_exact": true,
+    "reference_tests_absent_from_candidate_repository": true,
+    "runtime_import_smoke_pass": true,
+    "repository_baseline_pass": true,
+    "verifier_syntax_pass": true,
+    "judge_panel_frozen": true,
+    "candidate_boundary_strict": true,
+    "network_disabled": true
+  },
+  "runtime": {
+    "python": "3.13.14",
+    "pytest": "9.1.1",
+    "coverage": "7.15.2"
+  },
+  "repository_baseline": {
+    "command": "active/runtime/python3.13 -m pytest -q -p no:cacheprovider active/repository/tests/test_core_downloader.py",
+    "result": "12 passed, 1 skipped, 5 warnings in 1.91s"
+  },
+  "judge_panel": {
+    "panel_id": "judge-panel-v001",
+    "official_model_key": "openai--gpt-5-6-sol",
+    "shadow_model_keys": [],
+    "dimension_parallelism": 5,
+    "barrier_required": true
+  },
+  "limitations": [
+    "Upstream commit IDs identify the selected PR but are not local file integrity gates.",
+    "Published Delivery immutability and strict Candidate boundaries are process controls, not tamper-proof storage.",
+    "All PR-authored changed test files and sealed reference tests are absent from the candidate repository snapshot."
+  ],
+  "errors": []
+}

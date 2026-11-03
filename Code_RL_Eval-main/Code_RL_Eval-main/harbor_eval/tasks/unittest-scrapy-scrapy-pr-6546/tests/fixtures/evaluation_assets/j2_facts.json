@@ -1,0 +1,141 @@
+{
+  "schema_version": "unittest-rl-j2-facts-v4",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "pr_target_sha": "d9e2f5fbf7da59ea61595cffea5e3399fb9c3574",
+  "stage_id": "S08",
+  "status": "verified",
+  "oracle_contracts": [
+    {
+      "oracle_id": "J2-O-001",
+      "behavior_id": "scrapy.tls.stdlib_version_limits",
+      "direction": "state_oracle",
+      "precondition": "Both new bounds are configured to TLSv1.2 and TLSv1.3.",
+      "action": "Build the stdlib HTTPS context.",
+      "observable": "SSLContext.minimum_version and maximum_version",
+      "expected_contract": "They equal ssl.TLSVersion.TLSv1_2 and TLSv1_3.",
+      "counterexample": "One bound remains a default, is swapped, or is ignored.",
+      "expected_source": "PR implementation and S04 target/base replay",
+      "claim_key": "stdlib_version_limits|state_oracle|configured-range"
+    },
+    {
+      "oracle_id": "J2-O-002",
+      "behavior_id": "scrapy.tls.stdlib_version_limits",
+      "direction": "default_oracle",
+      "precondition": "Both bounds are omitted.",
+      "action": "Build the stdlib HTTPS context.",
+      "observable": "protocol and untouched version defaults",
+      "expected_contract": "PROTOCOL_TLS_CLIENT is used without forcing a concrete bound.",
+      "counterexample": "Omission selects a legacy single-version protocol.",
+      "expected_source": "PR default settings and stdlib behavior",
+      "claim_key": "stdlib_version_limits|default_oracle|omitted-range"
+    },
+    {
+      "oracle_id": "J2-O-003",
+      "behavior_id": "scrapy.tls.twisted_version_limits",
+      "direction": "state_oracle",
+      "precondition": "Both new bounds are configured for a Twisted handler.",
+      "action": "Load the context factory from a crawler.",
+      "observable": "factory tls_min_version, tls_max_version, and _ssl_method",
+      "expected_contract": "Bounds are TLSVersion constants and _ssl_method is None.",
+      "counterexample": "String bounds are retained, bounds are discarded, or the legacy method remains active.",
+      "expected_source": "PR implementation and S04 target/base replay",
+      "claim_key": "twisted_version_limits|state_oracle|factory-range"
+    },
+    {
+      "oracle_id": "J2-O-004",
+      "behavior_id": "scrapy.tls.invalid_min_version",
+      "direction": "error_oracle",
+      "precondition": "DOWNLOAD_TLS_MIN_VERSION is invalid.",
+      "action": "Build an HTTPS context.",
+      "observable": "ValueError message",
+      "expected_contract": "The message names DOWNLOAD_TLS_MIN_VERSION and the invalid value.",
+      "counterexample": "No error, KeyError, or a generic TLS error.",
+      "expected_source": "S04 target/base replay",
+      "claim_key": "invalid_min_version|error_oracle|setting-and-value"
+    },
+    {
+      "oracle_id": "J2-O-005",
+      "behavior_id": "scrapy.tls.invalid_max_version",
+      "direction": "error_oracle",
+      "precondition": "DOWNLOAD_TLS_MAX_VERSION is invalid.",
+      "action": "Build an HTTPS context.",
+      "observable": "ValueError message",
+      "expected_contract": "The message names DOWNLOAD_TLS_MAX_VERSION and the invalid value.",
+      "counterexample": "No error, KeyError, or a generic TLS error.",
+      "expected_source": "S04 target/base replay",
+      "claim_key": "invalid_max_version|error_oracle|setting-and-value"
+    },
+    {
+      "oracle_id": "J2-O-006",
+      "behavior_id": "scrapy.tls.legacy_api_deprecation",
+      "direction": "warning_oracle",
+      "precondition": "The historical METHOD_TLS module export is read.",
+      "action": "Access scrapy.core.downloader.tls.METHOD_TLS.",
+      "observable": "returned string and captured warning",
+      "expected_contract": "The value is exactly \"TLS\" and the access emits a ScrapyDeprecationWarning naming the full export.",
+      "counterexample": "The value changes or the named warning is absent.",
+      "expected_source": "PR compatibility implementation and S04 replay",
+      "claim_key": "legacy_api_deprecation|warning_oracle|METHOD_TLS"
+    },
+    {
+      "oracle_id": "J2-O-007",
+      "behavior_id": "scrapy.tls.legacy_api_deprecation",
+      "direction": "warning_oracle",
+      "precondition": "DOWNLOADER_CLIENT_TLS_METHOD is TLSv1.2.",
+      "action": "Load the Twisted context factory.",
+      "observable": "warning message and factory legacy method",
+      "expected_contract": "A migration warning is emitted and the method remains TLSv1.2 when no new bounds are present.",
+      "counterexample": "The setting is silent or breaks compatibility.",
+      "expected_source": "PR compatibility implementation",
+      "claim_key": "legacy_api_deprecation|warning_oracle|legacy-setting"
+    },
+    {
+      "oracle_id": "J2-O-008",
+      "behavior_id": "scrapy.tls.twisted_version_limits",
+      "direction": "mapping_oracle",
+      "precondition": "Twisted 26.4.0 is active, TWISTED_TLS_LIMITS_OFFBY1 is false, and max is TLSv1.2.",
+      "action": "Translate CertificateOptions version kwargs.",
+      "observable": "lowerMaximumSecurityTo",
+      "expected_contract": "The argument is TLSVersion.TLSv1_2 exactly.",
+      "counterexample": "The maximum mapping is missing or changed to another version.",
+      "expected_source": "Current Twisted 26.4.0 implementation and S04 replay",
+      "claim_key": "twisted_version_limits|mapping_oracle|tls12-direct"
+    },
+    {
+      "oracle_id": "J2-O-009",
+      "behavior_id": "scrapy.tls.twisted_version_limits",
+      "direction": "mapping_oracle",
+      "precondition": "Twisted 26.4.0 is active, TWISTED_TLS_LIMITS_OFFBY1 is false, and max is TLSv1.3.",
+      "action": "Translate CertificateOptions version kwargs.",
+      "observable": "normal return and lowerMaximumSecurityTo",
+      "expected_contract": "The argument is TLSVersion.TLSv1_3 exactly and the helper returns normally.",
+      "counterexample": "The maximum mapping is missing, changed to another version, or rejected as unrepresentable.",
+      "expected_source": "Current Twisted 26.4.0 implementation and S04 replay",
+      "claim_key": "twisted_version_limits|mapping_oracle|tls13-direct"
+    },
+    {
+      "oracle_id": "J2-O-010",
+      "behavior_id": "scrapy.tls.legacy_api_deprecation",
+      "direction": "warning_oracle",
+      "precondition": "The historical openssl_methods module export is read.",
+      "action": "Access scrapy.core.downloader.tls.openssl_methods.",
+      "observable": "returned mapping and captured warning",
+      "expected_contract": "The value is a dict exactly mapping TLS, TLSv1.0, TLSv1.1, and TLSv1.2 to their four documented OpenSSL methods; the access emits a ScrapyDeprecationWarning naming the full export.",
+      "counterexample": "The mapping type, key set, mapped method, or named warning differs.",
+      "expected_source": "PR compatibility implementation and S04 replay",
+      "claim_key": "legacy_api_deprecation|warning_oracle|openssl_methods"
+    }
+  ],
+  "oracle_count": 10,
+  "direction_counts": {
+    "state_oracle": 2,
+    "default_oracle": 1,
+    "error_oracle": 2,
+    "warning_oracle": 3,
+    "mapping_oracle": 2
+  },
+  "source_policy": {
+    "candidate_data_read": false,
+    "current_behavior_revision": "S04-current-only"
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "version": "2.0",
+  "dimension_id": "C4",
+  "name": "职责与内聚性",
+  "layer": "eq",
+  "applicable_equivalence_classes": [
+    "E1",
+    "E3",
+    "E8",
+    "E10",
+    "E12"
+  ],
+  "description": "评价数据、函数、类和模块是否放在了合理位置。核心：一起变化、共同使用、共同表达同一概念的内容，是否被合理地放在一起。对应过大类、纯数据类、依恋情结、发散式变化、搬移函数/字段/提炼类等场景。",
+  "system_prompt": "C4 属于等价类专属层，用于评价 E1（函数/表达式）、E3（搬移与职责）、E8（类与模块重组）、E10（死代码与冗余结构清理）等场景。警惕新的'垃圾桶类'（Manager/Helper/Service/Util）。",
+  "evaluation_prompt_template": "评估 C4 职责与内聚性。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 判断职责是否单一、数据与行为归属一致。\n2. 检测垃圾桶类和依恋情结。\n3. 每个 Atom 给出归一化分并附证据。",
+  "questions": [
+    {
+      "id": "C4.1",
+      "text": "重构后，函数、类或模块是否有明确的主要职责？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=职责混乱；1=职责清晰单一"
+    },
+    {
+      "id": "C4.2",
+      "text": "使用某组数据的主要行为，是否与这些数据处于合理位置？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=严重依恋情结；1=数据行为归属一致"
+    },
+    {
+      "id": "C4.3",
+      "text": "重构后，一个类或模块是否不再因为多个无关原因而变化？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=发散式变化未改善；1=变化原因收敛"
+    },
+    {
+      "id": "C4.4",
+      "text": "重构是否把多个职责转移到了新的 `Manager`、`Helper`、`Service` 或 `Util` 中？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=未形成垃圾桶类；fail=形成垃圾桶类"
+    },
+    {
+      "id": "C4.5",
+      "text": "重构后，类之间的参数传递和 getter/setter 调用是否明显减少？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=数据搬运未减少；1=显著减少"
+    },
+    {
+      "id": "C4.6",
+      "text": "同一模块中的内容是否因为共同概念、共同数据或共同变化原因而聚集？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=拼凑式聚集；1=真实内聚"
+    }
+  ],
+  "aggregation": {
+    "formula": "dim_C4 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)",
+    "hard_constraint_indicator": "H_C4 = product(s_a for a in hard atoms in A^†)",
+    "na_policy": "仅函数内部重构不涉及类/模块时，类相关 Atom 可标记 na"
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "dimension_id",
+      "layer",
+      "atom_scores",
+      "dim_score",
+      "hard_indicator",
+      "summary"
+    ],
+    "properties": {
+      "dimension_id": {
+        "const": "C4"
+      },
+      "layer": {
+        "const": "eq"
+      },
+      "atom_scores": {
+        "type": "array"
+      },
+      "dim_score": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "hard_indicator": {
+        "type": "number",
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "critical_failures": {
+        "type": "array"
+      },
+      "summary": {
+        "type": "string"
+      }
+    }
+  }
+}

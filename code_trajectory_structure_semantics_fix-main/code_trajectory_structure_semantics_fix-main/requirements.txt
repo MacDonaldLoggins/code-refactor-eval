@@ -1,0 +1,7 @@
+requests>=2.31.0,<3
+oss2>=2.18.0,<3
+pymysql>=1.1,<2
+langchain
+langchain-openai
+openai
+pymysql

@@ -1,0 +1,110 @@
+{
+  "version": "2.0",
+  "dimension_id": "C9",
+  "name": "条件逻辑与控制流",
+  "layer": "eq",
+  "applicable_equivalence_classes": [
+    "E4",
+    "E11",
+    "E12"
+  ],
+  "description": "评价重构后条件、循环和异常控制流是否更容易理解、验证和扩展。对应过长条件、嵌套条件、重复的 switch、循环、特例、断言以及以多态替代条件等场景。",
+  "system_prompt": "C9 属于等价类专属层，用于 E4（条件逻辑重构）与 E11（测试支撑）场景。警惕将简单条件盲目改成多态。",
+  "evaluation_prompt_template": "评估 C9 条件逻辑与控制流。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 判断条件表达清晰度、嵌套控制、分支重复。\n2. 判断多态、特例、断言的使用是否合理。\n3. 每个 Atom 给出归一化分并附证据。",
+  "questions": [
+    {
+      "id": "C9.1",
+      "text": "每个条件分支是否有清晰的业务含义？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=条件晦涩；1=每个分支意图明确"
+    },
+    {
+      "id": "C9.2",
+      "text": "重构后是否减少了不必要的嵌套和缩进？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=嵌套未改善；1=显著扁平化"
+    },
+    {
+      "id": "C9.3",
+      "text": "相同的条件判断和分支行为是否被集中处理？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=重复 switch/if 未消除；1=集中"
+    },
+    {
+      "id": "C9.4",
+      "text": "null、空对象、默认值和特殊状态是否被合理抽象，而不是到处增加分支？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=特例分支散布；1=特例统一处理"
+    },
+    {
+      "id": "C9.5",
+      "text": "是否只有在类型变化频繁、分支逻辑具有独立行为时才使用多态？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=多态使用合理；fail=盲目多态化"
+    },
+    {
+      "id": "C9.6",
+      "text": "将循环改为管道或拆分循环后，代码是否更清晰，而不是更晦涩？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=转换后更晦涩；1=更清晰"
+    },
+    {
+      "id": "C9.7",
+      "text": "断言是否表达真正的不变量？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=断言重复普通条件；1=断言表达不变量"
+    }
+  ],
+  "aggregation": {
+    "formula": "dim_C9 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)",
+    "hard_constraint_indicator": "H_C9 = product(s_a for a in hard atoms in A^†)",
+    "na_policy": "无循环变换 C9.6 可标记 na；无断言 C9.7 可标记 na"
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "dimension_id",
+      "layer",
+      "atom_scores",
+      "dim_score",
+      "hard_indicator",
+      "summary"
+    ],
+    "properties": {
+      "dimension_id": {
+        "const": "C9"
+      },
+      "layer": {
+        "const": "eq"
+      },
+      "atom_scores": {
+        "type": "array"
+      },
+      "dim_score": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "hard_indicator": {
+        "type": "number",
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "critical_failures": {
+        "type": "array"
+      },
+      "summary": {
+        "type": "string"
+      }
+    }
+  }
+}

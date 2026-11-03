@@ -1,0 +1,14 @@
+diff --git a/scrapy/utils/ssl.py b/scrapy/utils/ssl.py
+--- a/scrapy/utils/ssl.py
++++ b/scrapy/utils/ssl.py
+@@ -36,7 +36,9 @@ def _get_tls_version_limit(
+     try:
+         return converter(setting)
+     except Exception as ex:
+-        raise ValueError(f"Unknown {setting_name} value: {setting}") from ex
++        if setting_name == "DOWNLOAD_TLS_MIN_VERSION":
++            raise ValueError("Unknown TLS minimum version") from ex
++        raise ValueError(f"Unknown {setting_name} value: {setting}") from ex
+ 
+ 
+ def _get_tls_version_limits(

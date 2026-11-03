@@ -1,0 +1,112 @@
+{
+  "version": "2.0",
+  "dimension_id": "C11",
+  "name": "测试与验证质量",
+  "layer": "univ",
+  "applicable_equivalence_classes": [
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7",
+    "E8",
+    "E9",
+    "E10",
+    "E11",
+    "E12"
+  ],
+  "description": "判断重构是否有足够证据证明外部行为保持、边界条件没有被破坏、异常路径没有被改变、API 仍然可用，并且重构步骤可以安全回退。测试不是重构的目标，但它是重构安全性的主要证据。",
+  "system_prompt": "C11 属于普适层，用于验证重构的行为保持证据。没有基线测试、边界覆盖不足、测试绑定实现细节等问题必须明确指出。",
+  "evaluation_prompt_template": "评估 C11 测试与验证质量。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 判断是否有重构前基线测试。\n2. 判断正常路径、边界、异常、副作用是否被测试覆盖。\n3. 判断测试是否绑定实现细节。\n4. 每个 Atom 给出归一化分并附证据。",
+  "questions": [
+    {
+      "id": "C11.1",
+      "text": "重构前是否先确认了原始代码的行为？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=无基线测试；1=有明确基线"
+    },
+    {
+      "id": "C11.2",
+      "text": "主要业务路径是否有自动化测试？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=主路径无测试；1=主路径有覆盖"
+    },
+    {
+      "id": "C11.3",
+      "text": "是否测试了空值、边界值、异常、重复调用和失败路径？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=边界和异常无覆盖；1=边界与异常有测试"
+    },
+    {
+      "id": "C11.4",
+      "text": "是否确认数据库、文件、网络、缓存、事件等外部行为没有意外变化？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=副作用无验证；1=副作用有验证"
+    },
+    {
+      "id": "C11.5",
+      "text": "测试是否验证外部行为，而不是要求内部结构必须保持原样？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=测试基于外部行为；fail=测试绑定实现细节"
+    },
+    {
+      "id": "C11.6",
+      "text": "重构步骤是否足够小，是否能明确定位哪一步引入了问题？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=步骤过大无法回退；1=小步可回退"
+    }
+  ],
+  "aggregation": {
+    "formula": "dim_C11 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)",
+    "hard_constraint_indicator": "H_C11 = product(s_a for a in hard atoms in A^†)",
+    "na_policy": "无外部副作用场景 C11.4 可标记 na"
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "dimension_id",
+      "layer",
+      "atom_scores",
+      "dim_score",
+      "hard_indicator",
+      "summary"
+    ],
+    "properties": {
+      "dimension_id": {
+        "const": "C11"
+      },
+      "layer": {
+        "const": "univ"
+      },
+      "atom_scores": {
+        "type": "array"
+      },
+      "dim_score": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "hard_indicator": {
+        "type": "number",
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "critical_failures": {
+        "type": "array"
+      },
+      "summary": {
+        "type": "string"
+      }
+    }
+  }
+}

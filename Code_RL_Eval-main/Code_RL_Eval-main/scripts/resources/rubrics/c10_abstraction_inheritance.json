@@ -1,0 +1,111 @@
+{
+  "version": "2.0",
+  "dimension_id": "C10",
+  "name": "抽象、继承与委托",
+  "layer": "eq",
+  "applicable_equivalence_classes": [
+    "E4",
+    "E6",
+    "E10",
+    "E12"
+  ],
+  "description": "评价新增或调整的抽象关系是否真实、有价值并且可长期维护。对应被拒绝的遗赠、继承层级复杂、类型码、提炼超类、折叠继承体系、委托替代继承和子类替代类型码等场景。",
+  "system_prompt": "C10 属于等价类专属层，用于 E4（条件逻辑重构多态）、E6（继承与委托重构）、E10（冗余抽象清理）场景。引入没有真实语义基础的继承或委托层属于关键失败项。",
+  "evaluation_prompt_template": "评估 C10 抽象、继承与委托。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 判断继承是否表达真实类型关系，子类是否遵守 LSP。\n2. 判断共同内容上移、专有内容下移是否合理。\n3. 判断委托、抽象是否有真实价值。\n4. 每个 Atom 给出归一化分并附证据。",
+  "questions": [
+    {
+      "id": "C10.1",
+      "text": "子类是否真正是父类的一种，并且可以合理替代父类？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=符合 LSP；fail=子类不是父类的一种"
+    },
+    {
+      "id": "C10.2",
+      "text": "子类是否接受父类接口和行为约束，而不是只借用父类实现？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=遵守契约；fail=被拒绝的遗赠"
+    },
+    {
+      "id": "C10.3",
+      "text": "只有真正共同的字段和行为才被上移了吗？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=上移内容不具共性；1=上移准确"
+    },
+    {
+      "id": "C10.4",
+      "text": "只有特定子类需要的行为和数据，是否被限制在子类中？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=父类包含专有内容；1=专有内容下移"
+    },
+    {
+      "id": "C10.5",
+      "text": "使用委托后，变化是否更容易隔离？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=委托未改善隔离；1=变化隔离改善"
+    },
+    {
+      "id": "C10.6",
+      "text": "委托对象是否让调用链、状态和生命周期变得更复杂？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=委托引入过度间接；1=复杂度合理"
+    },
+    {
+      "id": "C10.7",
+      "text": "新增的超类、接口、策略或委托是否解决了真实变化问题，而不是为了'看起来更通用'？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=抽象有真实价值；fail=为抽象而抽象"
+    }
+  ],
+  "aggregation": {
+    "formula": "dim_C10 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)",
+    "hard_constraint_indicator": "H_C10 = product(s_a for a in hard atoms in A^†)",
+    "na_policy": "无继承场景 C10.1-C10.4 可标记 na；无委托场景 C10.5-C10.6 可标记 na"
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "dimension_id",
+      "layer",
+      "atom_scores",
+      "dim_score",
+      "hard_indicator",
+      "summary"
+    ],
+    "properties": {
+      "dimension_id": {
+        "const": "C10"
+      },
+      "layer": {
+        "const": "eq"
+      },
+      "atom_scores": {
+        "type": "array"
+      },
+      "dim_score": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "hard_indicator": {
+        "type": "number",
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "critical_failures": {
+        "type": "array"
+      },
+      "summary": {
+        "type": "string"
+      }
+    }
+  }
+}

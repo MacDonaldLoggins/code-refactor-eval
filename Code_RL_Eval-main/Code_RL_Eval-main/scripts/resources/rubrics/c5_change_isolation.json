@@ -1,0 +1,112 @@
+{
+  "version": "2.0",
+  "dimension_id": "C5",
+  "name": "变化隔离与可修改性",
+  "layer": "univ",
+  "applicable_equivalence_classes": [
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7",
+    "E8",
+    "E9",
+    "E10",
+    "E11",
+    "E12"
+  ],
+  "description": "判断重构后未来的需求变化是否可以被限制在合理范围内。重构的长期价值主要体现在这里。重点关注发散式变化、霰弹式修改、重复决策、变化传播、API 稳定性、代码位置以及通用与专用逻辑分离。",
+  "system_prompt": "C5 属于普适层，评价重构的长期演化收益。重构后变化传播范围明显扩大属于关键失败项。",
+  "evaluation_prompt_template": "评估 C5 变化隔离与可修改性。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 分析同类变化的修改点数量。\n2. 判断底层实现与调用者是否隔离。\n3. 判断霰弹式修改是否改善。\n4. 每个 Atom 给出归一化分并附证据。",
+  "questions": [
+    {
+      "id": "C5.1",
+      "text": "如果新增一种同类业务规则、类型或实现，需要修改几个位置？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=需修改 >3 处；0.5=2-3 处；1=1 处"
+    },
+    {
+      "id": "C5.2",
+      "text": "如果修改一个业务规则，是否可以在一个明确位置完成？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=规则分散多处；1=集中在一处"
+    },
+    {
+      "id": "C5.3",
+      "text": "更换底层算法、数据结构或服务实现时，调用者是否无需同步修改？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=底层泄漏调用者需改；1=完全隔离"
+    },
+    {
+      "id": "C5.4",
+      "text": "一次变化是否不再要求到处寻找并修改相似代码？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=霰弹式修改已消除；fail=变化传播范围扩大"
+    },
+    {
+      "id": "C5.5",
+      "text": "通用模块是否避免被当前业务场景的专用细节污染？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=通用模块被污染；1=通用与专用清晰分离"
+    },
+    {
+      "id": "C5.6",
+      "text": "总是一起变化的内容是否被放在一起，不同变化方向的内容是否被分开？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=变化方向错位；1=变化方向与边界一致"
+    }
+  ],
+  "aggregation": {
+    "formula": "dim_C5 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)",
+    "hard_constraint_indicator": "H_C5 = product(s_a for a in hard atoms in A^†)",
+    "na_policy": "无扩展场景的孤立重构 C5.1 可标记 na"
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "dimension_id",
+      "layer",
+      "atom_scores",
+      "dim_score",
+      "hard_indicator",
+      "summary"
+    ],
+    "properties": {
+      "dimension_id": {
+        "const": "C5"
+      },
+      "layer": {
+        "const": "univ"
+      },
+      "atom_scores": {
+        "type": "array"
+      },
+      "dim_score": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "hard_indicator": {
+        "type": "number",
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "critical_failures": {
+        "type": "array"
+      },
+      "summary": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "rubric_id": "SC-J2-001",
+    "direction": "state_oracle",
+    "score_1_condition": "The candidate test directly checks that minimum_version on the target SSLContext instance is ssl.TLSVersion.TLSv1_2 and maximum_version is ssl.TLSVersion.TLSv1_3; both property checks are bound to the instance produced by the same configured-range scenario.",
+    "score_0_condition": "The candidate test does not obtain the target SSLContext instance produced by the configured-range scenario; does not directly check minimum_version or maximum_version; does not compare the properties to ssl.TLSVersion.TLSv1_2 and ssl.TLSVersion.TLSv1_3; swaps the two boundaries; or reads the two properties from different instances."
+  },
+  {
+    "rubric_id": "SC-J2-002",
+    "direction": "default_oracle",
+    "score_1_condition": "The scenario that omits DOWNLOAD_TLS_MIN_VERSION and DOWNLOAD_TLS_MAX_VERSION directly checks that the target SSLContext uses ssl.PROTOCOL_TLS_CLIENT and compares minimum_version and maximum_version, property by property, with the corresponding defaults of a newly created ssl.PROTOCOL_TLS_CLIENT context in the same runtime.",
+    "score_0_condition": "The candidate test does not exercise a scenario that omits both version boundaries; checks only that a context exists; does not check ssl.PROTOCOL_TLS_CLIENT; does not compare the runtime defaults of minimum_version or maximum_version; or interprets omitted boundaries as one fixed legacy protocol."
+  },
+  {
+    "rubric_id": "SC-J2-003",
+    "direction": "state_oracle",
+    "score_1_condition": "The candidate directly checks that tls_min_version on the target Twisted factory is TLSVersion.TLSv1_2, tls_max_version is TLSVersion.TLSv1_3, and _ssl_method is None; all three checks are bound to the same scenario that configures both new boundaries.",
+    "score_0_condition": "The candidate does not obtain the target Twisted factory; or does not directly check tls_min_version, tls_max_version, or _ssl_method; or a boundary remains a string or None; or a boundary constant is wrong or swapped; or _ssl_method still holds the legacy method; or the three state checks come from different factories."
+  },
+  {
+    "rubric_id": "SC-J2-004",
+    "direction": "error_oracle",
+    "score_1_condition": "When DOWNLOAD_TLS_MIN_VERSION uses the invalid value declared by the candidate, the candidate test captures ValueError and directly checks that the exception text contains both DOWNLOAD_TLS_MIN_VERSION and that invalid value.",
+    "score_0_condition": "The candidate test does not use an invalid DOWNLOAD_TLS_MIN_VERSION; does not capture ValueError; does not find DOWNLOAD_TLS_MIN_VERSION in the exception text; does not find the invalid value passed by the candidate in the exception text; or checks an exception produced by the invalid-maximum scenario."
+  },
+  {
+    "rubric_id": "SC-J2-005",
+    "direction": "error_oracle",
+    "score_1_condition": "When DOWNLOAD_TLS_MAX_VERSION uses the invalid value declared by the candidate, the candidate test captures ValueError and directly checks that the exception text contains both DOWNLOAD_TLS_MAX_VERSION and that invalid value.",
+    "score_0_condition": "The candidate test does not use an invalid DOWNLOAD_TLS_MAX_VERSION; does not capture ValueError; does not find DOWNLOAD_TLS_MAX_VERSION in the exception text; does not find the invalid value passed by the candidate in the exception text; or checks an exception produced by the invalid-minimum scenario."
+  },
+  {
+    "rubric_id": "SC-J2-006",
+    "direction": "warning_oracle",
+    "score_1_condition": "The candidate test accesses the historical module export through scrapy.core.downloader.tls.METHOD_TLS and directly checks that this access returns \"TLS\"; that property access emits ScrapyDeprecationWarning, and the warning text contains the complete export name scrapy.core.downloader.tls.METHOD_TLS.",
+    "score_0_condition": "The candidate test does not access the historical module export through scrapy.core.downloader.tls.METHOD_TLS; does not directly check that the return value is \"TLS\"; the property access does not emit ScrapyDeprecationWarning; the warning category differs; the warning text omits the complete export name scrapy.core.downloader.tls.METHOD_TLS; or the return value and warning come from different property accesses."
+  },
+  {
+    "rubric_id": "SC-J2-007",
+    "direction": "warning_oracle",
+    "score_1_condition": "A scenario with DOWNLOADER_CLIENT_TLS_METHOD set to \"TLSv1.2\" and both new version boundaries omitted captures ScrapyDeprecationWarning, with DOWNLOADER_CLIENT_TLS_METHOD in the warning text; the test directly checks that _ssl_method on the factory produced by the same scenario is SSL.TLSv1_2_METHOD.",
+    "score_0_condition": "The candidate test does not exercise a scenario with the legacy method set to \"TLSv1.2\" and both new boundaries omitted; does not capture ScrapyDeprecationWarning; does not find DOWNLOADER_CLIENT_TLS_METHOD in the warning text; does not directly check the factory's _ssl_method; finds a value other than SSL.TLSv1_2_METHOD in _ssl_method; or obtains the warning and factory state from different scenarios."
+  },
+  {
+    "rubric_id": "SC-J2-008",
+    "direction": "mapping_oracle",
+    "score_1_condition": "In a Twisted 26.4.0 scenario where TWISTED_TLS_LIMITS_OFFBY1 is false and the requested maximum is TLSVersion.TLSv1_2, the test directly checks that lowerMaximumSecurityTo returned by _get_cert_options_version_kwargs is the same TLSVersion.TLSv1_2.",
+    "score_0_condition": "The candidate test does not establish the current Twisted condition and request TLSVersion.TLSv1_2; does not directly check lowerMaximumSecurityTo; omits the mapping; receives a value other than TLSVersion.TLSv1_2; or rewrites a dependency version flag to enter the legacy compatibility branch."
+  },
+  {
+    "rubric_id": "SC-J2-009",
+    "direction": "mapping_oracle",
+    "score_1_condition": "In a Twisted 26.4.0 scenario where TWISTED_TLS_LIMITS_OFFBY1 is false and the requested maximum is TLSVersion.TLSv1_3, the test directly checks that _get_cert_options_version_kwargs returns normally and that lowerMaximumSecurityTo is the same TLSVersion.TLSv1_3.",
+    "score_0_condition": "The candidate test does not establish the current Twisted condition and request TLSVersion.TLSv1_3; does not directly check normal return and lowerMaximumSecurityTo; omits the mapping; receives a value other than TLSVersion.TLSv1_3; accepts an exception; or rewrites a dependency version flag to enter the legacy compatibility branch."
+  },
+  {
+    "rubric_id": "SC-J2-010",
+    "direction": "warning_oracle",
+    "score_1_condition": "The candidate test accesses the historical module export through scrapy.core.downloader.tls.openssl_methods, directly checks that the returned object is a dictionary, and checks that the mapping is exactly {\"TLS\": SSL.SSLv23_METHOD, \"TLSv1.0\": SSL.TLSv1_METHOD, \"TLSv1.1\": SSL.TLSv1_1_METHOD, \"TLSv1.2\": SSL.TLSv1_2_METHOD}; that property access emits ScrapyDeprecationWarning, and the warning text contains the complete export name scrapy.core.downloader.tls.openssl_methods.",
+    "score_0_condition": "The candidate test does not access the historical module export through scrapy.core.downloader.tls.openssl_methods; the returned object is not a dictionary; the mapping omits TLS, TLSv1.0, TLSv1.1, or TLSv1.2; the mapping contains an extra key; an OpenSSL method differs for any protocol key; the property access does not emit ScrapyDeprecationWarning; the warning category differs; the warning text omits the complete export name scrapy.core.downloader.tls.openssl_methods; or the return value and warning come from different property accesses."
+  }
+]

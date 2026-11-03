@@ -1,0 +1,78 @@
+{
+  "schema_version": "unittest-rl-pr-admission-v4",
+  "task_id": "scrapy-scrapy-pr-6546-v082-r3",
+  "stage_id": "S02",
+  "status": "admitted",
+  "repository": "scrapy/scrapy",
+  "repository_url": "https://github.com/scrapy/scrapy",
+  "pr_number": 6546,
+  "pr_url": "https://github.com/scrapy/scrapy/pull/6546",
+  "title": "Add settings for TLS min/max version as a replacement for the TLS method",
+  "author": "wRAR",
+  "merged": true,
+  "merged_at": "2026-06-08T09:54:10Z",
+  "base_sha": "58af57a3ea3a109f05c5b3e9f7b6e1e24adc9834",
+  "head_sha": "6089d0f9fee7df9c891baf4bb0739cd42e7e5f6c",
+  "merge_sha": "d9e2f5fbf7da59ea61595cffea5e3399fb9c3574",
+  "local_base_sha": "5149e2c67993c642a384072ac43157491a3b2052",
+  "local_target_sha": "d9e2f5fbf7da59ea61595cffea5e3399fb9c3574",
+  "local_target_policy": "squash_merge_commit_against_first_parent",
+  "language": "Python",
+  "production_code_changed": true,
+  "production_paths": [
+    "scrapy/core/downloader/contextfactory.py",
+    "scrapy/core/downloader/tls.py",
+    "scrapy/settings/default_settings.py",
+    "scrapy/utils/_deps_compat.py",
+    "scrapy/utils/ssl.py"
+  ],
+  "upstream_test_paths": [
+    "tests/test_core_downloader.py",
+    "tests/test_downloader_handler_httpx.py",
+    "tests/test_downloader_handler_twisted_http11.py",
+    "tests/test_downloader_handler_twisted_http2.py",
+    "tests/test_downloader_handlers_http_base.py"
+  ],
+  "reference_test_paths": [
+    "active/sealed/reference_tests/test_pr6546_tls_contracts.py"
+  ],
+  "reference_test_count": 6,
+  "target_verification": {
+    "command": "PYTHONPATH=target PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -p no:cacheprovider -q target/tests/test_core_downloader.py",
+    "exit_code": 0,
+    "summary": "13 passed, 1 skipped in 0.53s"
+  },
+  "target_reference_verification": {
+    "command": "PYTHONPATH=target PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -p no:cacheprovider -q active/sealed/reference_tests/test_pr6546_tls_contracts.py",
+    "exit_code": 0,
+    "summary": "6 passed on each of 3 runs"
+  },
+  "base_health": {
+    "command": "PYTHONPATH=base PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -p no:cacheprovider -q base/tests/test_core_downloader.py",
+    "exit_code": 0,
+    "summary": "12 passed, 1 skipped in 0.54s"
+  },
+  "base_replay": {
+    "command": "PYTHONPATH=base PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -p no:cacheprovider -q active/sealed/reference_tests/test_pr6546_tls_contracts.py",
+    "exit_code": 1,
+    "summary": "6 failed in 0.14s",
+    "classification": "expected_behaviors_absent"
+  },
+  "criteria": {
+    "merged_python_pr": true,
+    "production_diff_nonempty": true,
+    "target_reference_tests_pass": true,
+    "base_and_target_healthy": true,
+    "base_and_target_distinguishable": true,
+    "candidate_reference_tests_hidden": true
+  },
+  "source_checkout": {
+    "base": "harbor_eval/sources/scrapy-pr-6546-repository/base",
+    "target": "harbor_eval/sources/scrapy-pr-6546-repository/target",
+    "runtime": "harbor_eval/sources/scrapy-pr-6546-repository/.venv"
+  },
+  "source_archives": {
+    "base_sha256": "95583f54e73153631bd448497101a673022f4ff668c393742ead406834732f41",
+    "target_sha256": "b038e2b066e252b30df6409ca9e0e9cc42e6c76fc210f74e722624dfbefb37bb"
+  }
+}

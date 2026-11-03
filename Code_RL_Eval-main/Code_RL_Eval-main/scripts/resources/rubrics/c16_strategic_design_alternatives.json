@@ -1,0 +1,19 @@
+{
+  "version": "2.0",
+  "dimension_id": "C16",
+  "name": "战略性设计与方案权衡",
+  "layer": "univ",
+  "applicable_equivalence_classes": ["E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", "E9", "E10", "E11", "E12"],
+  "description": "评价重构是否采取战略性、投资式设计，而不是只追求最小补丁；重大结构变化应体现对备选方案、长期收益和约束的权衡。",
+  "system_prompt": "C16 不要求每个小改动提交完整设计文档。仅在结构性、跨模块或契约级变化中要求方案权衡证据。",
+  "evaluation_prompt_template": "评估 C16 战略性设计与方案权衡。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 判断是否解决根因并改善整体设计。\n2. 对重大设计选择检查是否考虑合理备选方案。\n3. 区分必要的边界扩展与无关的大规模改写。",
+  "questions": [
+    {"id": "C16.1", "text": "重构是否解决了根因，而不是仅以最小补丁维持当前行为？", "type": "soft", "weight": 1.0, "anchor": "0=增加临时复杂性；1=整体设计得到投资式改善"},
+    {"id": "C16.2", "text": "对于重大结构选择，是否比较过至少一个合理且不同的设计方案？", "type": "soft", "weight": 1.0, "anchor": "0=未经权衡；1=有明确方案比较和取舍"},
+    {"id": "C16.3", "text": "修改范围是否服务于根因解决，而非包含无关重写？", "type": "hard", "weight": 1.0, "anchor": "pass=边界有理由；fail=无关范围扩大"},
+    {"id": "C16.4", "text": "重构是否以抽象或稳定边界为增量，而不是只堆叠当前功能特例？", "type": "soft", "weight": 1.0, "anchor": "0=战术性特例增加；1=形成可复用抽象"},
+    {"id": "C16.5", "text": "设计是否在当前约束下取得了合理的长期收益，而非追求脱离约束的理想方案？", "type": "soft", "weight": 1.0, "anchor": "0=忽略现实约束；1=收益与风险平衡"}
+  ],
+  "aggregation": {"formula": "dim_C16 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)", "hard_constraint_indicator": "H_C16 = product(s_a for a in hard atoms in A^†)", "na_policy": "小型局部改名或机械重构可将 C16.2 标记为 na"},
+  "output_schema": {"type": "object", "required": ["dimension_id", "layer", "atom_scores", "dim_score", "hard_indicator", "summary"], "properties": {"dimension_id": {"const": "C16"}, "layer": {"const": "univ"}, "atom_scores": {"type": "array"}, "dim_score": {"type": "number", "minimum": 0, "maximum": 1}, "hard_indicator": {"type": "number", "enum": [0, 1]}, "critical_failures": {"type": "array"}, "summary": {"type": "string"}}}
+}

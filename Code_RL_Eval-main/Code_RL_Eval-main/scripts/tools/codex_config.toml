@@ -1,0 +1,14 @@
+# Codex CLI 配置：走 mindflow 网关（OpenAI 兼容端点）
+# API Key 通过运行时环境变量 OPENAI_API_KEY 注入
+
+model = "gpt-5.5"
+model_provider = "mindflow"
+
+# 无头运行时跳过审批与沙箱
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+
+[model_providers.mindflow]
+name = "mindflow"
+base_url = "https://ai.mindflow.com.cn/v1"
+env_key = "sk-E1NkPY2XitbjnqKefs1td1r4SXJz4lJFRMarnZLHHuHGN8WS"

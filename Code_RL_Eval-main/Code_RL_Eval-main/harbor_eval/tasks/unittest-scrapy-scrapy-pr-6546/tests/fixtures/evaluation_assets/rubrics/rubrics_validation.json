@@ -1,0 +1,67 @@
+{
+  "schema_version": "unittest-rl-rubrics-validation-v5",
+  "stage_id": "S18",
+  "status": "pass",
+  "language_requirement": "en-US",
+  "required_files": [
+    "j1.json",
+    "j2.json",
+    "j3.json",
+    "j4.json",
+    "j5.json",
+    "rubrics_all.json"
+  ],
+  "source_files": {
+    "j1.json": {
+      "sha256": "f6b31183ba10d962ac989dd33e10383763db6df9a7636b9339805d93d750b7cc",
+      "status": "pass",
+      "rubric_count": 8,
+      "errors": []
+    },
+    "j2.json": {
+      "sha256": "90a6c7a5c6d502749c12ef4168eb075a2c99a398e0f98ea9d905f76ac1a695c6",
+      "status": "pass",
+      "rubric_count": 10,
+      "errors": []
+    },
+    "j3.json": {
+      "sha256": "07f0410f3f6ea4aca3c0aff5b04759a6a5b087490c780bf6b486b23043057f76",
+      "status": "pass",
+      "rubric_count": 5,
+      "errors": []
+    },
+    "j4.json": {
+      "sha256": "eaa13f183c840fdf2ff0d6294886806b7b6f4d4c61b314052c2ef24db99c5bf0",
+      "status": "pass",
+      "rubric_count": 7,
+      "errors": []
+    },
+    "j5.json": {
+      "sha256": "2659dcad984fc26e9a4ae64bb8aa58307f29a65d626034a77b6046175543039e",
+      "status": "pass",
+      "rubric_count": 28,
+      "errors": []
+    },
+    "rubrics_all.json": {
+      "sha256": "cc8a484c6ebfa8072b3e928e48a0c22ce38922afbded77c04ab86e04d950e757",
+      "status": "pass",
+      "rubric_count": 58,
+      "errors": []
+    }
+  },
+  "rubric_count": 58,
+  "dimension_counts": {
+    "SC-J1": 8,
+    "SC-J2": 10,
+    "SC-J3": 5,
+    "SC-J4": 7,
+    "SC-J5": 28
+  },
+  "checks": {
+    "exact_four_field_schema": true,
+    "required_scoring_fields_present": true,
+    "natural_language_fields_are_english": true,
+    "non_english_cjk_content_absent": true
+  },
+  "errors": []
+}

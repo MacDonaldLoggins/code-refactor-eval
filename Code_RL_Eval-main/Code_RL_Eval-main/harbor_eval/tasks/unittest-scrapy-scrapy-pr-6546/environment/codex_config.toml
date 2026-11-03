@@ -1,0 +1,10 @@
+model = "gpt-5.6-sol"
+model_provider = "xxx"
+
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+
+[model_providers.xxx]
+name = "xxx"
+base_url = "https://ai.xxx/v1"
+env_key = "sk-XbQwcie6bpdCvi6bwFbhhT7ptbSHIaoFeLEfI3poYD8jtWTJ"

@@ -1,0 +1,16 @@
+{
+  "schema_version": "unittest-rl-rule-source-v4",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "stage_id": "S01",
+  "status": "pass",
+  "engine": {
+    "name": "unittest-rl-evaluation-engine",
+    "version": "0.10.2",
+    "revision": "engine-revision-016"
+  },
+  "contract_version": "unittest-rl-internal-contract-v39",
+  "rule_revision_id": "rules-revision-017",
+  "rule_path": "active/sealed/rules/unittest-rl-rules.md",
+  "source_path": "harbor_eval/plugins/releases/0.10.2/unittest-rl-evaluation-engine/rules/unittest-rl-rules.md",
+  "source_sha256": "8c17227a4ddc2c1518179e765044ebd318f7d1d7f92a20132d6f68cf9b1147c0"
+}

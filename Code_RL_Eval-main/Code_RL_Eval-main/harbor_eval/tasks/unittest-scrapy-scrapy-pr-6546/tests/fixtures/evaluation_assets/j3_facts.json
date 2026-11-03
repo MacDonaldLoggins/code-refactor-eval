@@ -1,0 +1,70 @@
+{
+  "schema_version": "unittest-rl-j3-facts-v3",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "pr_target_sha": "d9e2f5fbf7da59ea61595cffea5e3399fb9c3574",
+  "stage_id": "S09",
+  "status": "verified",
+  "test_framework": "pytest",
+  "candidate_test_root": "candidate_tests/",
+  "expected_test_groups": [
+    {"group_id": "GROUP-STDLIB-RANGE", "behavior_id": "scrapy.tls.stdlib_version_limits", "purpose": "configured and omitted stdlib TLS bounds"},
+    {"group_id": "GROUP-TWISTED-RANGE", "behavior_id": "scrapy.tls.twisted_version_limits", "purpose": "Twisted conversion and precedence"},
+    {"group_id": "GROUP-INVALID-MIN", "behavior_id": "scrapy.tls.invalid_min_version", "purpose": "minimum-setting rejection"},
+    {"group_id": "GROUP-INVALID-MAX", "behavior_id": "scrapy.tls.invalid_max_version", "purpose": "maximum-setting rejection"},
+    {"group_id": "GROUP-LEGACY", "behavior_id": "scrapy.tls.legacy_api_deprecation", "purpose": "warning-backed compatibility"},
+    {"group_id": "GROUP-TWISTED-TRANSLATION", "behavior_id": "scrapy.tls.twisted_version_limits", "purpose": "current Twisted maximum translation for TLSv1.2 and TLSv1.3"}
+  ],
+  "structural_facts": [
+    {
+      "structure_fact_id": "J3-STRUCT-001",
+      "direction": "behavior_naming",
+      "behavior_ids": ["scrapy.tls.stdlib_version_limits", "scrapy.tls.twisted_version_limits", "scrapy.tls.invalid_min_version", "scrapy.tls.invalid_max_version", "scrapy.tls.legacy_api_deprecation"],
+      "scope": "TLS contract test groups",
+      "expected_condition": "Node IDs identify the backend, setting partition, or compatibility branch.",
+      "verification_method": "candidate AST and collected node IDs"
+    },
+    {
+      "structure_fact_id": "J3-STRUCT-002",
+      "direction": "single_behavior_cohesion",
+      "behavior_ids": ["scrapy.tls.stdlib_version_limits", "scrapy.tls.twisted_version_limits", "scrapy.tls.invalid_min_version", "scrapy.tls.invalid_max_version", "scrapy.tls.legacy_api_deprecation"],
+      "scope": "candidate TLS tests",
+      "expected_condition": "Each test has one primary TLS contract and can fail independently.",
+      "verification_method": "candidate AST and isolated execution"
+    },
+    {
+      "structure_fact_id": "J3-STRUCT-003",
+      "direction": "fixture_understandability",
+      "behavior_ids": ["scrapy.tls.stdlib_version_limits", "scrapy.tls.twisted_version_limits"],
+      "scope": "Settings, crawler, warning, and TLS-version fixtures",
+      "expected_condition": "Configured versions, current-runtime conditions, and expected state are local and explicit.",
+      "verification_method": "candidate AST and fixture/helper graph"
+    },
+    {
+      "structure_fact_id": "J3-STRUCT-004",
+      "direction": "structural_clarity",
+      "behavior_ids": ["scrapy.tls.stdlib_version_limits", "scrapy.tls.twisted_version_limits", "scrapy.tls.invalid_min_version", "scrapy.tls.invalid_max_version", "scrapy.tls.legacy_api_deprecation"],
+      "scope": "candidate_tests/",
+      "expected_condition": "Arrange, real context construction, and public observable assertions are concise and deterministic.",
+      "verification_method": "candidate source review and repeated execution"
+    },
+    {
+      "structure_fact_id": "J3-STRUCT-005",
+      "direction": "no_structural_coupling",
+      "behavior_ids": ["scrapy.tls.stdlib_version_limits", "scrapy.tls.twisted_version_limits", "scrapy.tls.invalid_min_version", "scrapy.tls.invalid_max_version", "scrapy.tls.legacy_api_deprecation"],
+      "scope": "TLS behavior tests",
+      "expected_condition": "Tests avoid source-text inspection, hard-coded implementation shape, network dependence, order dependence, and shared mutable state.",
+      "verification_method": "candidate AST, imports, and stability replay"
+    }
+  ],
+  "direction_counts": {
+    "behavior_naming": 1,
+    "single_behavior_cohesion": 1,
+    "fixture_understandability": 1,
+    "structural_clarity": 1,
+    "no_structural_coupling": 1
+  },
+  "source_policy": {
+    "candidate_data_read": false,
+    "workspace_constraint_source": "S22 pending"
+  }
+}

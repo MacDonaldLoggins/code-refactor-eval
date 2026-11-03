@@ -1,0 +1,7 @@
+{
+  "schema_version": "unittest-rl-reward-config-v5",
+  "reward_version": "reward-v5-fault-joint-e2v2-lambda025-001",
+  "formal_e2_component": "SC-E2-v2",
+  "lambda": 0.25,
+  "formula": "fault-joint-lambda025-v2"
+}

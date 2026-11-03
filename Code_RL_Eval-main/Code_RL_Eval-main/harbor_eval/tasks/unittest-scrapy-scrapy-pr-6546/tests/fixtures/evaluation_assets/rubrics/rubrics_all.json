@@ -1,0 +1,350 @@
+[
+  {
+    "rubric_id": "SC-J1-001",
+    "direction": "responsibility_path",
+    "score_1_condition": "The candidate invokes the production scrapy.utils.ssl._make_ssl_context with explicit min/max settings; within the same test_execution_id, the call arguments record both setting values, the production _get_tls_version_limits calls _get_tls_version_limit separately for min and max, and the outer call returns normally; the Oracle bound to that result in the candidate source is reached within the same test_execution_id.",
+    "score_0_condition": "The candidate does not invoke the production scrapy.utils.ssl._make_ssl_context; or the call arguments omit an explicit min or max; or the same test_execution_id lacks _get_tls_version_limits or either the min or max _get_tls_version_limit call; or the outer call does not return normally; or the corresponding Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-002",
+    "direction": "responsibility_path",
+    "score_1_condition": "The new-version-boundary scenario invokes the production _load_context_factory_from_settings; within the same test_execution_id, the call arguments record crawler Settings, the production _ScrapyClientContextFactory.from_crawler calls _get_cert_options_version_kwargs, and the outer loader returns normally; the Oracle bound to that factory state in the candidate source is reached within the same test_execution_id.",
+    "score_0_condition": "The candidate does not invoke the production _load_context_factory_from_settings; or the call arguments omit the new version boundaries; or the same test_execution_id lacks _ScrapyClientContextFactory.from_crawler or _get_cert_options_version_kwargs; or the outer loader does not return normally; or the corresponding Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-003",
+    "direction": "responsibility_path",
+    "score_1_condition": "An invalid DOWNLOAD_TLS_MIN_VERSION enters through a production HTTPS-context construction call; within the same test_execution_id, the call arguments record that setting value, the setting_name of the production _get_tls_version_limit is DOWNLOAD_TLS_MIN_VERSION, and that call ends with ValueError; pytest.raises and the exception check in the candidate source are reached within the same test_execution_id.",
+    "score_0_condition": "The invalid DOWNLOAD_TLS_MIN_VERSION is not exercised through a production HTTPS-context construction call; or the call arguments omit that setting value; or the same test_execution_id lacks the production _get_tls_version_limit with the corresponding setting_name; or that call does not end with ValueError; or the corresponding exception Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-004",
+    "direction": "responsibility_path",
+    "score_1_condition": "Access to a historical module export invokes the production scrapy.core.downloader.tls.__getattr__; within the same test_execution_id, the arguments record the export name, active_call_ids relates the warning invocation, and __getattr__ returns normally; pytest.warns and the compatibility-result Oracle in the candidate source are reached within the same test_execution_id.",
+    "score_0_condition": "The candidate does not invoke the production scrapy.core.downloader.tls.__getattr__; or the arguments omit the historical export name; or the same test_execution_id has no warning invocation related to that call; or __getattr__ does not return normally; or the corresponding warning or result Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-005",
+    "direction": "responsibility_path",
+    "score_1_condition": "A scenario with a non-default DOWNLOADER_CLIENT_TLS_METHOD and both new boundaries omitted invokes the production _load_context_factory_from_settings; within the same test_execution_id, the arguments record the legacy method setting, the warning invocation and _openssl_methods.__getitem__ are related to that loader, and the loader returns normally; pytest.warns and the factory-state Oracle in the candidate source are reached within the same test_execution_id.",
+    "score_0_condition": "The legacy-method scenario does not invoke the production _load_context_factory_from_settings; or the arguments do not record both the non-default legacy method and omission of both new boundaries; or the same test_execution_id lacks the related warning invocation or _openssl_methods.__getitem__; or the loader does not return normally; or the corresponding warning or state Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-006",
+    "direction": "responsibility_path",
+    "score_1_condition": "Under Twisted 26.4.0, a TLSv1.2 maximum invokes the production _get_cert_options_version_kwargs; within the same test_execution_id, the arguments record TWISTED_TLS_LIMITS_OFFBY1=false and TLSv1.2, the outer call returns normally; the lowerMaximumSecurityTo Oracle in the candidate source is reached within the same test_execution_id.",
+    "score_0_condition": "Under the current Twisted condition, the production _get_cert_options_version_kwargs is not invoked; or the arguments omit TWISTED_TLS_LIMITS_OFFBY1=false or the TLSv1.2 maximum; or the outer call does not return normally; or the corresponding mapping Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-007",
+    "direction": "responsibility_path",
+    "score_1_condition": "An invalid DOWNLOAD_TLS_MAX_VERSION enters through a production HTTPS-context construction call; within the same test_execution_id, the call arguments record that setting value, the setting_name of the production _get_tls_version_limit is DOWNLOAD_TLS_MAX_VERSION, and that call ends with ValueError; pytest.raises and the exception check in the candidate source are reached within the same test_execution_id.",
+    "score_0_condition": "The invalid DOWNLOAD_TLS_MAX_VERSION is not exercised through a production HTTPS-context construction call; or the call arguments omit that setting value; or the same test_execution_id lacks the production _get_tls_version_limit with the corresponding setting_name; or that call does not end with ValueError; or the corresponding exception Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-008",
+    "direction": "responsibility_path",
+    "score_1_condition": "Under Twisted 26.4.0, a TLSv1.3 maximum invokes the production _get_cert_options_version_kwargs; within the same test_execution_id, the arguments record TWISTED_TLS_LIMITS_OFFBY1=false and TLSv1.3, the outer call returns normally; the lowerMaximumSecurityTo Oracle in the candidate source is reached within the same test_execution_id.",
+    "score_0_condition": "Under the current Twisted condition, the production _get_cert_options_version_kwargs is not invoked; or the arguments omit TWISTED_TLS_LIMITS_OFFBY1=false or the TLSv1.3 maximum; or the outer call does not return normally; or the corresponding mapping Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J2-001",
+    "direction": "state_oracle",
+    "score_1_condition": "The candidate test directly checks that minimum_version on the target SSLContext instance is ssl.TLSVersion.TLSv1_2 and maximum_version is ssl.TLSVersion.TLSv1_3; both property checks are bound to the instance produced by the same configured-range scenario.",
+    "score_0_condition": "The candidate test does not obtain the target SSLContext instance produced by the configured-range scenario; does not directly check minimum_version or maximum_version; does not compare the properties to ssl.TLSVersion.TLSv1_2 and ssl.TLSVersion.TLSv1_3; swaps the two boundaries; or reads the two properties from different instances."
+  },
+  {
+    "rubric_id": "SC-J2-002",
+    "direction": "default_oracle",
+    "score_1_condition": "The scenario that omits DOWNLOAD_TLS_MIN_VERSION and DOWNLOAD_TLS_MAX_VERSION directly checks that the target SSLContext uses ssl.PROTOCOL_TLS_CLIENT and compares minimum_version and maximum_version, property by property, with the corresponding defaults of a newly created ssl.PROTOCOL_TLS_CLIENT context in the same runtime.",
+    "score_0_condition": "The candidate test does not exercise a scenario that omits both version boundaries; checks only that a context exists; does not check ssl.PROTOCOL_TLS_CLIENT; does not compare the runtime defaults of minimum_version or maximum_version; or interprets omitted boundaries as one fixed legacy protocol."
+  },
+  {
+    "rubric_id": "SC-J2-003",
+    "direction": "state_oracle",
+    "score_1_condition": "The candidate directly checks that tls_min_version on the target Twisted factory is TLSVersion.TLSv1_2, tls_max_version is TLSVersion.TLSv1_3, and _ssl_method is None; all three checks are bound to the same scenario that configures both new boundaries.",
+    "score_0_condition": "The candidate does not obtain the target Twisted factory; or does not directly check tls_min_version, tls_max_version, or _ssl_method; or a boundary remains a string or None; or a boundary constant is wrong or swapped; or _ssl_method still holds the legacy method; or the three state checks come from different factories."
+  },
+  {
+    "rubric_id": "SC-J2-004",
+    "direction": "error_oracle",
+    "score_1_condition": "When DOWNLOAD_TLS_MIN_VERSION uses the invalid value declared by the candidate, the candidate test captures ValueError and directly checks that the exception text contains both DOWNLOAD_TLS_MIN_VERSION and that invalid value.",
+    "score_0_condition": "The candidate test does not use an invalid DOWNLOAD_TLS_MIN_VERSION; does not capture ValueError; does not find DOWNLOAD_TLS_MIN_VERSION in the exception text; does not find the invalid value passed by the candidate in the exception text; or checks an exception produced by the invalid-maximum scenario."
+  },
+  {
+    "rubric_id": "SC-J2-005",
+    "direction": "error_oracle",
+    "score_1_condition": "When DOWNLOAD_TLS_MAX_VERSION uses the invalid value declared by the candidate, the candidate test captures ValueError and directly checks that the exception text contains both DOWNLOAD_TLS_MAX_VERSION and that invalid value.",
+    "score_0_condition": "The candidate test does not use an invalid DOWNLOAD_TLS_MAX_VERSION; does not capture ValueError; does not find DOWNLOAD_TLS_MAX_VERSION in the exception text; does not find the invalid value passed by the candidate in the exception text; or checks an exception produced by the invalid-minimum scenario."
+  },
+  {
+    "rubric_id": "SC-J2-006",
+    "direction": "warning_oracle",
+    "score_1_condition": "The candidate test accesses the historical module export through scrapy.core.downloader.tls.METHOD_TLS and directly checks that this access returns \"TLS\"; that property access emits ScrapyDeprecationWarning, and the warning text contains the complete export name scrapy.core.downloader.tls.METHOD_TLS.",
+    "score_0_condition": "The candidate test does not access the historical module export through scrapy.core.downloader.tls.METHOD_TLS; does not directly check that the return value is \"TLS\"; the property access does not emit ScrapyDeprecationWarning; the warning category differs; the warning text omits the complete export name scrapy.core.downloader.tls.METHOD_TLS; or the return value and warning come from different property accesses."
+  },
+  {
+    "rubric_id": "SC-J2-007",
+    "direction": "warning_oracle",
+    "score_1_condition": "A scenario with DOWNLOADER_CLIENT_TLS_METHOD set to \"TLSv1.2\" and both new version boundaries omitted captures ScrapyDeprecationWarning, with DOWNLOADER_CLIENT_TLS_METHOD in the warning text; the test directly checks that _ssl_method on the factory produced by the same scenario is SSL.TLSv1_2_METHOD.",
+    "score_0_condition": "The candidate test does not exercise a scenario with the legacy method set to \"TLSv1.2\" and both new boundaries omitted; does not capture ScrapyDeprecationWarning; does not find DOWNLOADER_CLIENT_TLS_METHOD in the warning text; does not directly check the factory's _ssl_method; finds a value other than SSL.TLSv1_2_METHOD in _ssl_method; or obtains the warning and factory state from different scenarios."
+  },
+  {
+    "rubric_id": "SC-J2-008",
+    "direction": "mapping_oracle",
+    "score_1_condition": "In a Twisted 26.4.0 scenario where TWISTED_TLS_LIMITS_OFFBY1 is false and the requested maximum is TLSVersion.TLSv1_2, the test directly checks that lowerMaximumSecurityTo returned by _get_cert_options_version_kwargs is the same TLSVersion.TLSv1_2.",
+    "score_0_condition": "The candidate test does not establish the current Twisted condition and request TLSVersion.TLSv1_2; does not directly check lowerMaximumSecurityTo; omits the mapping; receives a value other than TLSVersion.TLSv1_2; or rewrites a dependency version flag to enter the legacy compatibility branch."
+  },
+  {
+    "rubric_id": "SC-J2-009",
+    "direction": "mapping_oracle",
+    "score_1_condition": "In a Twisted 26.4.0 scenario where TWISTED_TLS_LIMITS_OFFBY1 is false and the requested maximum is TLSVersion.TLSv1_3, the test directly checks that _get_cert_options_version_kwargs returns normally and that lowerMaximumSecurityTo is the same TLSVersion.TLSv1_3.",
+    "score_0_condition": "The candidate test does not establish the current Twisted condition and request TLSVersion.TLSv1_3; does not directly check normal return and lowerMaximumSecurityTo; omits the mapping; receives a value other than TLSVersion.TLSv1_3; accepts an exception; or rewrites a dependency version flag to enter the legacy compatibility branch."
+  },
+  {
+    "rubric_id": "SC-J2-010",
+    "direction": "warning_oracle",
+    "score_1_condition": "The candidate test accesses the historical module export through scrapy.core.downloader.tls.openssl_methods, directly checks that the returned object is a dictionary, and checks that the mapping is exactly {\"TLS\": SSL.SSLv23_METHOD, \"TLSv1.0\": SSL.TLSv1_METHOD, \"TLSv1.1\": SSL.TLSv1_1_METHOD, \"TLSv1.2\": SSL.TLSv1_2_METHOD}; that property access emits ScrapyDeprecationWarning, and the warning text contains the complete export name scrapy.core.downloader.tls.openssl_methods.",
+    "score_0_condition": "The candidate test does not access the historical module export through scrapy.core.downloader.tls.openssl_methods; the returned object is not a dictionary; the mapping omits TLS, TLSv1.0, TLSv1.1, or TLSv1.2; the mapping contains an extra key; an OpenSSL method differs for any protocol key; the property access does not emit ScrapyDeprecationWarning; the warning category differs; the warning text omits the complete export name scrapy.core.downloader.tls.openssl_methods; or the return value and warning come from different property accesses."
+  },
+  {
+    "rubric_id": "SC-J3-001",
+    "direction": "behavior_naming",
+    "score_1_condition": "For every successfully collected TLS node, its function name and complete parameter identifier identify the backend or entry point and identify the corresponding partition among configured boundaries, omitted boundaries, invalid min, invalid max, historical compatibility, and current Twisted maximum-version conversion.",
+    "score_0_condition": "The candidate has no successfully collected TLS node; or a node's function name and complete parameter identifier do not identify the backend or entry point; or they do not identify the corresponding setting or conversion partition; or the node name describes only an internal function without expressing the scenario."
+  },
+  {
+    "rubric_id": "SC-J3-002",
+    "direction": "single_behavior_cohesion",
+    "score_1_condition": "Every successfully collected complete TLS nodeid belongs to one primary contract; independent contracts are carried by different nodes or complete parameter instances, while data values that share an action and Oracle may be carried by parameter instances.",
+    "score_0_condition": "A complete nodeid carries multiple independent primary contracts; or different contracts cannot be executed and attributed separately; or independent partitions collapse into executions that cannot be distinguished by their complete nodeids."
+  },
+  {
+    "rubric_id": "SC-J3-003",
+    "direction": "fixture_understandability",
+    "score_1_condition": "Version settings, the legacy method setting, dependency-version conditions, and expected states can be read from the test body, parameter values, or directly referenced fixtures; values modified by a fixture have clear names at their use sites.",
+    "score_0_condition": "A relevant setting, dependency condition, or expected state cannot be read from the test body, parameter values, or a directly referenced fixture; or a key fixture modification is used under a name with unclear meaning."
+  },
+  {
+    "rubric_id": "SC-J3-004",
+    "direction": "structural_clarity",
+    "score_1_condition": "Every TLS scenario has identifiable input preparation, one target construction or call, and a result check bound to that target; its control flow does not use broad OR conditions, environment branches, or swallowed target exceptions to accept incompatible outcomes.",
+    "score_0_condition": "A scenario lacks identifiable input preparation; lacks a target construction or call; has a result check that is not bound to the target; executes multiple indistinguishable target actions; or uses broad OR conditions, environment branches, or swallowed target exceptions so that incompatible outcomes can all pass."
+  },
+  {
+    "rubric_id": "SC-J3-005",
+    "direction": "no_structural_coupling",
+    "score_1_condition": "The TLS tests do not read production source, use inspect.getsource, change assertions based on production-file hashes or git differences, access an external network, depend on execution order, or depend on mutable state shared across tests; each complete node produces the same result when run alone and when the full group is run repeatedly.",
+    "score_0_condition": "A TLS test reads production source, calls inspect.getsource, changes assertions based on production-file hashes or git differences, accesses an external network, depends on another test running first, or depends on mutable state shared across tests; or a complete node produces different results when run alone and when the full group is run repeatedly."
+  },
+  {
+    "rubric_id": "SC-J4-001",
+    "direction": "configured_vs_omitted_bounds",
+    "score_1_condition": "The stdlib scenarios for explicitly configured boundaries and for both boundaries omitted use different complete nodes or parameter instances; each instance declares its input partition and checks the version state of its constructed SSLContext.",
+    "score_0_condition": "The explicitly configured or omitted-boundary partition lacks an independent complete instance; the inputs of the two partitions cannot be distinguished; an instance lacks its own SSLContext state check; or the result from one partition represents the other partition."
+  },
+  {
+    "rubric_id": "SC-J4-002",
+    "direction": "stdlib_vs_twisted_backend",
+    "score_1_condition": "The stdlib SSLContext and Twisted factory scenarios use different complete nodes or parameter instances; each instance declares its backend, the stdlib instance checks SSLContext version properties, and the Twisted instance checks the factory's version and method fields.",
+    "score_0_condition": "The stdlib or Twisted backend lacks an independent complete instance; the two backends cannot be distinguished from their inputs or observed objects; the stdlib instance does not check SSLContext version properties; the Twisted instance does not check factory version and method fields; or the result from one backend represents the other backend."
+  },
+  {
+    "rubric_id": "SC-J4-003",
+    "direction": "invalid_min_vs_invalid_max",
+    "score_1_condition": "Invalid min and invalid max use different complete nodes or parameter instances; each instance declares the corresponding setting name and rejected value and checks its own endpoint-specific exception.",
+    "score_0_condition": "Invalid min or invalid max lacks an independent complete instance; the complete parameter identifiers do not distinguish the two endpoints; an instance lacks its own setting name, rejected value, and endpoint-specific exception check; or the result from one endpoint represents the other endpoint."
+  },
+  {
+    "rubric_id": "SC-J4-004",
+    "direction": "module_api_vs_setting",
+    "score_1_condition": "The historical module export and non-default legacy-method setting use different complete nodes or parameter instances; the export instance checks the compatibility result and warning from property access, while the setting instance checks the loaded method state of the factory and the migration warning.",
+    "score_0_condition": "The module export or legacy-method setting lacks an independent complete instance; the inputs of the two paths cannot be distinguished; an instance lacks its own compatibility result and warning checks; or the result from one path represents the other path."
+  },
+  {
+    "rubric_id": "SC-J4-005",
+    "direction": "factory_range_vs_direct_maximum_translation",
+    "score_1_condition": "Twisted factory boundary state and current-Twisted maximum version translation use different complete nodes or parameter instances; the factory instance checks tls_min_version, tls_max_version, and legacy-method precedence, while the translation instances separately check lowerMaximumSecurityTo for TLSv1.2 or TLSv1.3.",
+    "score_0_condition": "The factory-state or maximum-version translation branch lacks an independent complete instance; the translation instance does not establish the current Twisted condition; an instance lacks its own result check; or the factory-state result represents the maximum-version mapping result."
+  },
+  {
+    "rubric_id": "SC-J4-006",
+    "direction": "valid_range_vs_invalid_min",
+    "score_1_condition": "A valid stdlib range and invalid min use different complete nodes or parameter instances; the valid instance checks the state of the constructed SSLContext, while the invalid instance checks the ValueError produced by context construction.",
+    "score_0_condition": "The valid range or invalid min lacks an independent complete instance; the inputs of the two partitions cannot be distinguished; an instance lacks its own successful-state or failure-exception check; or the result from one partition represents the other partition."
+  },
+  {
+    "rubric_id": "SC-J4-007",
+    "direction": "new_bounds_vs_legacy_method",
+    "score_1_condition": "A scenario that configures new boundaries together with the legacy method and a scenario that omits the new boundaries while configuring only a non-default legacy method use different complete nodes or parameter instances; the former checks the state showing new-boundary precedence, while the latter checks the compatible legacy-method state and migration warning.",
+    "score_0_condition": "The new-boundary-precedence or legacy-method-only compatibility scenario lacks an independent complete instance; the two configuration partitions cannot be distinguished; the former does not check the new-boundary-precedence state; the latter does not check the compatible legacy-method state or migration warning; or the result from one configuration represents the other configuration."
+  },
+  {
+    "rubric_id": "SC-J5-001",
+    "direction": "failure_location",
+    "score_1_condition": "For the stdlib TLS version-limits behavior in `_make_ssl_context`, explicit `DOWNLOAD_TLS_MIN_VERSION` and `DOWNLOAD_TLS_MAX_VERSION` must become the corresponding `SSLContext.minimum_version` and `SSLContext.maximum_version`: Replay output directly provides the complete node identifier of the failing candidate test, the candidate test file path, and the assertion location that checks SSLContext minimum_version or maximum_version.",
+    "score_0_condition": "For the stdlib TLS version-limits behavior in `_make_ssl_context`, explicit `DOWNLOAD_TLS_MIN_VERSION` and `DOWNLOAD_TLS_MAX_VERSION` must become the corresponding `SSLContext.minimum_version` and `SSLContext.maximum_version`: Replay output does not provide the complete candidate-test node identifier; does not provide the candidate test file path; does not provide the assertion location that checks SSLContext version boundaries; or identifies an assertion that is not in the same failure record as the failing node."
+  },
+  {
+    "rubric_id": "SC-J5-002",
+    "direction": "expected_actual_visible",
+    "score_1_condition": "For the stdlib TLS version-limits behavior in `_make_ssl_context`, explicit `DOWNLOAD_TLS_MIN_VERSION` and `DOWNLOAD_TLS_MAX_VERSION` must become the corresponding `SSLContext.minimum_version` and `SSLContext.maximum_version`: Replay output explicitly pairs expected and actual values for the minimum_version or maximum_version assertion that actually failed; if one failure record presents both boundaries, the two boundaries are distinguished item by item. When the candidate actually fails on maximum_version, it need not create an additional difference for an unfailed minimum_version.",
+    "score_0_condition": "For the stdlib TLS version-limits behavior in `_make_ssl_context`, explicit `DOWNLOAD_TLS_MIN_VERSION` and `DOWNLOAD_TLS_MAX_VERSION` must become the corresponding `SSLContext.minimum_version` and `SSLContext.maximum_version`: The failure has an actual boundary-assertion failure but does not explicitly pair expected and actual; expected and actual appear only in text that cannot be assigned to a specific boundary; or the difference cannot be identified as minimum_version or maximum_version."
+  },
+  {
+    "rubric_id": "SC-J5-003",
+    "direction": "input_context",
+    "score_1_condition": "For the stdlib TLS version-limits behavior in `_make_ssl_context`, explicit `DOWNLOAD_TLS_MIN_VERSION` and `DOWNLOAD_TLS_MAX_VERSION` must become the corresponding `SSLContext.minimum_version` and `SSLContext.maximum_version`: The input section, complete parameter identifier, or call arguments in the failure record directly provide the actual DOWNLOAD_TLS_MIN_VERSION and DOWNLOAD_TLS_MAX_VERSION values.",
+    "score_0_condition": "For the stdlib TLS version-limits behavior in `_make_ssl_context`, explicit `DOWNLOAD_TLS_MIN_VERSION` and `DOWNLOAD_TLS_MAX_VERSION` must become the corresponding `SSLContext.minimum_version` and `SSLContext.maximum_version`: The failure record's input source omits the actual DOWNLOAD_TLS_MIN_VERSION or DOWNLOAD_TLS_MAX_VERSION value; either value can only be inferred from expected text; or the minimum and maximum settings cannot be distinguished."
+  },
+  {
+    "rubric_id": "SC-J5-004",
+    "direction": "no_cascade_noise",
+    "score_1_condition": "For the stdlib TLS version-limits behavior in `_make_ssl_context`, explicit `DOWNLOAD_TLS_MIN_VERSION` and `DOWNLOAD_TLS_MAX_VERSION` must become the corresponding `SSLContext.minimum_version` and `SSLContext.maximum_version`: Every candidate failure in each replay belongs to stdlib SSLContext version-range application.",
+    "score_0_condition": "For the stdlib TLS version-limits behavior in `_make_ssl_context`, explicit `DOWNLOAD_TLS_MIN_VERSION` and `DOWNLOAD_TLS_MAX_VERSION` must become the corresponding `SSLContext.minimum_version` and `SSLContext.maximum_version`: A replay includes a candidate failure involving the Twisted backend, invalid-setting diagnostics, a deprecation warning, legacy compatibility, or anything else outside stdlib SSLContext version-range application."
+  },
+  {
+    "rubric_id": "SC-J5-005",
+    "direction": "failure_location",
+    "score_1_condition": "For the Twisted TLS version-limits behavior in `_load_context_factory_from_settings`, an explicit TLS range must populate the factory minimum and maximum versions and clear the legacy method: Replay output directly provides the complete node identifier of the failing candidate test, the candidate test file path, and the assertion location that checks tls_min_version, tls_max_version, or _ssl_method on the Twisted factory.",
+    "score_0_condition": "For the Twisted TLS version-limits behavior in `_load_context_factory_from_settings`, an explicit TLS range must populate the factory minimum and maximum versions and clear the legacy method: Replay output does not provide the complete candidate-test node identifier; does not provide the candidate test file path; does not provide the assertion location that checks the Twisted factory's version or method state; or identifies an assertion that is not in the same failure record as the failing node."
+  },
+  {
+    "rubric_id": "SC-J5-006",
+    "direction": "expected_actual_visible",
+    "score_1_condition": "For the Twisted TLS version-limits behavior in `_load_context_factory_from_settings`, an explicit TLS range must populate the factory minimum and maximum versions and clear the legacy method: Replay output separately presents the expected and actual states of tls_min_version, tls_max_version, and _ssl_method and explicitly labels the expected and actual value for each field.",
+    "score_0_condition": "For the Twisted TLS version-limits behavior in `_load_context_factory_from_settings`, an explicit TLS range must populate the factory minimum and maximum versions and clear the legacy method: Replay output omits the expected state of tls_min_version, tls_max_version, or _ssl_method; omits a corresponding actual state; does not label expected and actual values explicitly; or does not make each of the three field differences individually identifiable."
+  },
+  {
+    "rubric_id": "SC-J5-007",
+    "direction": "input_context",
+    "score_1_condition": "For the Twisted TLS version-limits behavior in `_load_context_factory_from_settings`, an explicit TLS range must populate the factory minimum and maximum versions and clear the legacy method: The input section, complete parameter identifier, or call arguments in the failure record directly provide the actual DOWNLOAD_TLS_MIN_VERSION, DOWNLOAD_TLS_MAX_VERSION, and DOWNLOADER_CLIENT_TLS_METHOD values.",
+    "score_0_condition": "For the Twisted TLS version-limits behavior in `_load_context_factory_from_settings`, an explicit TLS range must populate the factory minimum and maximum versions and clear the legacy method: The failure record's input source omits the actual value of any of the three settings; the setting values can only be inferred from expected text; or the input partition combining the new version range with the legacy method cannot be identified."
+  },
+  {
+    "rubric_id": "SC-J5-008",
+    "direction": "no_cascade_noise",
+    "score_1_condition": "For the Twisted TLS version-limits behavior in `_load_context_factory_from_settings`, an explicit TLS range must populate the factory minimum and maximum versions and clear the legacy method: Every candidate failure in each replay belongs to the Twisted factory version range or new-boundary precedence.",
+    "score_0_condition": "For the Twisted TLS version-limits behavior in `_load_context_factory_from_settings`, an explicit TLS range must populate the factory minimum and maximum versions and clear the legacy method: A replay includes a candidate failure involving a stdlib context, invalid-setting diagnostics, a module-export warning, legacy maximum-version compensation, or anything else outside the Twisted factory version range and new-boundary precedence."
+  },
+  {
+    "rubric_id": "SC-J5-009",
+    "direction": "failure_location",
+    "score_1_condition": "For the invalid `DOWNLOAD_TLS_MIN_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: Replay output for the invalid-minimum diagnostic fault directly provides the complete node identifier of the failing candidate test, the candidate test file path, and the assertion location that checks the DOWNLOAD_TLS_MIN_VERSION diagnostic.",
+    "score_0_condition": "For the invalid `DOWNLOAD_TLS_MIN_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: Replay output does not provide the complete candidate-test node identifier; does not provide the candidate test file path; does not provide the assertion location that checks the DOWNLOAD_TLS_MIN_VERSION diagnostic; or identifies an assertion that is not in the same failure record as the failing node."
+  },
+  {
+    "rubric_id": "SC-J5-010",
+    "direction": "expected_actual_visible",
+    "score_1_condition": "For the invalid `DOWNLOAD_TLS_MIN_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: Replay output clearly distinguishes the expected diagnostic from the actual diagnostic; the expected diagnostic contains DOWNLOAD_TLS_MIN_VERSION and the rejected value used by this execution, while the actual diagnostic presents the generic error text produced by the faulty program.",
+    "score_0_condition": "For the invalid `DOWNLOAD_TLS_MIN_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: Replay output does not present the expected diagnostic; does not present the actual diagnostic; does not label the expected and actual text explicitly; omits DOWNLOAD_TLS_MIN_VERSION from the expected diagnostic; or omits the rejected value used by this execution from the expected diagnostic."
+  },
+  {
+    "rubric_id": "SC-J5-011",
+    "direction": "input_context",
+    "score_1_condition": "For the invalid `DOWNLOAD_TLS_MIN_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: The input section, complete parameter identifier, call arguments, or a candidate source line or attribute-access record associated with the failing node in the failure record directly provide DOWNLOAD_TLS_MIN_VERSION and the rejected value used by this execution; expected diagnostic text alone cannot prove input context.",
+    "score_0_condition": "For the invalid `DOWNLOAD_TLS_MIN_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: The failure record and candidate source omit DOWNLOAD_TLS_MIN_VERSION or the rejected value; the setting name or value can only be inferred from expected diagnostic text; or the input belongs to the DOWNLOAD_TLS_MAX_VERSION partition."
+  },
+  {
+    "rubric_id": "SC-J5-012",
+    "direction": "no_cascade_noise",
+    "score_1_condition": "For the invalid `DOWNLOAD_TLS_MIN_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: Every candidate failure in each replay belongs to the setting-specific diagnostic for an invalid DOWNLOAD_TLS_MIN_VERSION.",
+    "score_0_condition": "For the invalid `DOWNLOAD_TLS_MIN_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: A replay includes a candidate failure involving a valid range, invalid max, backend conversion, a deprecation warning, legacy compatibility, or anything else outside the invalid DOWNLOAD_TLS_MIN_VERSION diagnostic."
+  },
+  {
+    "rubric_id": "SC-J5-013",
+    "direction": "failure_location",
+    "score_1_condition": "For historical exports from the `scrapy.core.downloader.tls` module, each compatibility access must emit `ScrapyDeprecationWarning` while preserving the old value: Replay output for the module-export warning fault directly provides the complete node identifier of the failing candidate test, the candidate test file path, and the assertion location that checks the historical module-export warning.",
+    "score_0_condition": "For historical exports from the `scrapy.core.downloader.tls` module, each compatibility access must emit `ScrapyDeprecationWarning` while preserving the old value: Replay output does not provide the complete candidate-test node identifier; does not provide the candidate test file path; does not provide the assertion location that checks the historical module-export warning; or identifies an assertion that is not in the same failure record as the failing node."
+  },
+  {
+    "rubric_id": "SC-J5-014",
+    "direction": "expected_actual_visible",
+    "score_1_condition": "For historical exports from the `scrapy.core.downloader.tls` module, each compatibility access must emit `ScrapyDeprecationWarning` while preserving the old value: The same failure record explicitly identifies the expected ScrapyDeprecationWarning and the actual uncaptured-warning state, so expected and actual can be distinguished directly.",
+    "score_0_condition": "For historical exports from the `scrapy.core.downloader.tls` module, each compatibility access must emit `ScrapyDeprecationWarning` while preserving the old value: The failure record omits the expected ScrapyDeprecationWarning; omits the actual uncaptured-warning state; or does not explicitly label expected and actual."
+  },
+  {
+    "rubric_id": "SC-J5-015",
+    "direction": "input_context",
+    "score_1_condition": "For historical exports from the `scrapy.core.downloader.tls` module, each compatibility access must emit `ScrapyDeprecationWarning` while preserving the old value: The complete parameter identifier, failed source line, or attribute-access record corresponding to the failing node in the failure record directly provides the complete name of the historical module export actually accessed; candidate source may provide that provenance through an explicit module import and the actual attribute name on the same failing node, but may not rely only on expected warning text.",
+    "score_0_condition": "For historical exports from the `scrapy.core.downloader.tls` module, each compatibility access must emit `ScrapyDeprecationWarning` while preserving the old value: Neither the failure record nor the corresponding candidate source provides the complete name of the historical module export; only its module is given without binding it to the actual attribute access; the export name appears only in expected warning text; or the input belongs to the legacy-method setting path."
+  },
+  {
+    "rubric_id": "SC-J5-016",
+    "direction": "no_cascade_noise",
+    "score_1_condition": "For historical exports from the `scrapy.core.downloader.tls` module, each compatibility access must emit `ScrapyDeprecationWarning` while preserving the old value: Every candidate failure in each replay concerns a missing named warning for a historical module export.",
+    "score_0_condition": "For historical exports from the `scrapy.core.downloader.tls` module, each compatibility access must emit `ScrapyDeprecationWarning` while preserving the old value: A replay includes a candidate failure involving the compatibility return value, factory construction, TLS boundary state, or anything else outside the historical module-export warning."
+  },
+  {
+    "rubric_id": "SC-J5-017",
+    "direction": "failure_location",
+    "score_1_condition": "For current Twisted maximum translation in `_get_cert_options_version_kwargs`, each requested maximum—TLSv1.2 or TLSv1.3—must be passed unchanged as the corresponding `lowerMaximumSecurityTo` value: Replay output directly provides the complete node identifier of the failing candidate test, the candidate test file path, and the assertion location that checks the `lowerMaximumSecurityTo` mapping for the corresponding TLSv1.2 or TLSv1.3 partition.",
+    "score_0_condition": "For current Twisted maximum translation in `_get_cert_options_version_kwargs`, each requested maximum—TLSv1.2 or TLSv1.3—must be passed unchanged as the corresponding `lowerMaximumSecurityTo` value: Replay output omits the complete candidate-test node identifier, candidate test file path, or the assertion location that checks the `lowerMaximumSecurityTo` mapping; the location cannot be matched to the TLSv1.2 or TLSv1.3 partition that actually ran; or the identified assertion is not in the same failure record as the failing node."
+  },
+  {
+    "rubric_id": "SC-J5-018",
+    "direction": "expected_actual_visible",
+    "score_1_condition": "For current Twisted maximum translation in `_get_cert_options_version_kwargs`, each requested maximum—TLSv1.2 or TLSv1.3—must be passed unchanged as the corresponding `lowerMaximumSecurityTo` value: Replay output identifies whether the executed partition used a TLSv1.2 or TLSv1.3 maximum and clearly distinguishes the expected `lowerMaximumSecurityTo` value, equal to the requested maximum, from the actual missing or incorrect mapping.",
+    "score_0_condition": "For current Twisted maximum translation in `_get_cert_options_version_kwargs`, each requested maximum—TLSv1.2 or TLSv1.3—must be passed unchanged as the corresponding `lowerMaximumSecurityTo` value: Replay output does not identify the TLSv1.2 or TLSv1.3 maximum-version partition; omits the expected `lowerMaximumSecurityTo` value, which should equal the requested maximum; omits the actual mapping state; or does not distinguish expected and actual results."
+  },
+  {
+    "rubric_id": "SC-J5-019",
+    "direction": "input_context",
+    "score_1_condition": "For current Twisted maximum translation in `_get_cert_options_version_kwargs`, each requested maximum—TLSv1.2 or TLSv1.3—must be passed unchanged as the corresponding `lowerMaximumSecurityTo` value: Given this frozen execution-profile precondition, the input section, complete parameter identifier, or call arguments in the failure record directly provide the requested TLSv1.2 or TLSv1.3 maximum and identify the corresponding partition; the candidate failure log need not repeat that profile precondition.",
+    "score_0_condition": "For current Twisted maximum translation in `_get_cert_options_version_kwargs`, each requested maximum—TLSv1.2 or TLSv1.3—must be passed unchanged as the corresponding `lowerMaximumSecurityTo` value: The failure record does not directly provide the requested TLSv1.2 or TLSv1.3 maximum; the maximum can only be inferred from expected text; or the TLSv1.2 and TLSv1.3 partitions cannot be distinguished."
+  },
+  {
+    "rubric_id": "SC-J5-020",
+    "direction": "no_cascade_noise",
+    "score_1_condition": "For current Twisted maximum translation in `_get_cert_options_version_kwargs`, each requested maximum—TLSv1.2 or TLSv1.3—must be passed unchanged as the corresponding `lowerMaximumSecurityTo` value: Every candidate failure in each replay belongs to the current Twisted maximum-version mapping behavior.",
+    "score_0_condition": "For current Twisted maximum translation in `_get_cert_options_version_kwargs`, each requested maximum—TLSv1.2 or TLSv1.3—must be passed unchanged as the corresponding `lowerMaximumSecurityTo` value: A replay includes a candidate failure involving ordinary factory loading, a stdlib context, setting diagnostics, a deprecation warning, or anything else outside the current Twisted maximum-version mapping behavior."
+  },
+  {
+    "rubric_id": "SC-J5-021",
+    "direction": "failure_location",
+    "score_1_condition": "For the invalid `DOWNLOAD_TLS_MAX_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: Replay output for the invalid-maximum diagnostic fault directly provides the complete node identifier of the failing candidate test, the candidate test file path, and the assertion location that checks the DOWNLOAD_TLS_MAX_VERSION diagnostic.",
+    "score_0_condition": "For the invalid `DOWNLOAD_TLS_MAX_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: Replay output does not provide the complete candidate-test node identifier; does not provide the candidate test file path; does not provide the assertion location that checks the DOWNLOAD_TLS_MAX_VERSION diagnostic; or identifies an assertion that is not in the same failure record as the failing node."
+  },
+  {
+    "rubric_id": "SC-J5-022",
+    "direction": "expected_actual_visible",
+    "score_1_condition": "For the invalid `DOWNLOAD_TLS_MAX_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: Replay output clearly distinguishes the expected diagnostic from the actual diagnostic; the expected diagnostic contains DOWNLOAD_TLS_MAX_VERSION and the rejected value used by this execution, while the actual diagnostic presents the generic error text produced by the faulty program.",
+    "score_0_condition": "For the invalid `DOWNLOAD_TLS_MAX_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: Replay output does not present the expected diagnostic; does not present the actual diagnostic; does not label the expected and actual text explicitly; omits DOWNLOAD_TLS_MAX_VERSION from the expected diagnostic; or omits the rejected value used by this execution from the expected diagnostic."
+  },
+  {
+    "rubric_id": "SC-J5-023",
+    "direction": "input_context",
+    "score_1_condition": "For the invalid `DOWNLOAD_TLS_MAX_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: The input section, complete parameter identifier, or call arguments in the failure record directly provide DOWNLOAD_TLS_MAX_VERSION and the rejected value for this execution.",
+    "score_0_condition": "For the invalid `DOWNLOAD_TLS_MAX_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: The failure record's input source omits DOWNLOAD_TLS_MAX_VERSION or the rejected value; the setting name or rejected value appears only in expected diagnostic text; or the input belongs to the DOWNLOAD_TLS_MIN_VERSION partition."
+  },
+  {
+    "rubric_id": "SC-J5-024",
+    "direction": "no_cascade_noise",
+    "score_1_condition": "For the invalid `DOWNLOAD_TLS_MAX_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: Every candidate failure in each replay belongs to the setting-specific diagnostic for an invalid DOWNLOAD_TLS_MAX_VERSION.",
+    "score_0_condition": "For the invalid `DOWNLOAD_TLS_MAX_VERSION` behavior in `_make_ssl_context`, the construction error must identify both the setting name and the rejected value: A replay includes a candidate failure involving a valid range, invalid min, backend conversion, a deprecation warning, legacy compatibility, or anything else outside the invalid DOWNLOAD_TLS_MAX_VERSION diagnostic."
+  },
+  {
+    "rubric_id": "SC-J5-025",
+    "direction": "failure_location",
+    "score_1_condition": "For a non-default `DOWNLOADER_CLIENT_TLS_METHOD`, the legacy compatibility path must emit `ScrapyDeprecationWarning` while preserving the compatible method behavior: Replay output for the legacy-method setting warning fault directly provides the complete node identifier of the failing candidate test, the candidate test file path, and the assertion location that checks the DOWNLOADER_CLIENT_TLS_METHOD deprecation warning.",
+    "score_0_condition": "For a non-default `DOWNLOADER_CLIENT_TLS_METHOD`, the legacy compatibility path must emit `ScrapyDeprecationWarning` while preserving the compatible method behavior: Replay output does not provide the complete candidate-test node identifier; does not provide the candidate test file path; does not provide the assertion location that checks the DOWNLOADER_CLIENT_TLS_METHOD deprecation warning; or identifies an assertion that is not in the same failure record as the failing node."
+  },
+  {
+    "rubric_id": "SC-J5-026",
+    "direction": "expected_actual_visible",
+    "score_1_condition": "For a non-default `DOWNLOADER_CLIENT_TLS_METHOD`, the legacy compatibility path must emit `ScrapyDeprecationWarning` while preserving the compatible method behavior: The same failure record explicitly identifies the expected ScrapyDeprecationWarning and the actual uncaptured-warning state, so expected and actual can be distinguished directly.",
+    "score_0_condition": "For a non-default `DOWNLOADER_CLIENT_TLS_METHOD`, the legacy compatibility path must emit `ScrapyDeprecationWarning` while preserving the compatible method behavior: The failure record omits the expected ScrapyDeprecationWarning; omits the actual uncaptured-warning state; or does not explicitly label expected and actual."
+  },
+  {
+    "rubric_id": "SC-J5-027",
+    "direction": "input_context",
+    "score_1_condition": "For a non-default `DOWNLOADER_CLIENT_TLS_METHOD`, the legacy compatibility path must emit `ScrapyDeprecationWarning` while preserving the compatible method behavior: The input section, complete parameter identifier, or call arguments in the failure record directly provide DOWNLOADER_CLIENT_TLS_METHOD and the non-default value used by this execution.",
+    "score_0_condition": "For a non-default `DOWNLOADER_CLIENT_TLS_METHOD`, the legacy compatibility path must emit `ScrapyDeprecationWarning` while preserving the compatible method behavior: The failure record's input source omits the setting name or non-default value; the setting name or non-default value appears only in expected warning text; or the input belongs to the historical module-export access path."
+  },
+  {
+    "rubric_id": "SC-J5-028",
+    "direction": "no_cascade_noise",
+    "score_1_condition": "For a non-default `DOWNLOADER_CLIENT_TLS_METHOD`, the legacy compatibility path must emit `ScrapyDeprecationWarning` while preserving the compatible method behavior: Every candidate failure in each replay concerns a missing named warning for a non-default DOWNLOADER_CLIENT_TLS_METHOD.",
+    "score_0_condition": "For a non-default `DOWNLOADER_CLIENT_TLS_METHOD`, the legacy compatibility path must emit `ScrapyDeprecationWarning` while preserving the compatible method behavior: A replay includes a candidate failure involving factory construction, compatible legacy-method state, TLS boundary state, or anything else outside the legacy-method setting warning."
+  }
+]

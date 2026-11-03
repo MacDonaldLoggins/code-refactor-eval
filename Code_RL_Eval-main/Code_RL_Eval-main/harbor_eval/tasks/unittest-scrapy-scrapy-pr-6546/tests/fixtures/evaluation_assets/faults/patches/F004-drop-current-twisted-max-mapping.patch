@@ -1,0 +1,11 @@
+diff --git a/scrapy/utils/ssl.py b/scrapy/utils/ssl.py
+--- a/scrapy/utils/ssl.py
++++ b/scrapy/utils/ssl.py
+@@ -214,7 +214,6 @@ def _get_cert_options_version_kwargs(
+                     f"Due to an error in Twisted < 26.4.0 cannot set the maximum TLS version to {max_version.name}"
+                 )
+             max_version = versions[max_index + 1]
+-        result["lowerMaximumSecurityTo"] = max_version
+     if min_version:
+         # We cannot pass both insecurelyLowerMinimumTo and raiseMinimumTo,
+         # so we need to know the direction.

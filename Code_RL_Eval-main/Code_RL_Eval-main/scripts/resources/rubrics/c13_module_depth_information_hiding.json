@@ -1,0 +1,20 @@
+{
+  "version": "2.0",
+  "dimension_id": "C13",
+  "name": "模块深度与信息隐藏",
+  "layer": "univ",
+  "applicable_equivalence_classes": ["E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", "E9", "E10", "E11", "E12"],
+  "description": "以 Ousterhout 的深模块和信息隐藏为核心，评价模块是否用简单接口隐藏有价值的实现复杂性，并减少设计决策泄漏。",
+  "system_prompt": "C13 优先评价接口是否简单于实现，而不是代码、类或方法数量是否更少。浅模块、无价值转发和跨模块知识泄漏是主要风险。",
+  "evaluation_prompt_template": "评估 C13 模块深度与信息隐藏。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 比较接口复杂度与实现复杂度。\n2. 检查设计决策是否泄漏到多个模块。\n3. 检查新增间接层是否提供真实抽象。\n4. 每个 Atom 给出分数并附证据位置。",
+  "questions": [
+    {"id": "C13.1", "text": "模块接口是否明显简单于其实现，并隐藏了主要实现复杂性？", "type": "soft", "weight": 1.0, "anchor": "0=接口几乎等同实现；1=接口提供清晰且显著更简单的抽象"},
+    {"id": "C13.2", "text": "调用者是否无需了解内部算法、数据结构、格式或存储决策即可正确使用模块？", "type": "soft", "weight": 1.0, "anchor": "0=实现细节泄漏；1=关键决策被隐藏"},
+    {"id": "C13.3", "text": "同一个设计决策是否集中在一个明确的知识边界内？", "type": "soft", "weight": 1.0, "anchor": "0=决策散落多个模块；1=单一且稳定的决策来源"},
+    {"id": "C13.4", "text": "新增的包装层、转发方法或中间对象是否提供了新的抽象价值？", "type": "hard", "weight": 1.0, "anchor": "pass=间接层隐藏复杂性或稳定契约；fail=仅增加跳转和依赖"},
+    {"id": "C13.5", "text": "常见使用路径是否简单，少数复杂能力是否被隔离而非暴露给所有调用者？", "type": "soft", "weight": 1.0, "anchor": "0=常见调用被低频复杂性污染；1=常见用法简单"},
+    {"id": "C13.6", "text": "模块是否围绕需要隐藏的知识而划分，而不是仅按文件、执行顺序或对象数量划分？", "type": "soft", "weight": 1.0, "anchor": "0=边界依据薄弱；1=边界对应稳定知识"}
+  ],
+  "aggregation": {"formula": "dim_C13 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)", "hard_constraint_indicator": "H_C13 = product(s_a for a in hard atoms in A^†)", "na_policy": "没有新增或调整模块边界时，可将模块边界相关 Atom 标记为 na"},
+  "output_schema": {"type": "object", "required": ["dimension_id", "layer", "atom_scores", "dim_score", "hard_indicator", "summary"], "properties": {"dimension_id": {"const": "C13"}, "layer": {"const": "univ"}, "atom_scores": {"type": "array"}, "dim_score": {"type": "number", "minimum": 0, "maximum": 1}, "hard_indicator": {"type": "number", "enum": [0, 1]}, "critical_failures": {"type": "array"}, "summary": {"type": "string"}}}
+}

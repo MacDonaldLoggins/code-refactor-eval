@@ -1,0 +1,15 @@
+diff --git a/scrapy/core/downloader/tls.py b/scrapy/core/downloader/tls.py
+--- a/scrapy/core/downloader/tls.py
++++ b/scrapy/core/downloader/tls.py
+@@ -51,11 +51,6 @@ def __getattr__(name: str) -> Any:
+         "openssl_methods": _openssl_methods,
+     }
+     if name in deprecated:
+-        warnings.warn(
+-            f"scrapy.core.downloader.tls.{name} is deprecated.",
+-            ScrapyDeprecationWarning,
+-            stacklevel=2,
+-        )
+         return deprecated[name]
+     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+ 

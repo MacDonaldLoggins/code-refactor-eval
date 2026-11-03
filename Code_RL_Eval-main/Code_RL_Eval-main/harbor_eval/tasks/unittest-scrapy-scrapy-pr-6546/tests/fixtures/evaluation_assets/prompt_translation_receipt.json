@@ -1,0 +1,14 @@
+{
+  "schema_version": "unittest-rl-prompt-translation-receipt-v1",
+  "stage_id": "S20",
+  "status": "pass",
+  "source_path": "harbor_eval/Unit_Test_RL_tasks/active/scrapy-scrapy-pr-6546-v082-r3/active/sealed/prompt_public_context.source.json",
+  "source_sha256": "1b2e5142975c8cd42bd802b4dfc179a9a8d6f86c1982cb541362914554a90d88",
+  "source_language": "en",
+  "target_language": "en-US",
+  "translation_required": true,
+  "translator_model_key": "openai--gpt-5-6-sol",
+  "translation_session_id": "english-copy-translation-current-only-v001",
+  "llm_used": true,
+  "output_path": "harbor_eval/Unit_Test_RL_tasks/active/scrapy-scrapy-pr-6546-v082-r3/active/candidate_visible/prompt_public_context.en-US.json"
+}

@@ -1,0 +1,203 @@
+{
+  "schema_version": "unittest-rl-j5-applicability-map-v1",
+  "status": "frozen_pre_candidate",
+  "activation_policy": "stable_killed_fault_intersection",
+  "rubrics": [
+    {
+      "rubric_id": "SC-J5-001",
+      "diagnostic_unit_id": "J5-DIAG-001",
+      "fault_ids": [
+        "F001"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-002",
+      "diagnostic_unit_id": "J5-DIAG-001",
+      "fault_ids": [
+        "F001"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-003",
+      "diagnostic_unit_id": "J5-DIAG-001",
+      "fault_ids": [
+        "F001"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-004",
+      "diagnostic_unit_id": "J5-DIAG-001",
+      "fault_ids": [
+        "F001"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-005",
+      "diagnostic_unit_id": "J5-DIAG-002",
+      "fault_ids": [
+        "F002"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-006",
+      "diagnostic_unit_id": "J5-DIAG-002",
+      "fault_ids": [
+        "F002"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-007",
+      "diagnostic_unit_id": "J5-DIAG-002",
+      "fault_ids": [
+        "F002"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-008",
+      "diagnostic_unit_id": "J5-DIAG-002",
+      "fault_ids": [
+        "F002"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-009",
+      "diagnostic_unit_id": "J5-DIAG-003",
+      "fault_ids": [
+        "F006"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-010",
+      "diagnostic_unit_id": "J5-DIAG-003",
+      "fault_ids": [
+        "F006"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-011",
+      "diagnostic_unit_id": "J5-DIAG-003",
+      "fault_ids": [
+        "F006"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-012",
+      "diagnostic_unit_id": "J5-DIAG-003",
+      "fault_ids": [
+        "F006"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-013",
+      "diagnostic_unit_id": "J5-DIAG-004",
+      "fault_ids": [
+        "F003"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-014",
+      "diagnostic_unit_id": "J5-DIAG-004",
+      "fault_ids": [
+        "F003"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-015",
+      "diagnostic_unit_id": "J5-DIAG-004",
+      "fault_ids": [
+        "F003"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-016",
+      "diagnostic_unit_id": "J5-DIAG-004",
+      "fault_ids": [
+        "F003"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-017",
+      "diagnostic_unit_id": "J5-DIAG-005",
+      "fault_ids": [
+        "F004"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-018",
+      "diagnostic_unit_id": "J5-DIAG-005",
+      "fault_ids": [
+        "F004"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-019",
+      "diagnostic_unit_id": "J5-DIAG-005",
+      "fault_ids": [
+        "F004"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-020",
+      "diagnostic_unit_id": "J5-DIAG-005",
+      "fault_ids": [
+        "F004"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-021",
+      "diagnostic_unit_id": "J5-DIAG-006",
+      "fault_ids": [
+        "F007"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-022",
+      "diagnostic_unit_id": "J5-DIAG-006",
+      "fault_ids": [
+        "F007"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-023",
+      "diagnostic_unit_id": "J5-DIAG-006",
+      "fault_ids": [
+        "F007"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-024",
+      "diagnostic_unit_id": "J5-DIAG-006",
+      "fault_ids": [
+        "F007"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-025",
+      "diagnostic_unit_id": "J5-DIAG-007",
+      "fault_ids": [
+        "F005"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-026",
+      "diagnostic_unit_id": "J5-DIAG-007",
+      "fault_ids": [
+        "F005"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-027",
+      "diagnostic_unit_id": "J5-DIAG-007",
+      "fault_ids": [
+        "F005"
+      ]
+    },
+    {
+      "rubric_id": "SC-J5-028",
+      "diagnostic_unit_id": "J5-DIAG-007",
+      "fault_ids": [
+        "F005"
+      ]
+    }
+  ]
+}

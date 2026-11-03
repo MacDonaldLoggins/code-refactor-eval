@@ -1,0 +1,77 @@
+[judge]
+judge = "codex"
+model = "gpt-5.5"
+mode = "batched"
+timeout = 900
+isolated = false
+cwd = "/logs/verifier/judge-workdir"
+prompt_template = "prompt.md"
+
+[scoring]
+aggregation = "weighted_mean"
+
+[[criterion]]
+id = "C1"
+name = "behavior_preservation"
+description = "Behavior contract preservation. Score 1 when every in-scope must-preserve claim has concrete executable evidence and no regression is visible; 0.5 when evidence is credible but incomplete for a non-critical edge; 0 when any required behavior, error, side effect, ordering, data, timing, or user workflow regresses or lacks credible evidence."
+type = "numeric"
+min = 0.0
+max = 1.0
+weight = 30.0
+hard = true
+evidence_refs = ["contract:must-preserve", "gate:behavior_oracle", "objective:behavior_evidence_coverage"]
+
+[[criterion]]
+id = "C2"
+name = "compatibility"
+description = "Compatibility with callers and consumers. Score 1 when public APIs, signatures, schemas, errors and relevant call paths remain compatible; 0.5 for a contained, explicitly justified residual risk outside critical consumers; 0 for a broken caller, public contract, persisted representation, output schema or error contract."
+type = "numeric"
+min = 0.0
+max = 1.0
+weight = 20.0
+hard = true
+evidence_refs = ["contract:observers", "gate:compatibility", "diff:callers"]
+
+[[criterion]]
+id = "C3"
+name = "task_completion"
+description = "Completion of the declared refactoring goal. Score 1 when the target responsibility, dependency or change-cost problem is materially addressed; 0.5 for a useful but incomplete improvement; 0 when the change is cosmetic, bypasses the stated goal or merely moves the same problem elsewhere."
+type = "numeric"
+min = 0.0
+max = 1.0
+weight = 15.0
+hard = false
+evidence_refs = ["prompt:task-goal", "diff:target-files"]
+
+[[criterion]]
+id = "C4"
+name = "responsibility_and_boundaries"
+description = "Responsibility, cohesion and dependency boundaries. Score 1 when knowledge and side effects live with the correct owner and common changes become more local; 0.5 for mixed improvement with a clear remaining boundary problem; 0 when coupling, duplication, indirection or responsibility scattering is unchanged or worse."
+type = "numeric"
+min = 0.0
+max = 1.0
+weight = 15.0
+hard = false
+evidence_refs = ["diff:dependencies", "objective:task-specific-structure"]
+
+[[criterion]]
+id = "C5"
+name = "change_cost_and_maintainability"
+description = "Change cost and maintainability. Score 1 when representative future changes require less knowledge exposure, propagation and coordination without needless abstraction; 0.5 for a plausible but weakly evidenced improvement; 0 when static metrics improve without a credible change-cost benefit, or complexity is transferred to callers."
+type = "numeric"
+min = 0.0
+max = 1.0
+weight = 10.0
+hard = false
+evidence_refs = ["objective:task-specific-structure", "diff:representative-change"]
+
+[[criterion]]
+id = "C6"
+name = "scope_and_integrity"
+description = "Scope discipline and evaluation integrity. Score 1 when changes stay inside the declared production scope and tests/evaluation evidence are untouched; 0.5 for a small justified production-only spillover; 0 for test tampering, verifier manipulation, skip/xfail shortcuts, hard-coded reference answers or unrelated broad changes."
+type = "numeric"
+min = 0.0
+max = 1.0
+weight = 10.0
+hard = true
+evidence_refs = ["gate:scope_pass", "gate:anti_cheating_pass", "objective:change_scope_focus"]

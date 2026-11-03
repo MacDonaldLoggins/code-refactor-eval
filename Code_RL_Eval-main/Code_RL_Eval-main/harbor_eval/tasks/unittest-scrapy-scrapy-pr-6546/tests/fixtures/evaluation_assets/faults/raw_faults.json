@@ -1,0 +1,73 @@
+{
+  "schema_version": "unittest-rl-raw-faults-v5",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "stage_id": "S05",
+  "status": "generated",
+  "model_run_id": "current-only-fault-revision-001",
+  "scope_revision_id": "coverage-scope-revision-002-current-only",
+  "faults": [
+    {
+      "fault_id": "F001",
+      "patch": "patches/F001-ignore-stdlib-tls-bounds.patch",
+      "behavior_ids": [
+        "scrapy.tls.stdlib_version_limits"
+      ],
+      "semantic_class": "ignored_stdlib_configuration",
+      "rationale": "The settings are parsed but never applied to the stdlib SSLContext."
+    },
+    {
+      "fault_id": "F002",
+      "patch": "patches/F002-ignore-twisted-tls-bounds.patch",
+      "behavior_ids": [
+        "scrapy.tls.twisted_version_limits"
+      ],
+      "semantic_class": "ignored_twisted_configuration",
+      "rationale": "The Twisted factory discards both configured bounds and keeps the legacy method."
+    },
+    {
+      "fault_id": "F003",
+      "patch": "patches/F003-suppress-legacy-module-warning.patch",
+      "behavior_ids": [
+        "scrapy.tls.legacy_api_deprecation"
+      ],
+      "semantic_class": "missing_module_api_deprecation",
+      "rationale": "Legacy module names remain available but no longer emit migration warnings."
+    },
+    {
+      "fault_id": "F004",
+      "patch": "patches/F004-drop-current-twisted-max-mapping.patch",
+      "behavior_ids": [
+        "scrapy.tls.twisted_version_limits"
+      ],
+      "semantic_class": "missing_current_twisted_maximum_mapping",
+      "rationale": "The current Twisted translation drops the requested maximum instead of passing it through as lowerMaximumSecurityTo."
+    },
+    {
+      "fault_id": "F005",
+      "patch": "patches/F005-suppress-legacy-setting-warning.patch",
+      "behavior_ids": [
+        "scrapy.tls.legacy_api_deprecation"
+      ],
+      "semantic_class": "missing_setting_deprecation",
+      "rationale": "A non-default DOWNLOADER_CLIENT_TLS_METHOD is accepted without a migration warning."
+    },
+    {
+      "fault_id": "F006",
+      "patch": "patches/F006-generic-invalid-min-version-error.patch",
+      "behavior_ids": [
+        "scrapy.tls.invalid_min_version"
+      ],
+      "semantic_class": "lost_minimum_setting_specific_diagnostic",
+      "rationale": "The invalid minimum bound fails without naming its setting or value."
+    },
+    {
+      "fault_id": "F007",
+      "patch": "patches/F007-generic-invalid-max-version-error.patch",
+      "behavior_ids": [
+        "scrapy.tls.invalid_max_version"
+      ],
+      "semantic_class": "lost_maximum_setting_specific_diagnostic",
+      "rationale": "The invalid maximum bound fails without naming its setting or value."
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+# 评估配置文件（精简版）
+
+# Agent 配置
+agent:
+  # 按供应商（vendor）组织要评测的模型
+  # 目前仅支持 claude（Claude Code CLI）；其余 vendor 保留结构，
+  # 运行到时会按"暂不支持"跳过并标记（其余 claude 模型正常执行）。
+  vendors:
+    claude:
+      - claude-opus-4-8
+    # gpt:            # 暂不支持，仅占位；取消注释后运行时会被跳过
+    #   - gpt-5
+
+  # 每个模型的迭代次数
+  iterations: 3
+
+  # 重构并行度（步骤 4 同时执行的候选数）；1 = 串行。命令行 --parallel 可覆盖。
+  parallel: 3
+
+# 验证配置
+verification:
+  # verifier 固定运行次数（不管成功与否都跑满，每次原始结果都落盘；不做跨次聚合）
+  verifier_runs: 3

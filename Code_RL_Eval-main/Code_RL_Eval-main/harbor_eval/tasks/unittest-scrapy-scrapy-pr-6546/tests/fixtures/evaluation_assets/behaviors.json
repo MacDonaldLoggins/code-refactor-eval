@@ -1,0 +1,69 @@
+{
+  "schema_version": "unittest-rl-behaviors-v4",
+  "task_id": "scrapy-scrapy-pr-6546-v0103",
+  "stage_id": "S03",
+  "status": "generated",
+  "model_run_id": "model-run-s03-v001",
+  "behaviors": [
+    {
+      "id": "scrapy.tls.stdlib_version_limits",
+      "precondition": "An HTTPS download handler using Python's ssl module is built from settings that optionally define DOWNLOAD_TLS_MIN_VERSION and DOWNLOAD_TLS_MAX_VERSION.",
+      "public_entry": "Scrapy settings consumed by the stdlib-based HTTPS download handler.",
+      "before": "The context protocol was selected only through DOWNLOADER_CLIENT_TLS_METHOD and could not independently express a minimum and maximum TLS version.",
+      "after": "TLSv1.0 through TLSv1.3 setting strings are converted to ssl.TLSVersion values and applied independently to SSLContext.minimum_version and SSLContext.maximum_version; omitted bounds preserve library defaults.",
+      "observable": "The constructed SSLContext exposes the requested minimum and maximum versions while retaining the existing certificate-verification and cipher behavior.",
+      "functional_hunks": [
+        "scrapy/settings/default_settings.py:270-271",
+        "scrapy/utils/ssl.py:30-87"
+      ]
+    },
+    {
+      "id": "scrapy.tls.twisted_version_limits",
+      "precondition": "The Twisted HTTPS context factory is constructed from crawler settings containing one or both TLS version bounds.",
+      "public_entry": "_load_context_factory_from_settings and _ScrapyClientContextFactory.from_crawler.",
+      "before": "Twisted CertificateOptions received only a single OpenSSL method and could not express an independent TLS range.",
+      "after": "The configured bounds are converted to Twisted TLSVersion values, carried by the context factory, and translated into CertificateOptions version keyword arguments; an explicit range takes precedence over the legacy method.",
+      "observable": "The context factory holds the selected TLSVersion bounds, clears its legacy method when a bound is present, and supplies equivalent CertificateOptions parameters.",
+      "functional_hunks": [
+        "scrapy/core/downloader/contextfactory.py:55-130",
+        "scrapy/core/downloader/contextfactory.py:268-301",
+        "scrapy/core/downloader/tls.py:63-68",
+        "scrapy/utils/ssl.py:201-228"
+      ]
+    },
+    {
+      "id": "scrapy.tls.invalid_min_version",
+      "precondition": "DOWNLOAD_TLS_MIN_VERSION contains a value outside the documented TLSv1.0 through TLSv1.3 set.",
+      "public_entry": "Construction of an HTTPS SSL or Twisted context from Scrapy settings.",
+      "before": "No dedicated minimum-version setting was parsed or diagnosed.",
+      "after": "Context construction fails closed with ValueError naming DOWNLOAD_TLS_MIN_VERSION and the rejected value.",
+      "observable": "The caller receives the message 'Unknown DOWNLOAD_TLS_MIN_VERSION value: <value>' before a connection is attempted.",
+      "functional_hunks": [
+        "scrapy/utils/ssl.py:30-48"
+      ]
+    },
+    {
+      "id": "scrapy.tls.invalid_max_version",
+      "precondition": "DOWNLOAD_TLS_MAX_VERSION contains a value outside the documented TLSv1.0 through TLSv1.3 set.",
+      "public_entry": "Construction of an HTTPS SSL or Twisted context from Scrapy settings.",
+      "before": "No dedicated maximum-version setting was parsed or diagnosed.",
+      "after": "Context construction fails closed with ValueError naming DOWNLOAD_TLS_MAX_VERSION and the rejected value.",
+      "observable": "The caller receives the message 'Unknown DOWNLOAD_TLS_MAX_VERSION value: <value>' before a connection is attempted.",
+      "functional_hunks": [
+        "scrapy/utils/ssl.py:30-48"
+      ]
+    },
+    {
+      "id": "scrapy.tls.legacy_api_deprecation",
+      "precondition": "Application code reads the historical METHOD_* or openssl_methods exports, or configures a non-default DOWNLOADER_CLIENT_TLS_METHOD.",
+      "public_entry": "scrapy.core.downloader.tls compatibility exports and DOWNLOADER_CLIENT_TLS_METHOD.",
+      "before": "The historical names and non-default method setting were accepted without a Scrapy deprecation signal.",
+      "after": "Historical module names remain value-compatible but emit ScrapyDeprecationWarning, and a non-default method setting emits a migration warning while continuing through the legacy path.",
+      "observable": "Existing callers still receive the same legacy values and factories, with warnings that direct them to DOWNLOAD_TLS_MIN_VERSION and DOWNLOAD_TLS_MAX_VERSION.",
+      "functional_hunks": [
+        "scrapy/core/downloader/tls.py:37-60",
+        "scrapy/core/downloader/contextfactory.py:273-282"
+      ]
+    }
+  ]
+}

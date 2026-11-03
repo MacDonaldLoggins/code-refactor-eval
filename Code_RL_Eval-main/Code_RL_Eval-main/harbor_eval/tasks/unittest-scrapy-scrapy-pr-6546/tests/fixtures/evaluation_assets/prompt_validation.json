@@ -1,0 +1,15 @@
+{
+  "schema_version": "unittest-rl-prompt-validation-v3",
+  "stage_id": "S21",
+  "status": "pass",
+  "synthesis_method": "public_context_english_normalization_plus_deterministic_rules_v2",
+  "translation_llm_used": true,
+  "final_render_llm_used": false,
+  "source_policy": "repository_readme_and_public_pr_commit_only",
+  "exact_render_match": true,
+  "prompt_structure": [
+    "## 1. Repository and PR information",
+    "## 2. Rules"
+  ],
+  "errors": []
+}

@@ -1,0 +1,18 @@
+diff --git a/scrapy/core/downloader/contextfactory.py b/scrapy/core/downloader/contextfactory.py
+--- a/scrapy/core/downloader/contextfactory.py
++++ b/scrapy/core/downloader/contextfactory.py
+@@ -271,14 +271,6 @@ def _load_context_factory_from_settings(crawler: Crawler) -> IPolicyForHTTPS:
+     Also passes values of other relevant settings to the factory class.
+     """
+     tls_method_setting: str = crawler.settings["DOWNLOADER_CLIENT_TLS_METHOD"]
+-    if tls_method_setting != "TLS":
+-        warnings.warn(
+-            "Setting DOWNLOADER_CLIENT_TLS_METHOD to a non-default value is"
+-            " deprecated, please use DOWNLOAD_TLS_MIN_VERSION and/or"
+-            " DOWNLOAD_TLS_MAX_VERSION instead.",
+-            ScrapyDeprecationWarning,
+-            stacklevel=2,
+-        )
+     tls_method = _openssl_methods[tls_method_setting]
+     if crawler.settings["DOWNLOADER_CLIENTCONTEXTFACTORY"] == "SENTINEL":
+         context_factory_cls = _ScrapyClientContextFactory

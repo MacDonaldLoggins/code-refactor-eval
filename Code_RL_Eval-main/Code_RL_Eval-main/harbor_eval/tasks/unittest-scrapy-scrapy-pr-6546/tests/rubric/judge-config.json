@@ -1,0 +1,18 @@
+{
+  "schema_version": "unittest-rl-harbor-judge-config-v1",
+  "config_id": "scrapy-pr6546-v0103-prepared-v004-judge-openai-gpt-5.6-sol-j1shared-v002",
+  "task_core_fingerprint": "bd6346982a716d90e0108d7b32d2de533a0ebfc78aa102e891e4b167def88f51",
+  "model_key": "openai--gpt-5.6-sol--judge",
+  "provider": "openai",
+  "model": "gpt-5.6-sol",
+  "base_url": "OPENAI_BASE_URL",
+  "credential_env": "OPENAI_API_KEY",
+  "reasoning_effort": "high",
+  "timeout_seconds": 900,
+  "max_output_tokens": 1000000,
+  "max_attempts": 2,
+  "parallelism": 5,
+  "judge_repetitions": 3,
+  "aggregation_policy": "per-rubric-majority",
+  "stability_policy": "report_only"
+}

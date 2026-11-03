@@ -1,0 +1,20 @@
+{
+  "version": "2.0",
+  "dimension_id": "C15",
+  "name": "层次抽象与系统一致性",
+  "layer": "univ",
+  "applicable_equivalence_classes": ["E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", "E9", "E10", "E11", "E12"],
+  "description": "评价相邻层是否提供不同抽象、系统是否遵守一致的接口与不变量，以及拆分是否减少而非增加认知负担。",
+  "system_prompt": "C15 以 Ousterhout 的 different layer, different abstraction 和 consistency 为准，不把所有重复都视为坏事，也不把所有拆分都视为进步。",
+  "evaluation_prompt_template": "评估 C15 层次抽象与系统一致性。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 检查相邻层的抽象是否真正不同。\n2. 检查有意重复与有害重复。\n3. 检查接口、生命周期、错误处理和不变量的一致性。",
+  "questions": [
+    {"id": "C15.1", "text": "相邻模块或层是否提供了不同且有价值的抽象？", "type": "soft", "weight": 1.0, "anchor": "0=层次只是重复转发；1=每层有清晰职责和抽象"},
+    {"id": "C15.2", "text": "拆分是否避免了按时间顺序制造大量中间状态、接口和调用步骤？", "type": "soft", "weight": 1.0, "anchor": "0=时间分解增加依赖；1=边界基于信息隐藏"},
+    {"id": "C15.3", "text": "不同层之间保留的重复是否属于有意的抽象表达，而不是重复维护同一知识？", "type": "hard", "weight": 1.0, "anchor": "pass=重复保护边界；fail=同一决策多点维护"},
+    {"id": "C15.4", "text": "重构后的接口、命名、生命周期和错误处理是否与项目中相似模块保持一致？", "type": "soft", "weight": 1.0, "anchor": "0=引入新的局部惯例；1=符合既有认知"},
+    {"id": "C15.5", "text": "关键不变量是否明确，并由代码或测试持续维护？", "type": "soft", "weight": 1.0, "anchor": "0=不变量隐含且易破坏；1=不变量清晰可验证"},
+    {"id": "C15.6", "text": "读者是否可以利用一个模块的经验安全推断其他相似模块的行为？", "type": "soft", "weight": 1.0, "anchor": "0=模式不一致；1=一致性带来认知杠杆"}
+  ],
+  "aggregation": {"formula": "dim_C15 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)", "hard_constraint_indicator": "H_C15 = product(s_a for a in hard atoms in A^†)", "na_policy": "未涉及多层或同类模块时，可将层次与一致性相关 Atom 标记为 na"},
+  "output_schema": {"type": "object", "required": ["dimension_id", "layer", "atom_scores", "dim_score", "hard_indicator", "summary"], "properties": {"dimension_id": {"const": "C15"}, "layer": {"const": "univ"}, "atom_scores": {"type": "array"}, "dim_score": {"type": "number", "minimum": 0, "maximum": 1}, "hard_indicator": {"type": "number", "enum": [0, 1]}, "critical_failures": {"type": "array"}, "summary": {"type": "string"}}}
+}

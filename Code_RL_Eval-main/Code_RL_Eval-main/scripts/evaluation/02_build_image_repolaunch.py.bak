@@ -1,0 +1,528 @@
+#!/usr/bin/env python3
+"""
+步骤 2: 使用 RepoLaunch 构建评测镜像
+
+功能：
+1. 将 case 的 metadata 转换为 RepoLaunch 格式
+2. 调用 RepoLaunch 构建基础镜像（自动安装依赖）
+3. 扩展镜像：安装 Claude Code CLI
+4. 扩展镜像：添加 setup.py 脚本
+5. 保存最终的评测镜像
+
+用法：
+    python scripts/evaluation/02_build_image.py --case manual_tasks/xxx
+"""
+
+import json
+import argparse
+import subprocess
+import docker
+from pathlib import Path
+from typing import Dict
+from datetime import datetime
+import sys
+import os
+import shutil
+
+# 加载 .env 文件
+def load_env():
+    """从 scripts/.env 加载环境变量"""
+    env_file = Path(__file__).parent.parent / ".env"
+    if env_file.exists():
+        with open(env_file) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    if '=' in line:
+                        key, value = line.split('=', 1)
+                        # 移除引号
+                        value = value.strip().strip('"').strip("'")
+                        os.environ[key.strip()] = value
+
+load_env()  # 启动时加载环境变量
+
+
+class ImageBuilder:
+    """评测镜像构建器（基于 RepoLaunch）"""
+
+    def __init__(self, case_path: Path, output_dir: Path, force_rebuild: bool = False):
+        self.case_path = case_path
+        self.output_dir = output_dir
+        self.force_rebuild = force_rebuild
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+
+        # Docker 客户端
+        self.docker_client = docker.from_env()
+
+        # 加载 metadata
+        self.metadata = self._load_metadata()
+
+        # 镜像名称
+        self.base_image_tag = f"repolaunch-base/{self.case_path.name}"
+        self.final_image_tag = f"refactor-eval/{self.case_path.name}"
+
+        # RepoLaunch 工作空间
+        self.repolaunch_workspace = Path("data/repolaunch_workspace")
+
+        # 确定 Python 解释器路径（优先使用虚拟环境）
+        self.python_executable = self._get_python_executable()
+
+    def _get_python_executable(self) -> str:
+        """获取 Python 解释器路径（优先使用虚拟环境）"""
+        # 检查是否在虚拟环境中
+        venv_python = Path(".venv/bin/python")
+        if venv_python.exists():
+            return str(venv_python.absolute())
+
+        # 使用当前 Python
+        return sys.executable
+
+    def _load_metadata(self) -> Dict:
+        """加载 metadata.json"""
+        metadata_file = self.case_path / "metadata.json"
+        if not metadata_file.exists():
+            raise FileNotFoundError(f"未找到 metadata.json: {metadata_file}")
+
+        with open(metadata_file) as f:
+            return json.load(f)
+
+    def run(self):
+        """运行镜像构建流程"""
+        print("=" * 80)
+        print(f"步骤 2: 构建评测镜像 - {self.case_path.name}")
+        print("=" * 80)
+
+        try:
+            # 检查镜像是否已存在
+            if not self.force_rebuild:
+                if self._check_image_exists(self.final_image_tag):
+                    print(f"\n✅ 镜像已存在: {self.final_image_tag}")
+                    print(f"  如需重新构建，请使用 --force-rebuild 参数")
+                    return 0
+
+            # 步骤 1: 准备 RepoLaunch 输入
+            print("\n[1/5] 准备 RepoLaunch 输入...")
+            self._prepare_repolaunch_input()
+            print(f"  ✅ dataset.jsonl 和 config.json 已生成")
+
+            # 步骤 2: 运行 RepoLaunch 构建基础镜像
+            print("\n[2/5] 运行 RepoLaunch 构建基础镜像...")
+            self._run_repolaunch()
+            print(f"  ✅ 基础镜像构建完成: {self.base_image_tag}")
+
+            # 步骤 3: 扩展镜像 - 安装 Claude Code CLI
+            print("\n[3/5] 扩展镜像 - 安装 Claude Code CLI...")
+            self._extend_image_with_claude()
+            print(f"  ✅ Claude Code CLI 已安装")
+
+            # 步骤 4: 扩展镜像 - 添加 setup.py
+            print("\n[4/5] 扩展镜像 - 添加 setup.py...")
+            self._extend_image_with_setup()
+            print(f"  ✅ setup.py 已添加")
+
+            # 步骤 5: 保存最终镜像
+            print("\n[5/5] 保存最终镜像...")
+            self._finalize_image()
+            print(f"  ✅ 最终镜像已保存: {self.final_image_tag}")
+
+            # 显示镜像信息
+            self._show_image_info()
+
+            return 0
+
+        except Exception as e:
+            print(f"\n❌ 镜像构建失败: {e}")
+            return 1
+
+    def _check_image_exists(self, image_tag: str) -> bool:
+        """检查镜像是否存在"""
+        try:
+            self.docker_client.images.get(image_tag)
+            return True
+        except docker.errors.ImageNotFound:
+            return False
+
+    def _prepare_repolaunch_input(self):
+        """准备 RepoLaunch 输入文件"""
+        # 创建工作空间
+        self.repolaunch_workspace.mkdir(parents=True, exist_ok=True)
+
+        # 生成 dataset.jsonl
+        dataset_file = self.repolaunch_workspace / "dataset.jsonl"
+        dataset_entry = {
+            "instance_id": self.case_path.name,
+            "repo": self.metadata.get("repo"),
+            "base_commit": self.metadata.get("base_commit"),
+            "language": self.metadata.get("language", "Python"),
+            "created_at": self.metadata.get("created_at", datetime.now().isoformat())
+        }
+
+        with open(dataset_file, "w") as f:
+            f.write(json.dumps(dataset_entry) + "\n")
+
+        print(f"    - dataset.jsonl: {dataset_file}")
+
+        # 生成 config.json
+        config_file = self.repolaunch_workspace / "config.json"
+
+        # 从环境变量获取模型配置
+        text_model = os.getenv("TEXT_MODEL", "gpt-4")
+        openai_base_url = os.getenv("OPENAI_BASE_URL", "")
+
+        config = {
+            "print_to_console": True,
+            "model_config": {
+                "model": f"openai/{text_model}",
+                "temperature": 0
+            },
+            "workspace_root": str(self.repolaunch_workspace),
+            "dataset": str(dataset_file),
+            "instance_id": self.case_path.name,  # 只构建这一个
+            "max_workers": 1,
+            "overwrite": self.force_rebuild,
+            "os": "linux",
+            "mode": {
+                "setup": True,
+                "organize": False  # 只需要搭建环境，不需要 organize
+            },
+            "max_trials": 1,
+            "max_steps_setup": 20,
+            "cmd_timeout": 80,
+            "image_prefix": "repolaunch-base"
+        }
+
+        # 如果有自定义 base_url，添加到 model_config
+        if openai_base_url:
+            config["model_config"]["base_url"] = openai_base_url
+
+        with open(config_file, "w") as f:
+            json.dump(config, f, indent=2)
+
+        print(f"    - config.json: {config_file}")
+
+        # 预置本地代码（如果存在）
+        self._prepare_local_repo()
+
+    def _prepare_local_repo(self):
+        """预置本地代码到 RepoLaunch 工作空间"""
+        repo_dir = self.case_path / "repo"
+        if not repo_dir.exists():
+            print(f"    ⚠️  本地 repo 不存在，RepoLaunch 会从 GitHub 克隆")
+            return
+
+        # 创建目标目录
+        target_dir = self.repolaunch_workspace / "playground" / self.case_path.name / "repo"
+        target_dir.parent.mkdir(parents=True, exist_ok=True)
+
+        if target_dir.exists():
+            if self.force_rebuild:
+                shutil.rmtree(target_dir)
+            else:
+                print(f"    - 本地 repo 已存在，跳过复制")
+                return
+
+        # 复制代码
+        shutil.copytree(repo_dir, target_dir)
+        print(f"    - 本地 repo 已复制到: {target_dir}")
+
+        # 初始化 git（RepoLaunch 需要）
+        try:
+            subprocess.run(
+                ["git", "init"],
+                cwd=target_dir,
+                check=True,
+                capture_output=True
+            )
+            subprocess.run(
+                ["git", "add", "-A"],
+                cwd=target_dir,
+                check=True,
+                capture_output=True
+            )
+            subprocess.run(
+                ["git", "commit", "-m", "base snapshot"],
+                cwd=target_dir,
+                check=True,
+                capture_output=True
+            )
+            print(f"    - git 仓库已初始化")
+        except subprocess.CalledProcessError as e:
+            print(f"    ⚠️  git 初始化失败: {e}")
+
+    def _run_repolaunch(self):
+        """运行 RepoLaunch"""
+        config_file = self.repolaunch_workspace / "config.json"
+
+        # 检查 RepoLaunch 是否安装（通过 Python 导入检测）
+        try:
+            import launch
+            print("    ✅ RepoLaunch 已安装")
+        except ImportError:
+            print("    ⚠️  RepoLaunch 未安装，正在自动安装...")
+
+            # 尝试自动安装 RepoLaunch
+            try:
+                # 克隆 RepoLaunch 仓库
+                repolaunch_dir = Path("/tmp/RepoLaunch-persistent")
+                if not repolaunch_dir.exists():
+                    print(f"    - 克隆 RepoLaunch 仓库到 {repolaunch_dir}...")
+                    subprocess.run(
+                        ["git", "clone", "https://github.com/microsoft/RepoLaunch.git", str(repolaunch_dir)],
+                        check=True,
+                        capture_output=True
+                    )
+
+                print(f"    - 安装 RepoLaunch...")
+                # 优先使用 uv
+                try:
+                    subprocess.run(
+                        ["uv", "pip", "install", "-e", str(repolaunch_dir)],
+                        check=True,
+                        capture_output=True,
+                        cwd=str(Path.cwd())  # 确保在项目目录下安装
+                    )
+                except (subprocess.CalledProcessError, FileNotFoundError):
+                    # fallback 到 pip
+                    subprocess.run(
+                        [self.python_executable, "-m", "pip", "install", "-e", str(repolaunch_dir)],
+                        check=True,
+                        capture_output=True
+                    )
+
+                print(f"    ✅ RepoLaunch 安装成功")
+
+            except Exception as e:
+                raise Exception(
+                    f"RepoLaunch 自动安装失败: {e}\n\n"
+                    "请手动安装:\n"
+                    "1. 确保使用 Python 3.12+\n"
+                    "2. git clone https://github.com/microsoft/RepoLaunch.git\n"
+                    "3. cd RepoLaunch && uv pip install -e . (或 pip install -e .)\n"
+                    "或参考: https://github.com/microsoft/RepoLaunch"
+                )
+
+        # 检查环境变量
+        if not os.getenv("OPENAI_API_KEY") and not os.getenv("ANTHROPIC_API_KEY"):
+            raise Exception(
+                "未设置 API Key！\n"
+                "请设置: export OPENAI_API_KEY=xxx 或 export ANTHROPIC_API_KEY=xxx"
+            )
+
+        if not os.getenv("TAVILY_API_KEY"):
+            print("    ⚠️  未设置 TAVILY_API_KEY，RepoLaunch 可能需要联网搜索")
+
+        # 运行 RepoLaunch（使用 Python 模块方式调用）
+        print(f"    执行: {self.python_executable} -m launch.run {config_file}")
+        print(f"    （这可能需要几分钟，取决于项目大小...）")
+
+        try:
+            result = subprocess.run(
+                [self.python_executable, "-m", "launch.run", str(config_file)],
+                check=True,
+                capture_output=False,  # 直接显示输出
+                text=True
+            )
+        except subprocess.CalledProcessError as e:
+            raise Exception(f"RepoLaunch 执行失败，退出码: {e.returncode}")
+
+        # 检查镜像是否生成
+        expected_image = f"repolaunch-base/{self.case_path.name}"
+        if not self._check_image_exists(expected_image):
+            raise Exception(f"RepoLaunch 未生成预期的镜像: {expected_image}")
+
+        self.base_image_tag = expected_image
+
+    def _extend_image_with_claude(self):
+        """扩展镜像 - 安装 Claude Code CLI"""
+        # 检查本地是否有 Claude Code 安装包
+        script_dir = Path(__file__).parent.parent  # scripts/
+        claude_package = script_dir / "tools" / "claude-code-cli"  # scripts/tools/claude-code-cli
+        claude_config = script_dir / "tools" / "claude-config"     # scripts/tools/claude-config
+
+        # 创建临时 Dockerfile
+        if claude_package.exists():
+            # 方案 A: 使用本地安装包
+            print(f"    - 使用本地 Claude Code 安装包: {claude_package}")
+
+            dockerfile_content = f"""
+FROM {self.base_image_tag}
+
+# 复制 Claude Code CLI 安装包
+COPY claude-code-cli /tmp/claude-code-cli
+RUN chmod +x /tmp/claude-code-cli && \\
+    mv /tmp/claude-code-cli /usr/local/bin/claude && \\
+    claude --version || echo "Claude Code CLI installed"
+
+# 复制配置文件（如果存在）
+COPY claude-config/* /root/.claude/ 2>/dev/null || true
+
+# 配置环境变量
+ENV ANTHROPIC_API_KEY=${{ANTHROPIC_API_KEY}}
+
+# 设置工作目录
+WORKDIR /workspace
+
+# 保持镜像标签
+LABEL repolaunch.instance_id="{self.case_path.name}"
+LABEL refactor-eval.version="1.0"
+"""
+
+            # 复制文件到构建上下文
+            shutil.copy(claude_package, self.output_dir / "claude-code-cli")
+
+            # 复制配置文件（如果存在）
+            if claude_config.exists() and claude_config.is_dir():
+                config_target = self.output_dir / "claude-config"
+                config_target.mkdir(exist_ok=True)
+                for config_file in claude_config.iterdir():
+                    if config_file.is_file():
+                        shutil.copy(config_file, config_target / config_file.name)
+                print(f"    - 使用本地 Claude 配置: {claude_config}")
+
+        else:
+            # 方案 B: 在线下载（fallback）
+            print(f"    ⚠️  本地安装包不存在，将在线下载 Claude Code CLI")
+            print(f"    提示：将 Claude CLI 放到 tools/claude-code-cli 可加速构建")
+
+            dockerfile_content = f"""
+FROM {self.base_image_tag}
+
+# 在线安装 Claude Code CLI
+RUN curl -sSL https://install.claude.ai/cli | bash || \\
+    pip install claude-code-cli || \\
+    echo "⚠️ Claude Code CLI installation failed"
+
+# 配置环境变量
+ENV ANTHROPIC_API_KEY=${{ANTHROPIC_API_KEY}}
+
+# 设置工作目录
+WORKDIR /workspace
+
+# 保持镜像标签
+LABEL repolaunch.instance_id="{self.case_path.name}"
+LABEL refactor-eval.version="1.0"
+"""
+
+        dockerfile_path = self.output_dir / f"Dockerfile.{self.case_path.name}.claude"
+        with open(dockerfile_path, "w") as f:
+            f.write(dockerfile_content)
+
+        print(f"    - Dockerfile: {dockerfile_path}")
+
+        # 构建镜像
+        temp_tag = f"{self.base_image_tag}-claude"
+        try:
+            image, build_logs = self.docker_client.images.build(
+                path=str(self.output_dir),
+                dockerfile=str(dockerfile_path.name),
+                tag=temp_tag,
+                rm=True
+            )
+        finally:
+            # 清理临时文件
+            if (self.output_dir / "claude-code-cli").exists():
+                (self.output_dir / "claude-code-cli").unlink()
+            if (self.output_dir / "claude-config").exists():
+                shutil.rmtree(self.output_dir / "claude-config")
+
+        self.base_image_tag = temp_tag
+
+    def _extend_image_with_setup(self):
+        """扩展镜像 - 添加 setup.py"""
+        setup_file = self.case_path / "setup.py"
+
+        if not setup_file.exists():
+            print(f"    ⚠️  setup.py 不存在，跳过此步骤")
+            return
+
+        # 创建临时 Dockerfile
+        dockerfile_content = f"""
+FROM {self.base_image_tag}
+
+# 复制 setup.py
+COPY setup.py /workspace/setup.py
+
+# 使 setup.py 可执行
+RUN chmod +x /workspace/setup.py
+
+# 保持镜像标签
+LABEL repolaunch.instance_id="{self.case_path.name}"
+LABEL refactor-eval.version="1.0"
+"""
+
+        dockerfile_path = self.output_dir / f"Dockerfile.{self.case_path.name}.setup"
+        with open(dockerfile_path, "w") as f:
+            f.write(dockerfile_content)
+
+        # 复制 setup.py 到构建上下文
+        shutil.copy(setup_file, self.output_dir / "setup.py")
+
+        print(f"    - Dockerfile: {dockerfile_path}")
+
+        # 构建镜像
+        temp_tag = f"{self.base_image_tag}-setup"
+        image, build_logs = self.docker_client.images.build(
+            path=str(self.output_dir),
+            dockerfile=str(dockerfile_path.name),
+            tag=temp_tag,
+            rm=True
+        )
+
+        self.base_image_tag = temp_tag
+
+        # 清理临时文件
+        (self.output_dir / "setup.py").unlink()
+
+    def _finalize_image(self):
+        """保存最终镜像"""
+        # 重新标记为最终镜像名
+        image = self.docker_client.images.get(self.base_image_tag)
+        image.tag(self.final_image_tag)
+
+        print(f"    - 镜像标签: {self.final_image_tag}")
+
+    def _show_image_info(self):
+        """显示镜像信息"""
+        try:
+            image = self.docker_client.images.get(self.final_image_tag)
+
+            print("\n" + "=" * 80)
+            print("镜像信息")
+            print("=" * 80)
+            print(f"镜像名称: {self.final_image_tag}")
+            print(f"镜像 ID: {image.id[:12]}")
+            print(f"镜像大小: {image.attrs['Size'] / (1024**3):.2f} GB")
+            print(f"创建时间: {image.attrs['Created']}")
+
+            # 显示标签
+            labels = image.labels
+            if labels:
+                print(f"\n标签:")
+                for key, value in labels.items():
+                    print(f"  {key}: {value}")
+
+        except Exception as e:
+            print(f"⚠️  无法获取镜像信息: {e}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="使用 RepoLaunch 构建评测镜像")
+    parser.add_argument("--case", type=str, required=True, help="Case 路径")
+    parser.add_argument("--output", type=str, default="results/images", help="输出目录")
+    parser.add_argument("--force-rebuild", action="store_true", help="强制重新构建镜像")
+
+    args = parser.parse_args()
+
+    case_path = Path(args.case)
+    if not case_path.exists():
+        print(f"❌ Case 目录不存在: {case_path}")
+        return 1
+
+    output_dir = Path(args.output)
+
+    builder = ImageBuilder(case_path, output_dir, force_rebuild=args.force_rebuild)
+    return builder.run()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

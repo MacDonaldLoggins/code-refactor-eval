@@ -1,0 +1,37 @@
+schema_version = "1.3"
+artifacts = []
+
+[metadata]
+task_id = "CHANGE_ME"
+language = "CHANGE_ME"
+refactor_type = "CHANGE_ME"
+evaluation_spec = "harbor-refactor-eval/v1"
+
+[verifier]
+timeout_sec = 1800.0
+network_mode = "public"
+collect = []
+
+[verifier.env]
+
+[agent]
+timeout_sec = 3600.0
+
+[environment]
+network_mode = "public"
+build_timeout_sec = 1800.0
+os = "linux"
+mcp_servers = []
+
+[environment.env]
+HTTP_PROXY = ""
+HTTPS_PROXY = ""
+http_proxy = ""
+https_proxy = ""
+ALL_PROXY = ""
+all_proxy = ""
+NO_PROXY = "*"
+no_proxy = "*"
+
+[solution.env]
+

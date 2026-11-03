@@ -1,0 +1,19 @@
+{
+  "version": "2.0",
+  "dimension_id": "C17",
+  "name": "性能证据与复杂性权衡",
+  "layer": "univ",
+  "applicable_equivalence_classes": ["E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", "E9", "E10", "E11", "E12"],
+  "description": "评价性能变化是否有证据、性能优化是否保持清晰设计，以及新增复杂性是否确实服务于重要性能目标。",
+  "system_prompt": "C17 以 Ousterhout 的原则为准：默认偏好简单且自然高效的设计；只有明确性能约束或测量证据才能支持额外复杂性。",
+  "evaluation_prompt_template": "评估 C17 性能证据与复杂性权衡。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 判断性能结论是否有基准、测量或明确约束支持。\n2. 检查性能复杂性是否被隐藏且不污染接口。\n3. 检查常见路径和特殊路径是否合理分离。",
+  "questions": [
+    {"id": "C17.1", "text": "性能变化是否有基准测试、运行指标或明确系统约束作为证据？", "type": "soft", "weight": 1.0, "anchor": "0=纯推测；1=证据充分"},
+    {"id": "C17.2", "text": "重构是否避免了没有证据支持的微优化和额外复杂性？", "type": "soft", "weight": 1.0, "anchor": "0=复杂性由猜测驱动；1=简单设计优先"},
+    {"id": "C17.3", "text": "必要的性能优化是否被封装在实现内部，未使调用者承担额外复杂性？", "type": "soft", "weight": 1.0, "anchor": "0=性能细节泄漏接口；1=优化被隐藏"},
+    {"id": "C17.4", "text": "常见路径是否保持简单、直接且避免不必要的特殊情况检查？", "type": "soft", "weight": 1.0, "anchor": "0=关键路径被特例污染；1=常见路径清晰高效"},
+    {"id": "C17.5", "text": "新增性能复杂性是否带来与其风险和维护成本相称的收益？", "type": "hard", "weight": 1.0, "anchor": "pass=收益明确且值得；fail=复杂性超过收益"}
+  ],
+  "aggregation": {"formula": "dim_C17 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)", "hard_constraint_indicator": "H_C17 = product(s_a for a in hard atoms in A^†)", "na_policy": "任务未涉及性能目标、性能敏感路径或运行时成本时，可整体标记 na"},
+  "output_schema": {"type": "object", "required": ["dimension_id", "layer", "atom_scores", "dim_score", "hard_indicator", "summary"], "properties": {"dimension_id": {"const": "C17"}, "layer": {"const": "univ"}, "atom_scores": {"type": "array"}, "dim_score": {"type": "number", "minimum": 0, "maximum": 1}, "hard_indicator": {"type": "number", "enum": [0, 1]}, "critical_failures": {"type": "array"}, "summary": {"type": "string"}}}
+}

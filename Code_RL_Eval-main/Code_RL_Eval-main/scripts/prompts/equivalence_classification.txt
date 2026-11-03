@@ -1,0 +1,52 @@
+你是一名重构任务分类专家。请阅读以下重构任务信息，判定它属于哪一种「原子等价类」E1-E5，并从该等价类的候选 scenario 列表中选出最匹配的一个 scenario_id。
+
+## 等价类定义
+
+- **E1 抽取与分解**：从既有结构中创建新抽象，原位置改为引用新抽象（如 Extract Method / Extract Class / Split Loop）。
+- **E2 内联与合并**：消除旧抽象，把语义迁移到使用位置或目标结构（如 Inline Method / Inline Variable / Collapse Hierarchy）。
+- **E3 迁移与职责重分配**：实体位置或所有权变化，并重新连接依赖和引用（如 Move Method / Encapsulate Variable / Pull Up）。
+- **E4 符号与契约迁移**：名称、签名或数据契约变化，所有引用与消费者同步迁移（如 Rename / Change Signature / Introduce Parameter Object）。
+- **E5 共享抽象与去重**：多个重复实现归并为一个共享抽象，或用统一形式取代散乱条件（如 Replace Conditional with Polymorphism / Consolidate Conditional / Replace Loop with Pipeline）。
+
+## 允许的 (E 类, scenario_id) 白名单
+
+**你必须从下面这份白名单里选 scenario_id。禁止发明未列出的名字，禁止拼写变体。**
+
+{scenario_catalog}
+
+## 任务元信息
+
+```json
+{metadata_json}
+```
+
+## 仓库目录结构
+
+```
+{directory_tree}
+```
+
+## 任务描述 (refactor.md)
+
+```
+{refactor_md}
+```
+
+## 输出要求
+
+只输出一个 JSON 对象（不要有 markdown 代码块外的解释）：
+
+```json
+{{
+  "equivalence_class": "E1|E2|E3|E4|E5",
+  "scenario_id": "<必须严格来自上面的白名单>",
+  "confidence": 0.0-1.0,
+  "reasoning": "为什么归入该 E 类和 scenario 的简短论据（<= 120 字）"
+}}
+```
+
+判定原则：
+1. 如果任务同时涉及多种重构，选**主导**的那一个；次要的重构不影响归类。
+2. 优先看结构后置条件（是新抽象出现 / 旧抽象消失 / 位置变化 / 契约变化 / 归并去重）。
+3. `scenario_id` 必须与 `equivalence_class` 在白名单里的从属关系一致。
+4. 如果证据严重不足以下判定，把 confidence 调到 <= 0.3，仍然输出你最有信心的一组答案。

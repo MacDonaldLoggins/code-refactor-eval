@@ -1,0 +1,120 @@
+{
+  "version": "2.0",
+  "dimension_id": "C8",
+  "name": "API 与调用契约",
+  "layer": "eq",
+  "applicable_equivalence_classes": [
+    "E2",
+    "E3",
+    "E5",
+    "E8",
+    "E9",
+    "E12"
+  ],
+  "description": "评价函数、类和模块对外暴露的接口是否清晰、稳定、易于调用、不泄漏实现、不要求调用者掌握过多上下文，并且能够表达真实语义。对应过长参数列表、标记参数、查询和修改混合、中间人、过长消息链、工厂函数以及命令与函数等场景。",
+  "system_prompt": "C8 属于等价类专属层，用于 E2（封装数据）、E3（搬移与职责）、E5（API 重构）、E8（类与模块重组）、E9（变量与数据流重组）场景。重构后 API 语义明显变差属于关键失败项。",
+  "evaluation_prompt_template": "评估 C8 API 与调用契约。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 判断接口意图、参数必要性、命令查询分离。\n2. 检测标记参数、中间人、隐含调用顺序。\n3. 每个 Atom 给出归一化分并附证据。",
+  "questions": [
+    {
+      "id": "C8.1",
+      "text": "调用者是否能从函数名、参数和返回值理解其语义？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=接口意图不明；1=接口自解释"
+    },
+    {
+      "id": "C8.2",
+      "text": "每个参数是否都是调用者必须提供的真实输入？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=大量冗余参数；1=参数最小必要"
+    },
+    {
+      "id": "C8.3",
+      "text": "是否通过标记参数让调用者面对多个不同职责或显著不同的调用契约？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=标记仅表达同一抽象内的稳定变化，或已拆分为更清晰接口；fail=标记掩盖多个职责并增加调用者认知负担"
+    },
+    {
+      "id": "C8.4",
+      "text": "查询与修改是否具有清晰、可预测的语义，且不会让调用者误判副作用？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=语义和副作用清晰；fail=混合行为导致调用者误判或隐含依赖"
+    },
+    {
+      "id": "C8.5",
+      "text": "调用者是否被迫从一个完整对象中拆出多个字段，再重新传递给函数？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=拆包重组严重；1=保持对象完整"
+    },
+    {
+      "id": "C8.6",
+      "text": "调用者是否必须按照隐含顺序调用多个方法才能正确使用 API？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=无隐含顺序或已显式化；fail=存在隐含调用顺序"
+    },
+    {
+      "id": "C8.7",
+      "text": "调用者是否还需要知道对象内部依赖了哪些其他对象？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=委托关系泄漏；1=已隐藏委托"
+    },
+    {
+      "id": "C8.8",
+      "text": "新接口是否增加了更多参数、状态、调用步骤或异常类型？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=API 未变差；fail=API 复杂度显著上升"
+    }
+  ],
+  "aggregation": {
+    "formula": "dim_C8 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)",
+    "hard_constraint_indicator": "H_C8 = product(s_a for a in hard atoms in A^†)",
+    "na_policy": "无对外 API 变更的内部重构可将 C8 整体标记 na"
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "dimension_id",
+      "layer",
+      "atom_scores",
+      "dim_score",
+      "hard_indicator",
+      "summary"
+    ],
+    "properties": {
+      "dimension_id": {
+        "const": "C8"
+      },
+      "layer": {
+        "const": "eq"
+      },
+      "atom_scores": {
+        "type": "array"
+      },
+      "dim_score": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "hard_indicator": {
+        "type": "number",
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "critical_failures": {
+        "type": "array"
+      },
+      "summary": {
+        "type": "string"
+      }
+    }
+  }
+}

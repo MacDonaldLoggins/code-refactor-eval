@@ -1,0 +1,217 @@
+{
+  "version": "2.0",
+  "dimension_id": "C2",
+  "name": "坏味道识别与目标命中",
+  "layer": "univ",
+  "applicable_equivalence_classes": [
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7",
+    "E8",
+    "E9",
+    "E10",
+    "E11",
+    "E12"
+  ],
+  "description": "判断重构是否准确识别了原始问题，并且真正解决了问题根因，而不是目标转移或过度解决。",
+  "system_prompt": "C2 确保重构针对具体坏味道采取对应变换，而不是为了'让代码看起来更漂亮'。必须验证：识别准确、手法匹配、根因解决、无目标转移、无过度解决。",
+  "evaluation_prompt_template": "评估 C2 坏味道识别与目标命中。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 验证重构前是否明确说明具体坏味道。\n2. 验证手法与坏味道匹配。\n3. 验证根因解决、无目标转移、无过度解决。\n4. 每个 Atom 给出 pass/fail/na 或归一化分，附证据位置。",
+  "questions": [
+    {
+      "id": "C2.1",
+      "text": "重构前是否明确说明了代码中的具体坏味道，而不是只说'代码不优雅'或'需要优化'？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=明确具体坏味道；fail=模糊描述或无识别"
+    },
+    {
+      "id": "C2.2",
+      "text": "所采用的重构手法是否直接针对识别出的坏味道？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=手法与坏味道匹配；fail=手法不对应"
+    },
+    {
+      "id": "C2.3.1",
+      "text": "重构后，原始问题是否真正消失，而不是只缓解表面现象？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=根因解决；fail=仅表面缓解"
+    },
+    {
+      "id": "C2.3.2",
+      "text": "重复是否真的减少？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=未减少或增加；1=显著减少"
+    },
+    {
+      "id": "C2.3.3",
+      "text": "变化是否真的集中？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=变化仍然分散；1=集中到明确位置"
+    },
+    {
+      "id": "C2.3.4",
+      "text": "参数是否真的变少或更有意义？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=参数无改善或更差；1=明显改善"
+    },
+    {
+      "id": "C2.3.5",
+      "text": "条件逻辑是否真的简化？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=条件未简化；1=明显简化"
+    },
+    {
+      "id": "C2.3.6",
+      "text": "类职责是否真的清晰？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=职责仍混乱；1=职责清晰"
+    },
+    {
+      "id": "C2.3.7",
+      "text": "API 是否真的更容易使用？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=API 未改善；1=明显改善"
+    },
+    {
+      "id": "C2.4.1",
+      "text": "重构是否只是把问题从一个位置转移到了另一个位置？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=未转移；fail=存在目标转移"
+    },
+    {
+      "id": "C2.4.2",
+      "text": "过长函数是否变成了过长类？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=未发生；fail=发生"
+    },
+    {
+      "id": "C2.4.3",
+      "text": "重复代码是否变成了重复工具函数？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=未发生；fail=发生"
+    },
+    {
+      "id": "C2.4.4",
+      "text": "过长参数列表是否变成了巨大 options 对象？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=未发生；fail=发生"
+    },
+    {
+      "id": "C2.4.5",
+      "text": "消息链是否变成了多层代理？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=未发生；fail=发生"
+    },
+    {
+      "id": "C2.4.6",
+      "text": "继承复杂是否变成了委托对象堆？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=未发生；fail=发生"
+    },
+    {
+      "id": "C2.5.1",
+      "text": "重构是否为一个局部问题引入了远超需要的结构？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=无过度解决；fail=过度解决"
+    },
+    {
+      "id": "C2.5.2",
+      "text": "是否建立了不必要的抽象层？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=明显过度；1=抽象必要"
+    },
+    {
+      "id": "C2.5.3",
+      "text": "是否引入复杂继承？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=引入不必要继承；1=继承合理"
+    },
+    {
+      "id": "C2.5.4",
+      "text": "是否创建了只使用一次的框架？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=未发生；fail=发生"
+    },
+    {
+      "id": "C2.5.5",
+      "text": "是否为了消除一个条件建立多个类？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=过度；1=合理"
+    },
+    {
+      "id": "C2.5.6",
+      "text": "是否进行了超出目标范围的大规模改写？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=范围克制；fail=超范围"
+    }
+  ],
+  "aggregation": {
+    "formula": "dim_C2 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)",
+    "hard_constraint_indicator": "H_C2 = product(s_a for a in hard atoms in A^†)",
+    "na_policy": "C2.1、C2.2、C2.3.1 不得用 na 规避；目标转移和过度解决检测可按实际适用性标记 na"
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "dimension_id",
+      "layer",
+      "atom_scores",
+      "dim_score",
+      "hard_indicator",
+      "summary"
+    ],
+    "properties": {
+      "dimension_id": {
+        "const": "C2"
+      },
+      "layer": {
+        "const": "univ"
+      },
+      "atom_scores": {
+        "type": "array"
+      },
+      "dim_score": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "hard_indicator": {
+        "type": "number",
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "critical_failures": {
+        "type": "array"
+      },
+      "summary": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "rubric_id": "SC-J1-001",
+    "direction": "responsibility_path",
+    "score_1_condition": "The candidate invokes the production scrapy.utils.ssl._make_ssl_context with explicit min/max settings; within the same test_execution_id, the call arguments record both setting values, the production _get_tls_version_limits calls _get_tls_version_limit separately for min and max, and the outer call returns normally; the Oracle bound to that result in the candidate source is reached within the same test_execution_id.",
+    "score_0_condition": "The candidate does not invoke the production scrapy.utils.ssl._make_ssl_context; or the call arguments omit an explicit min or max; or the same test_execution_id lacks _get_tls_version_limits or either the min or max _get_tls_version_limit call; or the outer call does not return normally; or the corresponding Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-002",
+    "direction": "responsibility_path",
+    "score_1_condition": "The new-version-boundary scenario invokes the production _load_context_factory_from_settings; within the same test_execution_id, the call arguments record crawler Settings, the production _ScrapyClientContextFactory.from_crawler calls _get_cert_options_version_kwargs, and the outer loader returns normally; the Oracle bound to that factory state in the candidate source is reached within the same test_execution_id.",
+    "score_0_condition": "The candidate does not invoke the production _load_context_factory_from_settings; or the call arguments omit the new version boundaries; or the same test_execution_id lacks _ScrapyClientContextFactory.from_crawler or _get_cert_options_version_kwargs; or the outer loader does not return normally; or the corresponding Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-003",
+    "direction": "responsibility_path",
+    "score_1_condition": "An invalid DOWNLOAD_TLS_MIN_VERSION enters through a production HTTPS-context construction call; within the same test_execution_id, the call arguments record that setting value, the setting_name of the production _get_tls_version_limit is DOWNLOAD_TLS_MIN_VERSION, and that call ends with ValueError; pytest.raises and the exception check in the candidate source are reached within the same test_execution_id.",
+    "score_0_condition": "The invalid DOWNLOAD_TLS_MIN_VERSION is not exercised through a production HTTPS-context construction call; or the call arguments omit that setting value; or the same test_execution_id lacks the production _get_tls_version_limit with the corresponding setting_name; or that call does not end with ValueError; or the corresponding exception Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-004",
+    "direction": "responsibility_path",
+    "score_1_condition": "Access to a historical module export invokes the production scrapy.core.downloader.tls.__getattr__; within the same test_execution_id, the arguments record the export name, active_call_ids relates the warning invocation, and __getattr__ returns normally; pytest.warns and the compatibility-result Oracle in the candidate source are reached within the same test_execution_id.",
+    "score_0_condition": "The candidate does not invoke the production scrapy.core.downloader.tls.__getattr__; or the arguments omit the historical export name; or the same test_execution_id has no warning invocation related to that call; or __getattr__ does not return normally; or the corresponding warning or result Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-005",
+    "direction": "responsibility_path",
+    "score_1_condition": "A scenario with a non-default DOWNLOADER_CLIENT_TLS_METHOD and both new boundaries omitted invokes the production _load_context_factory_from_settings; within the same test_execution_id, the arguments record the legacy method setting, the warning invocation and _openssl_methods.__getitem__ are related to that loader, and the loader returns normally; pytest.warns and the factory-state Oracle in the candidate source are reached within the same test_execution_id.",
+    "score_0_condition": "The legacy-method scenario does not invoke the production _load_context_factory_from_settings; or the arguments do not record both the non-default legacy method and omission of both new boundaries; or the same test_execution_id lacks the related warning invocation or _openssl_methods.__getitem__; or the loader does not return normally; or the corresponding warning or state Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-006",
+    "direction": "responsibility_path",
+    "score_1_condition": "Under Twisted 26.4.0, a TLSv1.2 maximum invokes the production _get_cert_options_version_kwargs; within the same test_execution_id, the arguments record TWISTED_TLS_LIMITS_OFFBY1=false and TLSv1.2, the outer call returns normally; the lowerMaximumSecurityTo Oracle in the candidate source is reached within the same test_execution_id.",
+    "score_0_condition": "Under the current Twisted condition, the production _get_cert_options_version_kwargs is not invoked; or the arguments omit TWISTED_TLS_LIMITS_OFFBY1=false or the TLSv1.2 maximum; or the outer call does not return normally; or the corresponding mapping Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-007",
+    "direction": "responsibility_path",
+    "score_1_condition": "An invalid DOWNLOAD_TLS_MAX_VERSION enters through a production HTTPS-context construction call; within the same test_execution_id, the call arguments record that setting value, the setting_name of the production _get_tls_version_limit is DOWNLOAD_TLS_MAX_VERSION, and that call ends with ValueError; pytest.raises and the exception check in the candidate source are reached within the same test_execution_id.",
+    "score_0_condition": "The invalid DOWNLOAD_TLS_MAX_VERSION is not exercised through a production HTTPS-context construction call; or the call arguments omit that setting value; or the same test_execution_id lacks the production _get_tls_version_limit with the corresponding setting_name; or that call does not end with ValueError; or the corresponding exception Oracle exists only in source and has no arrival record under the same test_execution_id."
+  },
+  {
+    "rubric_id": "SC-J1-008",
+    "direction": "responsibility_path",
+    "score_1_condition": "Under Twisted 26.4.0, a TLSv1.3 maximum invokes the production _get_cert_options_version_kwargs; within the same test_execution_id, the arguments record TWISTED_TLS_LIMITS_OFFBY1=false and TLSv1.3, the outer call returns normally; the lowerMaximumSecurityTo Oracle in the candidate source is reached within the same test_execution_id.",
+    "score_0_condition": "Under the current Twisted condition, the production _get_cert_options_version_kwargs is not invoked; or the arguments omit TWISTED_TLS_LIMITS_OFFBY1=false or the TLSv1.3 maximum; or the outer call does not return normally; or the corresponding mapping Oracle exists only in source and has no arrival record under the same test_execution_id."
+  }
+]

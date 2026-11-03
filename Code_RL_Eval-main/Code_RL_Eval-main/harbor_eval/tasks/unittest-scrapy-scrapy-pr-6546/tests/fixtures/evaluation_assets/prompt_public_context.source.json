@@ -1,0 +1,4 @@
+{
+  "repository_summary": "Scrapy is a fast high-level web crawling and web scraping framework, used to crawl websites and extract structured data from their pages.",
+  "change_summary": "Pull request 6546 adds minimum and maximum TLS version settings as a replacement for the legacy TLS method setting. It deprecates non-default uses of DOWNLOADER_CLIENT_TLS_METHOD and historical TLS module constants, and removes that legacy setting from the HTTPX download handler."
+}

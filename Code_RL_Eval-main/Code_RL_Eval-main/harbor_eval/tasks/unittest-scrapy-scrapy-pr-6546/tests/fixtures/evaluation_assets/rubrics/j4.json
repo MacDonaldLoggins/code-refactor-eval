@@ -1,0 +1,44 @@
+[
+  {
+    "rubric_id": "SC-J4-001",
+    "direction": "configured_vs_omitted_bounds",
+    "score_1_condition": "The stdlib scenarios for explicitly configured boundaries and for both boundaries omitted use different complete nodes or parameter instances; each instance declares its input partition and checks the version state of its constructed SSLContext.",
+    "score_0_condition": "The explicitly configured or omitted-boundary partition lacks an independent complete instance; the inputs of the two partitions cannot be distinguished; an instance lacks its own SSLContext state check; or the result from one partition represents the other partition."
+  },
+  {
+    "rubric_id": "SC-J4-002",
+    "direction": "stdlib_vs_twisted_backend",
+    "score_1_condition": "The stdlib SSLContext and Twisted factory scenarios use different complete nodes or parameter instances; each instance declares its backend, the stdlib instance checks SSLContext version properties, and the Twisted instance checks the factory's version and method fields.",
+    "score_0_condition": "The stdlib or Twisted backend lacks an independent complete instance; the two backends cannot be distinguished from their inputs or observed objects; the stdlib instance does not check SSLContext version properties; the Twisted instance does not check factory version and method fields; or the result from one backend represents the other backend."
+  },
+  {
+    "rubric_id": "SC-J4-003",
+    "direction": "invalid_min_vs_invalid_max",
+    "score_1_condition": "Invalid min and invalid max use different complete nodes or parameter instances; each instance declares the corresponding setting name and rejected value and checks its own endpoint-specific exception.",
+    "score_0_condition": "Invalid min or invalid max lacks an independent complete instance; the complete parameter identifiers do not distinguish the two endpoints; an instance lacks its own setting name, rejected value, and endpoint-specific exception check; or the result from one endpoint represents the other endpoint."
+  },
+  {
+    "rubric_id": "SC-J4-004",
+    "direction": "module_api_vs_setting",
+    "score_1_condition": "The historical module export and non-default legacy-method setting use different complete nodes or parameter instances; the export instance checks the compatibility result and warning from property access, while the setting instance checks the loaded method state of the factory and the migration warning.",
+    "score_0_condition": "The module export or legacy-method setting lacks an independent complete instance; the inputs of the two paths cannot be distinguished; an instance lacks its own compatibility result and warning checks; or the result from one path represents the other path."
+  },
+  {
+    "rubric_id": "SC-J4-005",
+    "direction": "factory_range_vs_direct_maximum_translation",
+    "score_1_condition": "Twisted factory boundary state and current-Twisted maximum version translation use different complete nodes or parameter instances; the factory instance checks tls_min_version, tls_max_version, and legacy-method precedence, while the translation instances separately check lowerMaximumSecurityTo for TLSv1.2 or TLSv1.3.",
+    "score_0_condition": "The factory-state or maximum-version translation branch lacks an independent complete instance; the translation instance does not establish the current Twisted condition; an instance lacks its own result check; or the factory-state result represents the maximum-version mapping result."
+  },
+  {
+    "rubric_id": "SC-J4-006",
+    "direction": "valid_range_vs_invalid_min",
+    "score_1_condition": "A valid stdlib range and invalid min use different complete nodes or parameter instances; the valid instance checks the state of the constructed SSLContext, while the invalid instance checks the ValueError produced by context construction.",
+    "score_0_condition": "The valid range or invalid min lacks an independent complete instance; the inputs of the two partitions cannot be distinguished; an instance lacks its own successful-state or failure-exception check; or the result from one partition represents the other partition."
+  },
+  {
+    "rubric_id": "SC-J4-007",
+    "direction": "new_bounds_vs_legacy_method",
+    "score_1_condition": "A scenario that configures new boundaries together with the legacy method and a scenario that omits the new boundaries while configuring only a non-default legacy method use different complete nodes or parameter instances; the former checks the state showing new-boundary precedence, while the latter checks the compatible legacy-method state and migration warning.",
+    "score_0_condition": "The new-boundary-precedence or legacy-method-only compatibility scenario lacks an independent complete instance; the two configuration partitions cannot be distinguished; the former does not check the new-boundary-precedence state; the latter does not check the compatible legacy-method state or migration warning; or the result from one configuration represents the other configuration."
+  }
+]

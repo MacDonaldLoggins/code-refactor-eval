@@ -1,0 +1,182 @@
+{
+  "version": "2.0",
+  "dimension_id": "C3",
+  "name": "可理解性",
+  "layer": "univ",
+  "applicable_equivalence_classes": [
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7",
+    "E8",
+    "E9",
+    "E10",
+    "E11",
+    "E12"
+  ],
+  "description": "判断重构后开发者是否更容易理解代码的目的、主要流程、业务规则、数据来源、状态变化、异常路径以及代码之间的关系。核心：读者能否更快地形成正确的心智模型。",
+  "system_prompt": "C3 强调重构后代码是否让读者更快形成正确心智模型，而不是代码短就得分高。特别警惕过度提炼造成的阅读跳转成本。",
+  "evaluation_prompt_template": "评估 C3 可理解性。\n\n任务描述：\n{task_description}\n\n重构前代码/上下文：\n{before_code}\n\nCandidate patch 或代码：\n{candidate_patch}\n\n自动门控与结构证据：\n{automated_evidence}\n\n评估要求：\n1. 判断主流程、命名、控制流、数据流是否清晰。\n2. 判断是否引入过多跳转碎片。\n3. 判断注释是否与重构后结构匹配。\n4. 每个 Atom 给出归一化分并附证据。",
+  "questions": [
+    {
+      "id": "C3.1",
+      "text": "读者能否快速看出这个函数或模块的主要工作流程？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=主流程难以识别；1=一眼看清主流程"
+    },
+    {
+      "id": "C3.2.1",
+      "text": "函数、变量、字段和类名是否表达了真实意图？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=名称与行为脱节；1=名称精确表达意图"
+    },
+    {
+      "id": "C3.2.2",
+      "text": "名称是否具体？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=抽象空洞；1=具体准确"
+    },
+    {
+      "id": "C3.2.3",
+      "text": "名称是否与行为一致？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=名实不符；1=完全一致"
+    },
+    {
+      "id": "C3.2.4",
+      "text": "是否存在神秘缩写？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=大量神秘缩写；1=无神秘缩写或有明确约定"
+    },
+    {
+      "id": "C3.2.5",
+      "text": "是否有 `data`、`info`、`manager`、`helper` 等模糊词？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=大量模糊词；1=无或有充分理由"
+    },
+    {
+      "id": "C3.2.6",
+      "text": "同一概念是否使用相同名称？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=同概念异名；1=概念-名称一一对应"
+    },
+    {
+      "id": "C3.3",
+      "text": "不运行程序，读者能否大致推断代码的执行路径？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=控制流晦涩；1=控制流显然"
+    },
+    {
+      "id": "C3.4",
+      "text": "读者能否看出数据从哪里来、如何变化、最终到哪里去？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=数据流被隐藏；1=数据流清晰可追"
+    },
+    {
+      "id": "C3.5.1",
+      "text": "重构是否在增加抽象的同时，控制了阅读跳转成本？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=跳转成本剧增；1=抽象与跳转平衡"
+    },
+    {
+      "id": "C3.5.2",
+      "text": "是否出现一行代码跳到另一文件的情况？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=频繁出现；1=无此类无价值跳转"
+    },
+    {
+      "id": "C3.5.3",
+      "text": "是否出现另一文件再跳到第三个类的情况？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=频繁多层跳转；1=跳转深度合理"
+    },
+    {
+      "id": "C3.5.4",
+      "text": "是否每个函数只有一行转发？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=大量一行转发；1=无无意义转发"
+    },
+    {
+      "id": "C3.5.5",
+      "text": "读者是否必须拼接大量碎片才能理解完整逻辑？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=严重碎片化；1=逻辑连贯"
+    },
+    {
+      "id": "C3.6.1",
+      "text": "重构后，注释是否仍然准确？",
+      "type": "hard",
+      "weight": 1.0,
+      "anchor": "pass=注释与代码一致；fail=注释过时误导"
+    },
+    {
+      "id": "C3.6.2",
+      "text": "注释是否解释的是代码无法直接表达的内容？",
+      "type": "soft",
+      "weight": 1.0,
+      "anchor": "0=大量冗余注释；1=注释聚焦不可自解释部分"
+    }
+  ],
+  "aggregation": {
+    "formula": "dim_C3 = sum(u_a * s_a for a in A^†) / sum(u_a for a in A^†)",
+    "hard_constraint_indicator": "H_C3 = product(s_a for a in hard atoms in A^†)",
+    "na_policy": "无注释的场景 C3.6.1、C3.6.2 可标记 na"
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "dimension_id",
+      "layer",
+      "atom_scores",
+      "dim_score",
+      "hard_indicator",
+      "summary"
+    ],
+    "properties": {
+      "dimension_id": {
+        "const": "C3"
+      },
+      "layer": {
+        "const": "univ"
+      },
+      "atom_scores": {
+        "type": "array"
+      },
+      "dim_score": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "hard_indicator": {
+        "type": "number",
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "critical_failures": {
+        "type": "array"
+      },
+      "summary": {
+        "type": "string"
+      }
+    }
+  }
+}

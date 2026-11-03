@@ -1,0 +1,232 @@
+{
+  "schema_version": "unittest-rl-harbor-e2-positive-execution-contract-v2",
+  "contract_id": "scrapy-pr6546-e2-current-only-v001",
+  "status": "frozen",
+  "task_core_fingerprint": "bd6346982a716d90e0108d7b32d2de533a0ebfc78aa102e891e4b167def88f51",
+  "obligation_revision_id": "obligations-revision-003-current-only",
+  "evidence_policy": {
+    "replay_count": 3,
+    "stable_witness_identity": "full_parameterized_pytest_nodeid",
+    "included": [
+      "positive target-version execution",
+      "frozen input partition",
+      "production invocation",
+      "return, exception, or warning event"
+    ],
+    "excluded": [
+      "candidate source text",
+      "AST and source token matching",
+      "fault replay and SC-E1",
+      "SC-J1 through SC-J5",
+      "expected result correctness",
+      "candidate assertion correctness"
+    ]
+  },
+  "rules": [
+    {
+      "obligation_id": "OBL-001",
+      "accepted_phases": ["setup", "call"],
+      "required_invocations": [
+        {
+          "alias": "stdlib_context",
+          "target": "scrapy.utils.ssl._make_ssl_context",
+          "arguments": {
+            "settings.DOWNLOAD_TLS_MIN_VERSION": "TLSv1.2",
+        "settings.DOWNLOAD_TLS_MAX_VERSION": "TLSv1.3"
+          },
+          "outcome": "return",
+          "observable_fields": ["minimum_version", "maximum_version"]
+        }
+      ],
+      "required_warnings": []
+    },
+    {
+      "obligation_id": "OBL-002",
+      "accepted_phases": ["setup", "call"],
+      "required_invocations": [
+        {
+          "alias": "stdlib_defaults",
+          "target": "scrapy.utils.ssl._make_ssl_context",
+          "arguments": {
+            "settings.DOWNLOAD_TLS_MIN_VERSION": null,
+            "settings.DOWNLOAD_TLS_MAX_VERSION": null
+          },
+          "outcome": "return",
+          "observable_fields": ["protocol", "minimum_version", "maximum_version"]
+        }
+      ],
+      "required_warnings": []
+    },
+    {
+      "obligation_id": "OBL-003",
+      "accepted_phases": ["setup", "call"],
+      "required_invocations": [
+        {
+          "alias": "twisted_loader",
+          "target": "scrapy.core.downloader.contextfactory._load_context_factory_from_settings",
+          "arguments": {
+            "settings.DOWNLOAD_TLS_MIN_VERSION": "TLSv1.2",
+            "settings.DOWNLOAD_TLS_MAX_VERSION": "TLSv1.3"
+          },
+          "outcome": "return",
+          "observable_fields": ["tls_min_version", "tls_max_version"]
+        },
+        {
+          "alias": "certificate_options_translation",
+          "target": "scrapy.utils.ssl._get_cert_options_version_kwargs",
+          "arguments": {
+            "min_version.name": "TLSv1_2",
+            "max_version.name": "TLSv1_3"
+          },
+          "outcome": "return",
+          "observable_fields": ["mapping"]
+        }
+      ],
+      "required_warnings": []
+    },
+    {
+      "obligation_id": "OBL-004",
+      "accepted_phases": ["setup", "call"],
+      "required_invocations": [
+        {
+          "alias": "range_precedence",
+          "target": "scrapy.core.downloader.contextfactory._load_context_factory_from_settings",
+          "arguments": {
+            "settings.DOWNLOADER_CLIENT_TLS_METHOD": {"not_equals": "TLS"}
+          },
+          "any_argument_sets": [
+            {"settings.DOWNLOAD_TLS_MIN_VERSION": {"not_equals": null}},
+            {"settings.DOWNLOAD_TLS_MAX_VERSION": {"not_equals": null}}
+          ],
+          "outcome": "return",
+          "observable_fields": ["_ssl_method", "tls_min_version", "tls_max_version"]
+        }
+      ],
+      "required_warnings": []
+    },
+    {
+      "obligation_id": "OBL-005",
+      "accepted_phases": ["setup", "call"],
+      "required_invocations": [
+        {
+          "alias": "invalid_min_conversion",
+          "target": "scrapy.utils.ssl._get_tls_version_limit",
+          "arguments": {
+            "setting_name": "DOWNLOAD_TLS_MIN_VERSION",
+            "settings.DOWNLOAD_TLS_MIN_VERSION": {
+              "not_in": [null, "TLSv1.0", "TLSv1.1", "TLSv1.2", "TLSv1.3"]
+            }
+          },
+          "outcome": "exception",
+          "observable_fields": ["exception"]
+        }
+      ],
+      "required_warnings": []
+    },
+    {
+      "obligation_id": "OBL-006",
+      "accepted_phases": ["setup", "call"],
+      "required_invocations": [
+        {
+          "alias": "invalid_max_conversion",
+          "target": "scrapy.utils.ssl._get_tls_version_limit",
+          "arguments": {
+            "setting_name": "DOWNLOAD_TLS_MAX_VERSION",
+            "settings.DOWNLOAD_TLS_MAX_VERSION": {
+              "not_in": [null, "TLSv1.0", "TLSv1.1", "TLSv1.2", "TLSv1.3"]
+            }
+          },
+          "outcome": "exception",
+          "observable_fields": ["exception"]
+        }
+      ],
+      "required_warnings": []
+    },
+    {
+      "obligation_id": "OBL-007",
+      "accepted_phases": ["setup", "call"],
+      "required_invocations": [
+        {
+          "alias": "method_tls_access",
+          "target": "scrapy.core.downloader.tls.__getattr__",
+          "arguments": {"name": "METHOD_TLS"},
+          "outcome": "return",
+          "observable_fields": ["value"]
+        }
+      ],
+      "required_warnings": [
+        {"within_invocation": "method_tls_access"}
+      ]
+    },
+    {
+      "obligation_id": "OBL-008",
+      "accepted_phases": ["setup", "call"],
+      "required_invocations": [
+        {
+          "alias": "legacy_setting_loader",
+          "target": "scrapy.core.downloader.contextfactory._load_context_factory_from_settings",
+          "arguments": {
+            "settings.DOWNLOADER_CLIENT_TLS_METHOD": "TLSv1.2",
+            "settings.DOWNLOAD_TLS_MIN_VERSION": null,
+            "settings.DOWNLOAD_TLS_MAX_VERSION": null
+          },
+          "outcome": "return",
+          "observable_fields": ["_ssl_method"]
+        }
+      ],
+      "required_warnings": [
+        {"within_invocation": "legacy_setting_loader"}
+      ]
+    },
+    {
+      "obligation_id": "OBL-009",
+      "accepted_phases": ["setup", "call"],
+      "required_invocations": [
+        {
+          "alias": "current_tls12_maximum",
+          "target": "scrapy.utils.ssl._get_cert_options_version_kwargs",
+          "arguments": {
+            "max_version.name": "TLSv1_2",
+            "global_state.TWISTED_TLS_LIMITS_OFFBY1": false
+          },
+          "outcome": "return",
+          "observable_fields": ["mapping.lowerMaximumSecurityTo"]
+        }
+      ],
+      "required_warnings": []
+    },
+    {
+      "obligation_id": "OBL-010",
+      "accepted_phases": ["setup", "call"],
+      "required_invocations": [
+        {
+          "alias": "current_tls13_maximum",
+          "target": "scrapy.utils.ssl._get_cert_options_version_kwargs",
+          "arguments": {
+            "max_version.name": "TLSv1_3",
+            "global_state.TWISTED_TLS_LIMITS_OFFBY1": false
+          },
+          "outcome": "return",
+          "observable_fields": ["mapping.lowerMaximumSecurityTo"]
+        }
+      ],
+      "required_warnings": []
+    },
+    {
+      "obligation_id": "OBL-011",
+      "accepted_phases": ["setup", "call"],
+      "required_invocations": [
+        {
+          "alias": "openssl_methods_access",
+          "target": "scrapy.core.downloader.tls.__getattr__",
+          "arguments": {"name": "openssl_methods"},
+          "outcome": "return",
+          "observable_fields": ["value"]
+        }
+      ],
+      "required_warnings": [
+        {"within_invocation": "openssl_methods_access"}
+      ]
+    }
+  ]
+}

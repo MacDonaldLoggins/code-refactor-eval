@@ -1,0 +1,32 @@
+[
+  {
+    "rubric_id": "SC-J3-001",
+    "direction": "behavior_naming",
+    "score_1_condition": "For every successfully collected TLS node, its function name and complete parameter identifier identify the backend or entry point and identify the corresponding partition among configured boundaries, omitted boundaries, invalid min, invalid max, historical compatibility, and current Twisted maximum-version conversion.",
+    "score_0_condition": "The candidate has no successfully collected TLS node; or a node's function name and complete parameter identifier do not identify the backend or entry point; or they do not identify the corresponding setting or conversion partition; or the node name describes only an internal function without expressing the scenario."
+  },
+  {
+    "rubric_id": "SC-J3-002",
+    "direction": "single_behavior_cohesion",
+    "score_1_condition": "Every successfully collected complete TLS nodeid belongs to one primary contract; independent contracts are carried by different nodes or complete parameter instances, while data values that share an action and Oracle may be carried by parameter instances.",
+    "score_0_condition": "A complete nodeid carries multiple independent primary contracts; or different contracts cannot be executed and attributed separately; or independent partitions collapse into executions that cannot be distinguished by their complete nodeids."
+  },
+  {
+    "rubric_id": "SC-J3-003",
+    "direction": "fixture_understandability",
+    "score_1_condition": "Version settings, the legacy method setting, dependency-version conditions, and expected states can be read from the test body, parameter values, or directly referenced fixtures; values modified by a fixture have clear names at their use sites.",
+    "score_0_condition": "A relevant setting, dependency condition, or expected state cannot be read from the test body, parameter values, or a directly referenced fixture; or a key fixture modification is used under a name with unclear meaning."
+  },
+  {
+    "rubric_id": "SC-J3-004",
+    "direction": "structural_clarity",
+    "score_1_condition": "Every TLS scenario has identifiable input preparation, one target construction or call, and a result check bound to that target; its control flow does not use broad OR conditions, environment branches, or swallowed target exceptions to accept incompatible outcomes.",
+    "score_0_condition": "A scenario lacks identifiable input preparation; lacks a target construction or call; has a result check that is not bound to the target; executes multiple indistinguishable target actions; or uses broad OR conditions, environment branches, or swallowed target exceptions so that incompatible outcomes can all pass."
+  },
+  {
+    "rubric_id": "SC-J3-005",
+    "direction": "no_structural_coupling",
+    "score_1_condition": "The TLS tests do not read production source, use inspect.getsource, change assertions based on production-file hashes or git differences, access an external network, depend on execution order, or depend on mutable state shared across tests; each complete node produces the same result when run alone and when the full group is run repeatedly.",
+    "score_0_condition": "A TLS test reads production source, calls inspect.getsource, changes assertions based on production-file hashes or git differences, accesses an external network, depends on another test running first, or depends on mutable state shared across tests; or a complete node produces different results when run alone and when the full group is run repeatedly."
+  }
+]
